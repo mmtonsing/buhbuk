@@ -15,7 +15,7 @@ app.use("/user", userRoutes); //Login, register, get logged-in user, logout
 app.use("/images", imageRoutes); //Upload/download actual files to AWS
 
 app.get("/", (req, res) => {
-  res.send("Hello from BukWarm");
+  res.send("Hawkdak Pa");
 });
 
 const { globalLimiter } = require("./middleware/rateLimit");
