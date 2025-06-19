@@ -8,9 +8,6 @@ const isProduction = process.env.NODE_ENV === "production";
 const upload = multer();
 
 const applyMiddleware = (app) => {
-  app.use(cookieParser()); //parses the cookie from incoming requests (for reading JWT).
-  app.use(upload.any()); //upload files (via multer).
-
   //enables frontend–backend communication with credentials (cookies)
   app.use(
     cors({
@@ -18,6 +15,10 @@ const applyMiddleware = (app) => {
       credentials: true,
     })
   );
+
+  app.use(cookieParser()); //parses the cookie from incoming requests (for reading JWT).
+  app.use(upload.any()); //upload files (via multer).
+
   app.use(express.json()); //parses incoming JSON bodies.
   app.use(passport.initialize()); //passport strategy for login.
 };
