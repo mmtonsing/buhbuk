@@ -89,7 +89,7 @@ module.exports.loginUser = (req, res, next) => {
         process.env.SECRETKEY,
         { expiresIn: "12h" }
       );
-      console.log("NODE_ENV:", process.env.NODE_ENV);
+
       //stores it in an HTTP-only cookie
       res.cookie("token", token, {
         httpOnly: true,
