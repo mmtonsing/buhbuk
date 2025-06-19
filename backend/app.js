@@ -5,6 +5,7 @@ const { mod3dRoutes, userRoutes, imageRoutes } = require("./routes"); //Load Rou
 
 const app = express(); //Creates Express app
 
+app.set("trust proxy", 1);
 //MIDDLE WARES- cookieParser, multer, CORS, passport)
 applyMiddleware(app);
 
