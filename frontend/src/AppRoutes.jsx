@@ -1,5 +1,5 @@
 // AppRoutes.jsx
-import { HashRouter as Router, Routes, Route } from "react-router-dom";
+// import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { Toaster } from "sonner";
 import { useAuth } from "./context/AuthContext";
 import Loader from "./components/customUI/Loader";
@@ -17,6 +17,7 @@ import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { ComingSoon } from "./pages/ComingSoon";
 import { PostPage } from "./pages/main/PostPage";
 import { EditMod3d } from "./pages/mod3d/EditMod3d";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 export function AppRoutes() {
   const { loading } = useAuth();

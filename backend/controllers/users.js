@@ -5,8 +5,12 @@ const Mod3d = require("../models/mod3d");
 
 //retrieve all users
 module.exports.getAllUsers = async (req, res) => {
-  const users = await User.find({});
-  res.json(users);
+  try {
+    const users = await User.find({});
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to retrieve users" });
+  }
 };
 
 //create a user
@@ -85,12 +89,12 @@ module.exports.loginUser = (req, res, next) => {
         process.env.SECRETKEY,
         { expiresIn: "12h" }
       );
-
+      console.log("NODE_ENV:", process.env.NODE_ENV);
       //stores it in an HTTP-only cookie
       res.cookie("token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production", // true in production
-        sameSite: "Lax",
+        sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
         maxAge: 12 * 60 * 60 * 1000, // 12 hours
       });
       return res.json({
@@ -107,7 +111,7 @@ module.exports.logoutUser = (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "Lax",
+    sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
   });
   return res.json({ success: true, message: "Logged out successfully" });
 };
