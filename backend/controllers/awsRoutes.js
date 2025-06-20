@@ -60,7 +60,10 @@ module.exports.retrievePublicFile = async (req, res) => {
     const contentType = data.ContentType;
     const srcString = await data.Body.transformToString("base64");
     const imageSource = `data:${contentType};base64, ${srcString}`;
-    console.log("Trying to fetch key:", id); // e.g. "captain.png"
+
+    if (process.env.NODE_ENV !== "production") {
+      console.log("Trying to fetch key:", id);
+    }
 
     res.send(imageSource);
   } catch (err) {

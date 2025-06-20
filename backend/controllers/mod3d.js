@@ -1,6 +1,7 @@
 const Mod3d = require("../models/mod3d");
 const { deleteFileFromS3 } = require("../utils/s3");
 
+//retrieve
 module.exports.retrieveAllPublic = async (req, res) => {
   try {
     const publicMods = await Mod3d.find({
@@ -17,6 +18,7 @@ module.exports.retrieveAllPublic = async (req, res) => {
   }
 };
 
+//retrieve all
 module.exports.retrieveAll = async (req, res) => {
   try {
     const mod3ds = await Mod3d.find().populate("author", "username email");
@@ -26,6 +28,7 @@ module.exports.retrieveAll = async (req, res) => {
   }
 };
 
+//upload
 module.exports.uploadModel = async (req, res) => {
   try {
     const mod3d = new Mod3d({
@@ -43,6 +46,7 @@ module.exports.uploadModel = async (req, res) => {
   }
 };
 
+//retrieve
 module.exports.retrieveModel = async (req, res) => {
   try {
     const mod3d = await Mod3d.findById(req.params.id).populate(
@@ -56,6 +60,7 @@ module.exports.retrieveModel = async (req, res) => {
   }
 };
 
+//edit model
 module.exports.editModel = async (req, res) => {
   try {
     const { id } = req.params;
@@ -87,6 +92,7 @@ module.exports.editModel = async (req, res) => {
   }
 };
 
+//delete model
 module.exports.deleteModel = async (req, res) => {
   try {
     const mod3d = await Mod3d.findById(req.params.id);
