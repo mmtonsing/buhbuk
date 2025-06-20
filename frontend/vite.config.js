@@ -12,4 +12,13 @@ export default defineConfig({
     },
   },
   base: "/", // for Vercel root deployment
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:3000", //backend
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ""),
+      },
+    },
+  },
 });

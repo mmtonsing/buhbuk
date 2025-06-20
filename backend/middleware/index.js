@@ -4,14 +4,13 @@ const cors = require("cors");
 const multer = require("multer");
 const passport = require("passport");
 
-const isProduction = process.env.NODE_ENV === "production";
 const upload = multer();
 
 const applyMiddleware = (app) => {
   //enables frontend–backend communication with credentials (cookies)
   app.use(
     cors({
-      origin: isProduction ? process.env.CLIENT_URL : "http://localhost:5173", // your frontend URL
+      origin: process.env.CLIENT_URL, // your frontend URL
       credentials: true,
     })
   );

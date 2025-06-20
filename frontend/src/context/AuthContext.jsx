@@ -23,7 +23,6 @@ export function AuthProvider({ children }) {
         }
         setUser(null);
       } finally {
-        console.log("loadiing set to false at AuthContext");
         setLoading(false);
       }
     }

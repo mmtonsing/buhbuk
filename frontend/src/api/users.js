@@ -19,7 +19,6 @@ export async function getCurrentUser() {
     return res.data;
   } catch (err) {
     if (err.response?.status === 401) {
-      console.log("no user(getCurrentUser api)");
       return null; // ✅ just return null, don't redirect!
     }
     throw err; // let other errors bubble up
