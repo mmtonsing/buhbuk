@@ -1,30 +1,27 @@
-const express = require("express");
+import express from "express";
+import * as users from "../controllers/users.js";
+import authMiddleware from "../middleware/auth.js";
+import { loginLimiter } from "../middleware/rateLimit.js";
+
 const router = express.Router();
-const users = require("../controllers/users");
-const authMiddleware = require("../middleware/auth");
-const { loginLimiter } = require("../middleware/rateLimit");
 
-router
-  .route("/")
-  .get(authMiddleware, users.getAllUsers) //Get all users/
-  .post(users.createUser); //Create user
+router.route("/").get(authMiddleware, users.getAllUsers).post(users.createUser);
 
-//always keep the route "/me" above "/:id"
-//Gets user info from JWT (cookie)
+// Always keep the "/me" route above "/:id"
 router.get("/me", authMiddleware, users.getUserInfo);
 
 router.get("/:id/posts", users.getUserPosts);
 
 router
   .route("/:id")
-  .get(authMiddleware, users.retrieveUser) //Retrieve a user
-  .put(authMiddleware, users.editUser) //Edit a user
-  .delete(authMiddleware, users.deleteUser); //Delete a user
+  .get(authMiddleware, users.retrieveUser)
+  .put(authMiddleware, users.editUser)
+  .delete(authMiddleware, users.deleteUser);
 
 // Login and set HTTP-only cookie
 router.post("/login", loginLimiter, users.loginUser);
 
-//logout Clears cookie
+// Logout - Clears cookie
 router.post("/logout", authMiddleware, users.logoutUser);
 
-module.exports = router;
+export default router;

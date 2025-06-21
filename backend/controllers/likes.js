@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
-const Mod3D = require("../models/mod3d");
+import mongoose from "mongoose";
+import Mod3D from "../models/mod3d.js";
 
-module.exports.ToggleLike = async (req, res) => {
+export const ToggleLike = async (req, res) => {
   const modId = req.params.id;
   const userId = req.body.userId;
 
@@ -9,9 +9,8 @@ module.exports.ToggleLike = async (req, res) => {
     const mod = await Mod3D.findById(modId);
     if (!mod) return res.status(404).json({ message: "Mod not found" });
 
-    // const userObjectId = new mongoose.Types.ObjectId(userId);
     const userObjectId = new mongoose.Types.ObjectId(userId);
-    // Find index correctly using equals() if stored as ObjectId
+
     const index = mod.likedBy.findIndex((id) => id.equals(userObjectId));
 
     let liked;
@@ -20,12 +19,9 @@ module.exports.ToggleLike = async (req, res) => {
       mod.likedBy.push(userObjectId); // Add like
       liked = true;
     } else {
-      mod.likedBy.splice(index, 1);
+      mod.likedBy.splice(index, 1); // Remove like
       liked = false;
     }
-
-    // 🛡️ Ensure uniqueness: prevent duplicates
-    // mod.likedBy = [...new Set(mod.likedBy.map((id) => id.toString()))];
 
     await mod.save();
 

@@ -1,9 +1,11 @@
+import dotenv from "dotenv";
+
 if (process.env.NODE_ENV !== "production") {
-  require("dotenv").config();
+  dotenv.config();
 }
 
-const app = require("./app");
-const connectDB = require("./utils/database");
+import app from "./app.js";
+import connectDB from "./utils/database.js";
 
 const PORT = process.env.PORT || 3000;
 

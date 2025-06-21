@@ -1,12 +1,17 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+import mongoose from "mongoose";
+
+const { Schema } = mongoose;
 
 const Mod3dSchema = new Schema({
-  title: String, //temporary
-  description: String, //temporary
+  title: String,
+  description: String,
   price: Number,
 
+<<<<<<< HEAD
   imageId: { type: String, required: true }, // S3 key of thumbnail
+=======
+  imageId: { type: String, required: true },
+>>>>>>> 497afeb (shifting backend to esm)
   videoId: String,
   modelFiles: [
     {
@@ -16,7 +21,11 @@ const Mod3dSchema = new Schema({
     },
   ],
 
+<<<<<<< HEAD
   likes: { type: Number, default: 0 }, //temporary
+=======
+  likes: { type: Number, default: 0 },
+>>>>>>> 497afeb (shifting backend to esm)
   likedBy: [
     {
       type: Schema.Types.ObjectId,
@@ -31,12 +40,12 @@ const Mod3dSchema = new Schema({
 
   author: {
     type: Schema.Types.ObjectId,
-    ref: "User", //link to User collection
+    ref: "User",
   },
 
   postId: {
     type: Schema.Types.ObjectId,
-    ref: "Post", // Optional backward reference
+    ref: "Post",
   },
 
   dateCreated: {
@@ -45,4 +54,4 @@ const Mod3dSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model("Mod3d", Mod3dSchema);
+export default mongoose.model("Mod3d", Mod3dSchema);

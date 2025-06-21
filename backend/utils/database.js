@@ -1,5 +1,4 @@
-// utils/db.js
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const connectDB = async () => {
   const dbUrl = process.env.ATLAS_URI || "mongodb://127.0.0.1:27017/eimihub";
@@ -13,4 +12,4 @@ const connectDB = async () => {
   }
 };
 
-module.exports = connectDB;
+export default connectDB;

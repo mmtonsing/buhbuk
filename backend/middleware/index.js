@@ -1,13 +1,13 @@
-const express = require("express");
-const cookieParser = require("cookie-parser");
-const cors = require("cors");
-const multer = require("multer");
-const passport = require("passport");
+import express from "express";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import multer from "multer";
+import passport from "passport";
 
 const upload = multer();
 
 const applyMiddleware = (app) => {
-  //enables frontend–backend communication with credentials (cookies)
+  // Enables frontend–backend communication with credentials (cookies)
   app.use(
     cors({
       origin: process.env.CLIENT_URL, // your frontend URL
@@ -15,11 +15,10 @@ const applyMiddleware = (app) => {
     })
   );
 
-  app.use(cookieParser()); //parses the cookie from incoming requests (for reading JWT).
-  app.use(upload.any()); //upload files (via multer).
-
-  app.use(express.json()); //parses incoming JSON bodies.
-  app.use(passport.initialize()); //passport strategy for login.
+  app.use(cookieParser()); // Parses cookies (for reading JWT)
+  app.use(upload.any()); // Handles file uploads
+  app.use(express.json()); // Parses incoming JSON
+  app.use(passport.initialize()); // Initializes passport
 };
 
-module.exports = applyMiddleware;
+export default applyMiddleware;

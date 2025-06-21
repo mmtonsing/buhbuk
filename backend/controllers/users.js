@@ -1,10 +1,10 @@
-const User = require("../models/user");
-const passport = require("passport");
-const jwt = require("jsonwebtoken");
-const Mod3d = require("../models/mod3d");
+import User from "../models/user.js";
+import passport from "passport";
+import jwt from "jsonwebtoken";
+import Mod3d from "../models/mod3d.js";
 
-//retrieve all users
-module.exports.getAllUsers = async (req, res) => {
+// Retrieve all users
+export const getAllUsers = async (req, res) => {
   try {
     const users = await User.find({});
     res.json(users);
@@ -13,22 +13,18 @@ module.exports.getAllUsers = async (req, res) => {
   }
 };
 
-//create a user
-module.exports.createUser = async (req, res) => {
+// Create a user
+export const createUser = async (req, res) => {
   try {
     const { username, password, email } = req.body;
-
     const errors = [];
 
-    // Check if email already exists
     const existingEmail = await User.findOne({ email });
     if (existingEmail) errors.push("Email");
 
-    // Check if username already exists
     const existingUsername = await User.findOne({ username });
     if (existingUsername) errors.push("Username");
 
-    // If either/both are taken
     if (errors.length > 0) {
       const message =
         errors.length === 2
@@ -37,7 +33,6 @@ module.exports.createUser = async (req, res) => {
       return res.status(400).json({ success: false, message });
     }
 
-    // Register user
     const user = new User({ username, email });
     const registeredUser = await User.register(user, password);
     res.status(200).json({ success: true, user: registeredUser });
@@ -46,28 +41,28 @@ module.exports.createUser = async (req, res) => {
   }
 };
 
-//Retrieve a user
-module.exports.retrieveUser = async (req, res) => {
+// Retrieve a user
+export const retrieveUser = async (req, res) => {
   const user = await User.findById(req.params.id);
   res.json(user);
 };
 
-//Edit a user
-module.exports.editUser = async (req, res) => {
+// Edit a user
+export const editUser = async (req, res) => {
   const { id } = req.params;
   const user = await User.findByIdAndUpdate(id, { ...req.body.user });
   await user.save();
   res.json(user);
 };
 
-//Delete a user
-module.exports.deleteUser = async (req, res) => {
+// Delete a user
+export const deleteUser = async (req, res) => {
   const user = await User.findByIdAndDelete(req.params.id);
   res.json(user);
 };
 
 // Login and set HTTP-only cookie
-module.exports.loginUser = (req, res, next) => {
+export const loginUser = (req, res, next) => {
   passport.authenticate(
     "local",
     { session: false },
@@ -78,7 +73,6 @@ module.exports.loginUser = (req, res, next) => {
           .status(400)
           .json({ success: false, message: info?.message || "Login failed" });
 
-      //generates JWT and
       const token = jwt.sign(
         {
           id: user._id.toString(),
@@ -90,13 +84,13 @@ module.exports.loginUser = (req, res, next) => {
         { expiresIn: "12h" }
       );
 
-      //stores it in an HTTP-only cookie
       res.cookie("token", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // true in production
+        secure: process.env.NODE_ENV === "production",
         sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
-        maxAge: 12 * 60 * 60 * 1000, // 12 hours
+        maxAge: 12 * 60 * 60 * 1000,
       });
+
       return res.json({
         success: true,
         message: "Logged in successfully",
@@ -106,8 +100,8 @@ module.exports.loginUser = (req, res, next) => {
   )(req, res, next);
 };
 
-//logout Clears cookie
-module.exports.logoutUser = (req, res) => {
+// Logout: Clear cookie
+export const logoutUser = (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -116,8 +110,8 @@ module.exports.logoutUser = (req, res) => {
   return res.json({ success: true, message: "Logged out successfully" });
 };
 
-//Gets user info from JWT (cookie)
-module.exports.getUserInfo = (req, res) => {
+// Get user info from JWT (cookie)
+export const getUserInfo = (req, res) => {
   try {
     const user = req.user;
     res.json({
@@ -131,11 +125,11 @@ module.exports.getUserInfo = (req, res) => {
   }
 };
 
-module.exports.getUserPosts = async (req, res) => {
+// Get a user's Mod3d posts
+export const getUserPosts = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Simple ID format check (avoid CastError from Mongoose)
     if (!id || id.length !== 24) {
       return res.status(400).json({
         success: false,
@@ -145,7 +139,7 @@ module.exports.getUserPosts = async (req, res) => {
     }
 
     const posts = await Mod3d.find({ author: id })
-      .populate("author", "username email") // Populate username + email
+      .populate("author", "username email")
       .sort({ dateCreated: -1 });
 
     res.status(200).json({
@@ -154,11 +148,10 @@ module.exports.getUserPosts = async (req, res) => {
     });
   } catch (err) {
     console.error("getUserPosts error:", err);
-
     res.status(500).json({
       success: false,
       message: "Failed to retrieve posts",
-      posts: [], // Always return posts array
+      posts: [],
     });
   }
 };

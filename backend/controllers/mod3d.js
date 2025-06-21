@@ -1,14 +1,13 @@
-const Mod3d = require("../models/mod3d");
-const { deleteFileFromS3 } = require("../utils/s3");
+import Mod3d from "../models/mod3d.js";
+import { deleteFileFromS3 } from "../utils/s3.js";
 
-//retrieve
-module.exports.retrieveAllPublic = async (req, res) => {
+// Retrieve all public models
+export const retrieveAllPublic = async (req, res) => {
   try {
     const publicMods = await Mod3d.find({
       $or: [{ isPublic: true }, { isPublic: { $exists: false } }],
     })
-      .sort({ dateCreated: -1 }) // newest first
-      // .limit(3) //set limit 3
+      .sort({ dateCreated: -1 })
       .populate("author", "username email");
 
     res.json(publicMods);
@@ -18,8 +17,8 @@ module.exports.retrieveAllPublic = async (req, res) => {
   }
 };
 
-//retrieve all
-module.exports.retrieveAll = async (req, res) => {
+// Retrieve all models (admin/future use)
+export const retrieveAll = async (req, res) => {
   try {
     const mod3ds = await Mod3d.find().populate("author", "username email");
     res.json(mod3ds);
@@ -28,8 +27,8 @@ module.exports.retrieveAll = async (req, res) => {
   }
 };
 
-//upload
-module.exports.uploadModel = async (req, res) => {
+// Upload a new model
+export const uploadModel = async (req, res) => {
   try {
     console.log("Incoming data:", req.body);
 
@@ -44,7 +43,10 @@ module.exports.uploadModel = async (req, res) => {
   } catch (err) {
     console.error("❌ Error saving Mod3D:", err.message);
 
+<<<<<<< HEAD
     // Clean up uploaded files if saving fails
+=======
+>>>>>>> 497afeb (shifting backend to esm)
     if (req.body.imageId) await deleteFileFromS3(req.body.imageId);
 
     if (req.body.modelFiles && Array.isArray(req.body.modelFiles)) {
@@ -59,8 +61,8 @@ module.exports.uploadModel = async (req, res) => {
   }
 };
 
-//retrieve
-module.exports.retrieveModel = async (req, res) => {
+// Retrieve single model
+export const retrieveModel = async (req, res) => {
   try {
     const mod3d = await Mod3d.findById(req.params.id).populate(
       "author",
@@ -73,8 +75,8 @@ module.exports.retrieveModel = async (req, res) => {
   }
 };
 
-//edit model
-module.exports.editModel = async (req, res) => {
+// Edit model
+export const editModel = async (req, res) => {
   try {
     const { id } = req.params;
     const updatedFields = req.body;
@@ -87,13 +89,39 @@ module.exports.editModel = async (req, res) => {
       console.log("📥 Payload:", updatedFields);
     }
 
+<<<<<<< HEAD
     // 🖼️ Delete old image if replaced
+=======
+>>>>>>> 497afeb (shifting backend to esm)
     if (updatedFields.imageId && updatedFields.imageId !== existing.imageId) {
       if (existing.imageId) {
         await deleteFileFromS3(existing.imageId);
         console.log("🧹 Deleted old image:", existing.imageId);
       }
     }
+<<<<<<< HEAD
+=======
+
+    if (
+      Array.isArray(updatedFields.modelFiles) &&
+      JSON.stringify(updatedFields.modelFiles) !==
+        JSON.stringify(existing.modelFiles)
+    ) {
+      for (const file of existing.modelFiles || []) {
+        if (file?.key) {
+          await deleteFileFromS3(file.key);
+          console.log("🧹 Deleted old model file:", file.key);
+        }
+      }
+    }
+
+    if (updatedFields.videoId && updatedFields.videoId !== existing.videoId) {
+      if (existing.videoId) {
+        await deleteFileFromS3(existing.videoId);
+        console.log("🧹 Deleted old video:", existing.videoId);
+      }
+    }
+>>>>>>> 497afeb (shifting backend to esm)
 
     // 📦 Delete old model files if replaced
     if (
@@ -132,8 +160,8 @@ module.exports.editModel = async (req, res) => {
   }
 };
 
-//delete model
-module.exports.deleteModel = async (req, res) => {
+// Delete model
+export const deleteModel = async (req, res) => {
   try {
     const mod3d = await Mod3d.findById(req.params.id);
     if (!mod3d) return res.status(404).json({ error: "Model not found" });
@@ -142,7 +170,10 @@ module.exports.deleteModel = async (req, res) => {
       return res.status(403).json({ error: "Not authorized" });
     }
 
+<<<<<<< HEAD
     // Delete files
+=======
+>>>>>>> 497afeb (shifting backend to esm)
     if (mod3d.imageId) {
       await deleteFileFromS3(mod3d.imageId);
     }
@@ -154,6 +185,10 @@ module.exports.deleteModel = async (req, res) => {
     if (mod3d.videoId) {
       await deleteFileFromS3(mod3d.videoId);
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 497afeb (shifting backend to esm)
     await Mod3d.findByIdAndDelete(req.params.id);
     res.json({ success: true });
   } catch (err) {

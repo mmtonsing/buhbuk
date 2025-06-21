@@ -1,5 +1,4 @@
-// utils/s3.js
-const { S3Client, DeleteObjectCommand } = require("@aws-sdk/client-s3");
+import { S3Client, DeleteObjectCommand } from "@aws-sdk/client-s3";
 
 const s3Bucket = process.env.AWS_BUCKET_NAME;
 
@@ -32,6 +31,4 @@ async function deleteFileFromS3(key) {
   }
 }
 
-module.exports = {
-  deleteFileFromS3,
-};
+export { deleteFileFromS3 };
