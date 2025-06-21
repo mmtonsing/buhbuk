@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getMod3d, editMod3d, createImage } from "../../api/mod3ds";
+import { getMod3d, editMod3d, createFile } from "../../api/mod3ds";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { MessageBanner } from "@/components/customUI/MessageBanner";
@@ -15,8 +15,12 @@ export function EditMod3d() {
     title: "",
     description: "",
     price: "",
-    file: null,
-    imageId: "", // original
+    imageId: "",
+    modelFiles: [],
+    videoId: "",
+    imageFile: null,
+    modelFile: null,
+    videoFile: null,
   });
 
   useEffect(() => {
@@ -27,21 +31,36 @@ export function EditMod3d() {
         return navigate("/home3d");
       }
 
-      setForm({
+      setForm((prev) => ({
+        ...prev,
         title: mod.title || "",
         description: mod.description || "",
         price: mod.price || "",
-        imageId: mod.imageId,
-        file: null,
-      });
+        imageId: mod.imageId || "",
+        modelFiles: mod.modelFiles || [], // use correct key
+        videoId: mod.videoId || "",
+      }));
     }
+
     loadModel();
-  }, [id]);
+  }, [id, user?.id, navigate]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
+
     if (files) {
-      setForm((prev) => ({ ...prev, file: files[0] }));
+      const file = files[0];
+      const ext = file.name.split(".").pop().toLowerCase();
+
+      if (["jpg", "jpeg", "png", "webp"].includes(ext)) {
+        setForm((prev) => ({ ...prev, imageFile: file }));
+      } else if (["glb", "gltf", "obj", "stl", "zip"].includes(ext)) {
+        setForm((prev) => ({ ...prev, modelFile: file }));
+      } else if (["mp4", "webm", "mov"].includes(ext)) {
+        setForm((prev) => ({ ...prev, videoFile: file }));
+      } else {
+        alert("Unsupported file type.");
+      }
     } else {
       setForm((prev) => ({ ...prev, [name]: value }));
     }
@@ -50,24 +69,55 @@ export function EditMod3d() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let updatedData = {
+    const updatedData = {
       title: form.title,
       description: form.description,
       price: form.price,
-      imageId: form.imageId, // default to original
+      imageId: form.imageId,
+      modelId: form.modelId,
+      videoId: form.videoId,
     };
 
     try {
-      if (form.file) {
-        await createImage(form.file); // uploads to S3
-        updatedData.imageId = form.file.name; // overwrite imageId
+      // Upload and update files if provided
+      if (form.imageFile) {
+        const imgRes = await createFile(form.imageFile);
+        updatedData.imageId = imgRes.data.key;
+      }
+
+      if (form.modelFile) {
+        if (form.modelFile?.name?.endsWith(".zip")) {
+          const zipForm = new FormData();
+          zipForm.append("file", form.modelFile);
+
+          const res = await axiosInstance.post("/file/zip", zipForm, {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+
+          updatedData.modelFiles = res.data.modelFiles; // array of files
+        } else {
+          const modelRes = await createFile(form.modelFile);
+          updatedData.modelFiles = [
+            {
+              key: modelRes.data.key,
+              type: form.modelFile.name.split(".").pop().toLowerCase(),
+              originalName: form.modelFile.name,
+            },
+          ];
+        }
+      }
+
+      if (form.videoFile) {
+        const vidRes = await createFile(form.videoFile);
+        updatedData.videoId = vidRes.data.key;
       }
 
       await editMod3d(id, updatedData);
       setShowBanner(true);
+
       setTimeout(() => {
         navigate(`/viewmod3d/${id}`);
-      }, 1000);
+      }, 500);
     } catch (err) {
       console.error("Failed to update mod:", err);
       alert("Error updating model.");
@@ -119,11 +169,36 @@ export function EditMod3d() {
 
           <div>
             <label className="text-sm text-stone-400 mb-1 block">
-              Upload new image (optional)
+              Replace image
             </label>
             <input
               type="file"
               accept="image/*"
+              onChange={handleChange}
+              className="w-full bg-stone-700 text-white file:mr-2 file:p-1 file:border-0 file:rounded"
+            />
+          </div>
+
+          <div>
+            <label className="text-sm text-stone-400 mb-1 block">
+              Replace 3D Model (.zip & .glb recommended, .gltf, .obj, .stl"-Max
+              50MB)
+            </label>
+            <input
+              type="file"
+              accept=".glb, .gltf, .obj, .stl, .zip"
+              onChange={handleChange}
+              className="w-full bg-stone-700 text-white file:mr-2 file:p-1 file:border-0 file:rounded"
+            />
+          </div>
+
+          <div>
+            <label className="text-sm text-stone-400 mb-1 block">
+              Replace Demo Video (".mp4,.webm,.mov"-Max 20MB)
+            </label>
+            <input
+              type="file"
+              accept=".mp4, .webm, .mov"
               onChange={handleChange}
               className="w-full bg-stone-700 text-white file:mr-2 file:p-1 file:border-0 file:rounded"
             />

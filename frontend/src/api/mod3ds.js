@@ -7,7 +7,7 @@ export async function getPublicMod3ds() {
 
     const mod3dsWithImages = await Promise.all(
       mod3ds.map(async (mod) => {
-        const image = await getImagePublic(mod.imageId);
+        const image = await getFilePublic(mod.imageId);
         return { ...mod, image };
       })
     );
@@ -26,7 +26,7 @@ export async function getMod3ds() {
 
     const mod3dsWithImages = await Promise.all(
       mod3ds.map(async (mod) => {
-        const image = await getImage(mod.imageId);
+        const image = await getFile(mod.imageId);
         return { ...mod, image };
       })
     );
@@ -42,7 +42,7 @@ export async function getMod3ds() {
 export async function getMod3d(id) {
   try {
     const { data: mod } = await axiosInstance.get(`/mod3ds/${id}`);
-    const image = await getImagePublic(mod.imageId);
+    const image = await getFilePublic(mod.imageId);
     return { ...mod, image };
   } catch (err) {
     console.error("⚠️ Error fetching mod3d:", err.message);
@@ -51,12 +51,9 @@ export async function getMod3d(id) {
 }
 
 // ⬆️ Upload new mod3d (S3 first, then MongoDB)
-export async function uploadMod3d(mod3d) {
+// ⬆️ Upload new mod3d (image + modelFiles + optional video)
+export async function uploadMod3d(payload) {
   try {
-    const uploadResponse = await createImage(mod3d.file);
-    const imageId = mod3d.file.name; // Ensure it's same as key used in S3
-
-    const payload = { ...mod3d, imageId };
     const res = await axiosInstance.post("/mod3ds", payload);
     return res.data;
   } catch (err) {
@@ -69,7 +66,7 @@ export async function uploadMod3d(mod3d) {
 export async function editMod3d(id, updatedMod3d) {
   try {
     const res = await axiosInstance.put(`/mod3ds/${id}`, updatedMod3d);
-    return res;
+    return res.data;
   } catch (err) {
     console.error("⚠️ Failed to edit mod3d:", err.message);
     throw err;
@@ -87,36 +84,43 @@ export async function deleteMod3d(id) {
   }
 }
 
-// 📤 Upload image to S3
-export async function createImage(file) {
-  const formData = new FormData();
-  formData.append("image", file);
+// 📤 Upload file to S3
+export async function createFile(file) {
+  console.log(file);
+  if (!file || !file.name) {
+    throw new Error("Invalid file object");
+  }
 
-  const response = await axiosInstance.post(`/images`, formData, {
+  const ext = file.name.split(".").pop().toLowerCase();
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const route = ext === "zip" ? "/file/zip" : "/file";
+  const response = await axiosInstance.post(route, formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
-
+  console.log("📤 Uploading file:", file.name);
   return response;
 }
 
-// 🖼 Get image (auth)
-export async function getImage(id) {
+//  Get file (auth)
+export async function getFile(id) {
   try {
-    const { data } = await axiosInstance.get(`/images/${id}`);
+    const { data } = await axiosInstance.get(`/file/${id}`);
     return data;
   } catch (err) {
-    console.error("⚠️ Failed to fetch image:", err.message);
+    console.error("⚠️ Failed to fetch file:", err.message);
     return null;
   }
 }
 
-// 🖼 Get public image (no auth)
-export async function getImagePublic(id) {
+// Get public file (no auth)
+export async function getFilePublic(id) {
   try {
-    const { data } = await axiosInstance.get(`/images/public/${id}`);
+    const { data } = await axiosInstance.get(`/file/public/${id}`);
     return data;
   } catch (err) {
-    console.error("⚠️ Failed to fetch public image:", err.message);
+    console.error("⚠️ Failed to fetch public file:", err.message);
     return null;
   }
 }

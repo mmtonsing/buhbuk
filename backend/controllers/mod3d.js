@@ -31,17 +31,30 @@ module.exports.retrieveAll = async (req, res) => {
 //upload
 module.exports.uploadModel = async (req, res) => {
   try {
+    console.log("Incoming data:", req.body);
+
     const mod3d = new Mod3d({
       ...req.body,
+      modelFiles: req.body.modelFiles || [],
       author: req.user.id,
     });
+
     await mod3d.save();
     res.json(mod3d);
   } catch (err) {
-    // Cleanup image on failure (optional)
-    if (req.body.imageId) {
-      await deleteFileFromS3(req.body.imageId);
+    console.error("❌ Error saving Mod3D:", err.message);
+
+    // Clean up uploaded files if saving fails
+    if (req.body.imageId) await deleteFileFromS3(req.body.imageId);
+
+    if (req.body.modelFiles && Array.isArray(req.body.modelFiles)) {
+      for (const file of req.body.modelFiles) {
+        if (file?.key) await deleteFileFromS3(file.key);
+      }
     }
+
+    if (req.body.videoId) await deleteFileFromS3(req.body.videoId);
+
     res.status(500).json({ error: "Failed to upload 3D model" });
   }
 };
@@ -67,28 +80,55 @@ module.exports.editModel = async (req, res) => {
     const updatedFields = req.body;
 
     const existing = await Mod3d.findById(id);
-
     if (!existing) return res.status(404).json({ error: "Model not found" });
 
-    // 🔄 Delete old image if it's being replaced
-    if (updatedFields.imageId && updatedFields.imageId !== existing.imageId) {
-      await deleteFileFromS3(existing.imageId);
+    if (process.env.NODE_ENV !== "production") {
+      console.log("📝 Edit request for:", id);
+      console.log("📥 Payload:", updatedFields);
     }
 
-    // 🔄 Same for 3d model file if you use one
-    // if (updatedFields.modelFileId && updatedFields.modelFileId !== existing.modelFileId) {
-    //   await deleteFileFromS3(existing.modelFileId);
-    // }
+    // 🖼️ Delete old image if replaced
+    if (updatedFields.imageId && updatedFields.imageId !== existing.imageId) {
+      if (existing.imageId) {
+        await deleteFileFromS3(existing.imageId);
+        console.log("🧹 Deleted old image:", existing.imageId);
+      }
+    }
 
+    // 📦 Delete old model files if replaced
+    if (
+      Array.isArray(updatedFields.modelFiles) &&
+      JSON.stringify(updatedFields.modelFiles) !==
+        JSON.stringify(existing.modelFiles)
+    ) {
+      for (const file of existing.modelFiles || []) {
+        if (file?.key) {
+          await deleteFileFromS3(file.key);
+          console.log("🧹 Deleted old model file:", file.key);
+        }
+      }
+    }
+
+    // 🎞️ Delete old video if replaced
+    if (updatedFields.videoId && updatedFields.videoId !== existing.videoId) {
+      if (existing.videoId) {
+        await deleteFileFromS3(existing.videoId);
+        console.log("🧹 Deleted old video:", existing.videoId);
+      }
+    }
+
+    // 🛠️ Perform update
     const updated = await Mod3d.findByIdAndUpdate(id, updatedFields, {
       new: true,
     });
 
     res.json(updated);
   } catch (err) {
-    res
-      .status(500)
-      .json({ error: "Failed to update model", details: err.message });
+    console.error("❌ Error updating model:", err);
+    res.status(500).json({
+      error: "Failed to update model",
+      details: err.message,
+    });
   }
 };
 
@@ -102,11 +142,18 @@ module.exports.deleteModel = async (req, res) => {
       return res.status(403).json({ error: "Not authorized" });
     }
 
-    // Delete image from S3
+    // Delete files
     if (mod3d.imageId) {
       await deleteFileFromS3(mod3d.imageId);
     }
-
+    if (mod3d.modelFiles?.length) {
+      for (const file of mod3d.modelFiles) {
+        await deleteFileFromS3(file.key);
+      }
+    }
+    if (mod3d.videoId) {
+      await deleteFileFromS3(mod3d.videoId);
+    }
     await Mod3d.findByIdAndDelete(req.params.id);
     res.json({ success: true });
   } catch (err) {

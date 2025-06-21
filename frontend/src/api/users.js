@@ -1,5 +1,5 @@
 import axiosInstance from "./axiosInstance";
-import { getImagePublic } from "./mod3ds";
+import { getFilePublic } from "./mod3ds";
 
 // Get all users
 export async function getUsers() {
@@ -97,7 +97,7 @@ export async function getUserPosts(id) {
 
     const postsWithImages = await Promise.all(
       posts.map(async (mod3d) => {
-        const image = await getImagePublic(mod3d.imageId, true);
+        const image = await getFilePublic(mod3d.imageId, true);
         return { ...mod3d, image };
       })
     );

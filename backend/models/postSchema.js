@@ -1,37 +1,35 @@
 // models/Post.js
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-const postSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
-    trim: true,
-    maxlength: 150,
-  },
-  description: {
-    type: String,
-    trim: true,
-    maxlength: 1000,
-  },
+const PostSchema = new Schema({
   category: {
     type: String,
-    enum: ["mod3d", "graphics", "blog"], // Expandable in future
     required: true,
+    enum: ["Mod3d", "Graphic", "Blog"], // extendable
   },
-  refId: {
-    type: mongoose.Schema.Types.ObjectId,
+
+  contentRef: {
+    type: Schema.Types.ObjectId,
     required: true,
+    refPath: "category", // dynamic reference to the actual post model
   },
+
   author: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },
-  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  createdAt: {
+
+  isPublic: {
+    type: Boolean,
+    default: true,
+  },
+
+  dateCreated: {
     type: Date,
     default: Date.now,
   },
 });
 
-module.exports = mongoose.model("Post", postSchema);
+module.exports = mongoose.model("Post", PostSchema);

@@ -7,17 +7,36 @@ import { Textarea } from "@/components/ui/textarea";
 import { MessageBanner } from "@/components/customUI/MessageBanner";
 import Loader from "@/components/customUI/Loader";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../api/axiosInstance";
 
 export function UploadMod3d() {
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [priceError, setPriceError] = useState("");
   const [description, setDescription] = useState("");
-  const [file, setFile] = useState();
+
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
+  const [modelFile, setModelFile] = useState(null);
+  const [videoFile, setVideoFile] = useState(null);
 
-  const MAX_FILE_SIZE = 2 * 1024 * 1024;
+  const MAX_FILE_SIZE = 50 * 1024 * 1024; //50  MB
+  const allowedExtensions = [
+    "jpg",
+    "jpeg",
+    "png",
+
+    "glb",
+    "gltf",
+    "obj",
+    "stl",
+    "zip",
+
+    "mp4",
+    "webm",
+  ];
+
   const inputFile = useRef(null);
   const navigate = useNavigate();
 
@@ -29,36 +48,77 @@ export function UploadMod3d() {
       return;
     }
 
-    const submitObject = {
-      title,
-      price,
-      description,
-      author: null,
-      dateCreated: new Date(),
-      file,
-    };
-
     try {
       setLoading(true);
 
-      const newMod = await uploadMod3d(submitObject);
+      // Upload image (thumbnail)
+      if (!imageFile || !(imageFile instanceof File)) {
+        throw new Error("Please upload a valid thumbnail image.");
+      }
+      const imageForm = new FormData();
+      console.log("Uploading image:", imageFile);
+      imageForm.append("file", imageFile);
 
-      // ✅ Ensure file input reset before leaving DOM
-      if (inputFile.current) {
-        inputFile.current.value = "";
+      const imageRes = await axiosInstance.post("/file", imageForm);
+      const imageId = imageRes.data.key;
+
+      // Upload model(s)
+      let modelFiles = [];
+      const ext = modelFile.name.split(".").pop().toLowerCase();
+
+      if (ext === "zip") {
+        const zipForm = new FormData();
+        zipForm.append("file", modelFile);
+        //zip route
+        console.log("zip file sendingto backend");
+        const { data } = await axiosInstance.post("/file/zip", zipForm, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        if (data.modelFiles) {
+          modelFiles = data.modelFiles;
+        } else {
+          throw new Error("Zip upload failed or no models extracted");
+        }
+      } else {
+        const modelForm = new FormData();
+
+        console.log("Uploading model:", modelFile);
+
+        modelForm.append("file", modelFile);
+        const modelRes = await axiosInstance.post("/file", modelForm);
+
+        modelFiles = [
+          {
+            key: modelRes.data.key,
+            type: ext,
+            originalName: modelFile.name,
+          },
+        ];
       }
 
-      // ✅ Reset form before navigation
-      setTitle("");
-      setPrice("");
-      setDescription("");
-      setFile(null);
-      setLoading(false);
-
-      if (!newMod || !newMod._id) {
-        throw new Error("Upload succeeded but no ID returned.");
+      // Upload video (optional)
+      let videoId = null;
+      if (videoFile) {
+        const videoForm = new FormData();
+        console.log("Uploading video:", videoFile);
+        videoForm.append("file", videoFile);
+        const videoRes = await axiosInstance.post("/file", videoForm);
+        videoId = videoRes.data.key;
       }
 
+      const payload = {
+        title,
+        price,
+        description,
+        imageId,
+        modelFiles,
+        videoId,
+      };
+
+      const newMod = await uploadMod3d(payload);
+
+      resetForm();
       setMessage({ text: "✅ Model uploaded successfully!", type: "success" });
 
       setTimeout(() => {
@@ -76,21 +136,40 @@ export function UploadMod3d() {
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
-    const fileExtension = file.name.split(".").pop().toLowerCase();
+    const ext = file.name.split(".").pop().toLowerCase();
 
-    if (!["jpg", "jpeg", "png"].includes(fileExtension)) {
-      alert("Files must be jpg, jpeg, or png");
-      if (inputFile.current) inputFile.current.value = "";
+    if (!allowedExtensions.includes(ext)) {
+      alert(
+        "Allowed file types: jpg, jpeg, png, glb, gltf, obj, stl, zip, mp4, webm, mov"
+      );
+      e.target.value = "";
       return;
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      alert("File size exceeds 2MB limit");
-      if (inputFile.current) inputFile.current.value = "";
+      alert("File size exceeds 50MB limit");
+      e.target.value = "";
       return;
     }
 
-    setFile(file);
+    if (["jpg", "jpeg", "png"].includes(ext)) {
+      setImageFile(file);
+    } else if (["zip", "glb", "gltf", "obj", "stl"].includes(ext)) {
+      setModelFile(file);
+    } else if (["mp4", "webm", "mov"].includes(ext)) {
+      setVideoFile(file);
+    }
+  };
+
+  const resetForm = () => {
+    if (inputFile.current) inputFile.current.value = "";
+    setTitle("");
+    setPrice("");
+    setDescription("");
+    setImageFile(null);
+    setModelFile(null);
+    setVideoFile(null);
+    setLoading(false);
   };
 
   if (loading) return <Loader message="Uploading model..." />;
@@ -106,7 +185,7 @@ export function UploadMod3d() {
       )}
 
       <h2 className="text-3xl font-bold mb-8 text-center text-amber-400">
-        Upload a New 3D Model
+        Upload your 3D Model
       </h2>
 
       <form
@@ -137,11 +216,8 @@ export function UploadMod3d() {
             onChange={(e) => {
               const val = e.target.value;
               setPrice(val);
-              if (!val || !isNaN(val)) {
-                setPriceError("");
-              } else {
-                setPriceError("Price must be a number");
-              }
+              if (!val || !isNaN(val)) setPriceError("");
+              else setPriceError("Price must be a number");
             }}
             className="bg-stone-700 text-stone-100"
           />
@@ -167,14 +243,41 @@ export function UploadMod3d() {
 
         <div>
           <Label className="text-sm text-stone-300 block mb-2">
-            Upload Thumbnail (png, jpg, jpeg — max 2MB)
+            Upload Thumbnail* ("jpg, jpeg, png")
           </Label>
           <Input
             type="file"
+            accept="image/*"
             onChange={handleFileUpload}
             ref={inputFile}
-            className="cursor-pointer bg-stone-700 text-stone-100 file:bg-stone-700 file:border-none file:text-stone-300 hover:file:bg-stone-600"
+            className="cursor-pointer bg-stone-700 text-stone-100"
             required
+          />
+        </div>
+
+        <div>
+          <Label className="text-sm text-stone-300 block mb-2">
+            Upload 3D Model* (.zip & .glb recommended, .gltf, .obj, .stl"-Max
+            50MB)
+          </Label>
+          <Input
+            type="file"
+            accept=".glb,.gltf,.obj,.stl,.zip"
+            onChange={handleFileUpload}
+            className="cursor-pointer bg-stone-700 text-stone-100"
+            required
+          />
+        </div>
+
+        <div>
+          <Label className="text-sm text-stone-300 block mb-2">
+            Upload Demo Video (".mp4,.webm,.mov"-Max 20MB)
+          </Label>
+          <Input
+            type="file"
+            accept=".mp4,.webm,.mov"
+            onChange={handleFileUpload}
+            className="cursor-pointer bg-stone-700 text-stone-100"
           />
         </div>
 

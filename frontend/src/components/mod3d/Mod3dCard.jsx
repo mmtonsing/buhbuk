@@ -23,20 +23,20 @@ export function ModCard({ mod3d }) {
             <div className="text-gray-500 text-center">No Image</div>
           )}
         </div>
-      </Link>
 
-      <div className="p-4 space-y-1">
-        <Link to={`/viewmod3d/${mod3d._id}`}>
+        <div className="p-4 space-y-1">
           <h3 className="text-base font-semibold line-clamp-1">
             {mod3d.title}
           </h3>
-        </Link>
+        </div>
+      </Link>
 
-        {mod3d.author && <UserBadge user={mod3d.author} className="mt-1" />}
+      <div className="px-4 pb-4 space-y-2">
+        {/* Move UserBadge and Like out of the Link */}
+        {mod3d.author && <UserBadge user={mod3d.author} />}
 
-        <div className="flex items-center justify-between pt-2">
+        <div className="flex items-center justify-between pt-1">
           <p className="text-xs text-stone-500">{stringDate}</p>
-
           <LikeWithAuth modId={mod3d._id} likedBy={mod3d.likedBy} />
         </div>
       </div>
