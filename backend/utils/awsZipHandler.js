@@ -1,17 +1,8 @@
-<<<<<<< HEAD
-// 📦 awsZipHandler.js (new utility module)
-const { PutObjectCommand } = require("@aws-sdk/client-s3");
-const { v4: uuidv4 } = require("uuid");
-const unzipper = require("unzipper");
-
-async function handleZipUpload(zipFile, s3Client, s3Bucket) {
-=======
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { v4 as uuidv4 } from "uuid";
 import unzipper from "unzipper";
 
 export default async function handleZipUpload(zipFile, s3Client, s3Bucket) {
->>>>>>> 497afeb (shifting backend to esm)
   const extractedFiles = [];
   const dateStr = new Date().toISOString().slice(0, 10);
 
@@ -60,8 +51,3 @@ export default async function handleZipUpload(zipFile, s3Client, s3Bucket) {
     ],
   };
 }
-<<<<<<< HEAD
-
-module.exports = { handleZipUpload };
-=======
->>>>>>> 497afeb (shifting backend to esm)

@@ -1,14 +1,7 @@
-<<<<<<< HEAD
-// models/Post.js
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-
-=======
 import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
->>>>>>> 497afeb (shifting backend to esm)
 const PostSchema = new Schema({
   category: {
     type: String,
@@ -16,11 +9,7 @@ const PostSchema = new Schema({
     enum: ["Mod3d", "Graphic", "Blog"], // extendable
   },
 
-<<<<<<< HEAD
-  contentRef: {
-=======
   refId: {
->>>>>>> 497afeb (shifting backend to esm)
     type: Schema.Types.ObjectId,
     required: true,
     refPath: "category", // dynamic reference to the actual post model
@@ -43,8 +32,4 @@ const PostSchema = new Schema({
   },
 });
 
-<<<<<<< HEAD
-module.exports = mongoose.model("Post", PostSchema);
-=======
 export default mongoose.model("Post", PostSchema);
->>>>>>> 497afeb (shifting backend to esm)

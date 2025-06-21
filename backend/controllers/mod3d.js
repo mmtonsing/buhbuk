@@ -43,10 +43,6 @@ export const uploadModel = async (req, res) => {
   } catch (err) {
     console.error("❌ Error saving Mod3D:", err.message);
 
-<<<<<<< HEAD
-    // Clean up uploaded files if saving fails
-=======
->>>>>>> 497afeb (shifting backend to esm)
     if (req.body.imageId) await deleteFileFromS3(req.body.imageId);
 
     if (req.body.modelFiles && Array.isArray(req.body.modelFiles)) {
@@ -89,18 +85,12 @@ export const editModel = async (req, res) => {
       console.log("📥 Payload:", updatedFields);
     }
 
-<<<<<<< HEAD
-    // 🖼️ Delete old image if replaced
-=======
->>>>>>> 497afeb (shifting backend to esm)
     if (updatedFields.imageId && updatedFields.imageId !== existing.imageId) {
       if (existing.imageId) {
         await deleteFileFromS3(existing.imageId);
         console.log("🧹 Deleted old image:", existing.imageId);
       }
     }
-<<<<<<< HEAD
-=======
 
     if (
       Array.isArray(updatedFields.modelFiles) &&
@@ -121,7 +111,6 @@ export const editModel = async (req, res) => {
         console.log("🧹 Deleted old video:", existing.videoId);
       }
     }
->>>>>>> 497afeb (shifting backend to esm)
 
     // 📦 Delete old model files if replaced
     if (
@@ -170,10 +159,6 @@ export const deleteModel = async (req, res) => {
       return res.status(403).json({ error: "Not authorized" });
     }
 
-<<<<<<< HEAD
-    // Delete files
-=======
->>>>>>> 497afeb (shifting backend to esm)
     if (mod3d.imageId) {
       await deleteFileFromS3(mod3d.imageId);
     }
@@ -185,10 +170,6 @@ export const deleteModel = async (req, res) => {
     if (mod3d.videoId) {
       await deleteFileFromS3(mod3d.videoId);
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> 497afeb (shifting backend to esm)
     await Mod3d.findByIdAndDelete(req.params.id);
     res.json({ success: true });
   } catch (err) {

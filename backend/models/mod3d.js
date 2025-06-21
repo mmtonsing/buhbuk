@@ -7,11 +7,7 @@ const Mod3dSchema = new Schema({
   description: String,
   price: Number,
 
-<<<<<<< HEAD
-  imageId: { type: String, required: true }, // S3 key of thumbnail
-=======
   imageId: { type: String, required: true },
->>>>>>> 497afeb (shifting backend to esm)
   videoId: String,
   modelFiles: [
     {
@@ -21,11 +17,7 @@ const Mod3dSchema = new Schema({
     },
   ],
 
-<<<<<<< HEAD
-  likes: { type: Number, default: 0 }, //temporary
-=======
   likes: { type: Number, default: 0 },
->>>>>>> 497afeb (shifting backend to esm)
   likedBy: [
     {
       type: Schema.Types.ObjectId,
