@@ -1,7 +1,7 @@
 import express from "express";
-import authMiddleware from "../middleware/auth.js";
-import * as mod3d from "../controllers/mod3d.js";
-import * as likes from "../controllers/likes.js";
+import authMiddleware from "../middleware/authMiddleware.js";
+import * as mod3d from "../controllers/mod3dController.js";
+import * as likes from "../controllers/likeController.js";
 
 const router = express.Router();
 

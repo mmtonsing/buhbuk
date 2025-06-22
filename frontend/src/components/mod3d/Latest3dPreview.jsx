@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { getPublicMod3ds } from "../../api/mod3ds";
 import { PublicCard } from "../general/PublicCard";
 import { SkeletonCard } from "../customUI/SkeletonCard";
+import { sortByDateCreated } from "../../utils/sortByDate";
 
 export default function Latest3dPreview() {
   const [mod3ds, setMod3ds] = useState([]);
@@ -12,7 +13,8 @@ export default function Latest3dPreview() {
     async function fetchMods() {
       try {
         const data = await getPublicMod3ds();
-        setMod3ds(data);
+        const sorted = sortByDateCreated(data);
+        setMod3ds(sorted);
       } catch (err) {
         console.error("Failed to load 3D models:", err);
       } finally {

@@ -1,12 +1,10 @@
 import { Link } from "react-router-dom";
 import { UserBadge } from "@/pages/user/UserBadge";
 import LikeWithAuth from "@/context/LikeWithAuth";
+import { timeAgo } from "@/utils/timeAgo";
 
 export function ModCard({ mod3d }) {
-  const date = new Date(mod3d.dateCreated);
-  const stringDate = mod3d?.dateCreated
-    ? date.toString().slice(4, 15)
-    : "Unknown Date";
+  const displayDate = timeAgo(mod3d?.dateCreated);
 
   return (
     <div className="block rounded-xl border border-stone-700 shadow bg-stone-800 hover:bg-stone-700 text-stone-100 overflow-hidden transition-transform hover:scale-105 hover:shadow-xl duration-300 group">
@@ -32,12 +30,12 @@ export function ModCard({ mod3d }) {
       </Link>
 
       <div className="px-4 pb-4 space-y-2">
-        {/* Move UserBadge and Like out of the Link */}
-        {mod3d.author && <UserBadge user={mod3d.author} />}
-
-        <div className="flex items-center justify-between pt-1">
-          <p className="text-xs text-stone-500">{stringDate}</p>
+        <div className="flex items-center justify-between pt-1 text-xs text-stone-400">
+          {mod3d.author && <UserBadge user={mod3d.author} />}
           <LikeWithAuth modId={mod3d._id} likedBy={mod3d.likedBy} />
+        </div>
+        <div className="flex items-center justify-between pt-1 text-xs text-stone-400">
+          <p>{displayDate}</p>
         </div>
       </div>
     </div>

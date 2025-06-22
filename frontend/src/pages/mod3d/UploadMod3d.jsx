@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { MessageBanner } from "@/components/customUI/MessageBanner";
 import Loader from "@/components/customUI/Loader";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../../api/axiosInstance";
+import { createFile } from "../../utils/createFile"; // ✅ use shared helper
 
 export function UploadMod3d() {
   const [title, setTitle] = useState("");
@@ -21,20 +21,19 @@ export function UploadMod3d() {
   const [modelFile, setModelFile] = useState(null);
   const [videoFile, setVideoFile] = useState(null);
 
-  const MAX_FILE_SIZE = 50 * 1024 * 1024; //50  MB
+  const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
   const allowedExtensions = [
     "jpg",
     "jpeg",
     "png",
-
     "glb",
     "gltf",
     "obj",
     "stl",
     "zip",
-
     "mp4",
     "webm",
+    "mov",
   ];
 
   const inputFile = useRef(null);
@@ -51,46 +50,29 @@ export function UploadMod3d() {
     try {
       setLoading(true);
 
-      // Upload image (thumbnail)
       if (!imageFile || !(imageFile instanceof File)) {
         throw new Error("Please upload a valid thumbnail image.");
       }
-      const imageForm = new FormData();
-      console.log("Uploading image:", imageFile);
-      imageForm.append("file", imageFile);
 
-      const imageRes = await axiosInstance.post("/file", imageForm);
-      const imageId = imageRes.data.key;
+      const imageRes = await createFile(imageFile);
+      const imageId = imageRes.key;
 
       // Upload model(s)
       let modelFiles = [];
       const ext = modelFile.name.split(".").pop().toLowerCase();
 
       if (ext === "zip") {
-        const zipForm = new FormData();
-        zipForm.append("file", modelFile);
-        //zip route
-        console.log("zip file sendingto backend");
-        const { data } = await axiosInstance.post("/file/zip", zipForm, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-
-        if (data.modelFiles) {
-          modelFiles = data.modelFiles;
+        const zipRes = await createFile(modelFile, true);
+        if (zipRes.modelFiles) {
+          modelFiles = zipRes.modelFiles;
         } else {
-          throw new Error("Zip upload failed or no models extracted");
+          throw new Error("Zip upload failed or no models extracted.");
         }
       } else {
-        const modelForm = new FormData();
-
-        console.log("Uploading model:", modelFile);
-
-        modelForm.append("file", modelFile);
-        const modelRes = await axiosInstance.post("/file", modelForm);
-
+        const modelRes = await createFile(modelFile);
         modelFiles = [
           {
-            key: modelRes.data.key,
+            key: modelRes.key,
             type: ext,
             originalName: modelFile.name,
           },
@@ -100,11 +82,8 @@ export function UploadMod3d() {
       // Upload video (optional)
       let videoId = null;
       if (videoFile) {
-        const videoForm = new FormData();
-        console.log("Uploading video:", videoFile);
-        videoForm.append("file", videoFile);
-        const videoRes = await axiosInstance.post("/file", videoForm);
-        videoId = videoRes.data.key;
+        const videoRes = await createFile(videoFile);
+        videoId = videoRes.key;
       }
 
       const payload = {
@@ -117,7 +96,6 @@ export function UploadMod3d() {
       };
 
       const newMod = await uploadMod3d(payload);
-
       resetForm();
       setMessage({ text: "✅ Model uploaded successfully!", type: "success" });
 
@@ -136,6 +114,8 @@ export function UploadMod3d() {
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
+    if (!file) return;
+
     const ext = file.name.split(".").pop().toLowerCase();
 
     if (!allowedExtensions.includes(ext)) {
@@ -172,7 +152,13 @@ export function UploadMod3d() {
     setLoading(false);
   };
 
-  if (loading) return <Loader message="Uploading model..." />;
+  if (loading)
+    return (
+      <Loader
+        message="Uploading model, this may take some time"
+        overlay={true}
+      />
+    );
 
   return (
     <div className="w-full max-w-3xl mx-auto px-4 py-10 bg-stone-900 min-h-screen text-stone-100">
@@ -243,7 +229,7 @@ export function UploadMod3d() {
 
         <div>
           <Label className="text-sm text-stone-300 block mb-2">
-            Upload Thumbnail* ("jpg, jpeg, png")
+            Upload Thumbnail* (jpg, jpeg, png)
           </Label>
           <Input
             type="file"
@@ -257,8 +243,8 @@ export function UploadMod3d() {
 
         <div>
           <Label className="text-sm text-stone-300 block mb-2">
-            Upload 3D Model* (.zip & .glb recommended, .gltf, .obj, .stl"-Max
-            50MB)
+            Upload 3D Model* (.zip & .glb recommended; also supports .gltf,
+            .obj, .stl - Max 50MB)
           </Label>
           <Input
             type="file"
@@ -271,7 +257,7 @@ export function UploadMod3d() {
 
         <div>
           <Label className="text-sm text-stone-300 block mb-2">
-            Upload Demo Video (".mp4,.webm,.mov"-Max 20MB)
+            Upload Demo Video (mp4, webm, mov - Max 20MB)
           </Label>
           <Input
             type="file"

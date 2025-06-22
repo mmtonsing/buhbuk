@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Mod3D from "../models/mod3d.js";
+import Mod3D from "../models/mod3dSchema.js";
 
 export const ToggleLike = async (req, res) => {
   const modId = req.params.id;

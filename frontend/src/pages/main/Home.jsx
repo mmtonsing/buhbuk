@@ -5,6 +5,9 @@ import { useAuth } from "../../context/AuthContext";
 import { Suspense, lazy } from "react";
 import { SkeletonCard } from "../../components/customUI/SkeletonCard";
 import { HomeSidebarNav } from "@/components/navbar/HomeSidebarNav";
+import { useState, useEffect } from "react";
+import { getLatestPosts } from "@/api/posts";
+import { PostCard } from "@/components/PostCard";
 
 const Latest3dPreview = lazy(() =>
   import("../../components/mod3d/Latest3dPreview")
@@ -14,7 +17,17 @@ const BlogSection = lazy(() => import("../../components/blog/BlogSection"));
 export function Home() {
   const navigate = useNavigate();
   const { user, setUser } = useAuth();
+  const [latestPosts, setLatestPosts] = useState([]);
+
   const onLogout = () => handleLogout(navigate, setUser);
+
+  useEffect(() => {
+    async function fetchLatestPosts() {
+      const posts = await getLatestPosts();
+      setLatestPosts(posts.slice(0, 6));
+    }
+    fetchLatestPosts();
+  }, []);
 
   const SkeletonGrid = () => (
     <div className="w-full max-w-7xl mx-auto px-4">
@@ -66,6 +79,26 @@ export function Home() {
                 Get Started
               </Button>
             )}
+          </div>
+        </div>
+      </section>
+
+      {/* 🔥 Latest Posts Section */}
+      <section className="py-16 bg-stone-800">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-3xl font-bold text-amber-300">Latest Posts</h2>
+            <Button
+              onClick={() => navigate("/feed")}
+              className="bg-amber-500 hover:bg-amber-600 text-black px-4 py-2 rounded-lg"
+            >
+              View More
+            </Button>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {latestPosts.map((post) => (
+              <PostCard key={post._id} post={post} />
+            ))}
           </div>
         </div>
       </section>

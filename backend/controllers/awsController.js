@@ -8,19 +8,18 @@ import { deleteFileFromS3 } from "../utils/s3.js";
 import handleZipUpload from "../utils/awsZipHandler.js";
 import { v4 as uuidv4 } from "uuid";
 
-import dotenv from "dotenv";
-dotenv.config();
-
 const allowedMimeTypes = [
   "image/png",
   "image/jpeg",
   "image/jpg",
   "image/webp",
-  "model/gltf+json",
-  "model/obj",
-  "model/stl",
+
+  "model/gltf+json", // ✅ .gltf
+  "model/obj", // ✅ .obj
+  "model/stl", // ✅ .stl
   "application/octet-stream",
-  "model/gltf-binary",
+  "model/gltf-binary", // ✅ .glb
+
   "video/mp4",
   "video/webm",
   "video/quicktime",
@@ -58,6 +57,12 @@ export const retrieveFile = async (req, res) => {
 export const uploadFile = async (req, res) => {
   try {
     const file = req.files?.[0] || req.file;
+    // console.log("File received:", file);
+    console.log("🧾 Uploading:", {
+      name: file.originalname,
+      type: file.mimetype,
+      sizeMB: (file.size / 1024 / 1024).toFixed(2) + " MB",
+    });
     if (!file) return res.status(400).json({ error: "No file uploaded" });
 
     if (!allowedMimeTypes.includes(file.mimetype)) {
@@ -67,7 +72,7 @@ export const uploadFile = async (req, res) => {
     }
 
     const isVideo = file.mimetype.startsWith("video/");
-    const maxSize = isVideo ? 50 * 1024 * 1024 : 10 * 1024 * 1024;
+    const maxSize = isVideo ? 20 * 1024 * 1024 : 50 * 1024 * 1024; //50MB
     if (file.size > maxSize) {
       return res.status(400).json({
         error: `File exceeds ${isVideo ? "50MB" : "10MB"} size limit`,
@@ -109,12 +114,13 @@ export const retrievePublicFile = async (req, res) => {
 
     const data = await s3Client.send(new GetObjectCommand(bucketParams));
     const contentType = data.ContentType;
+
     const srcString = await data.Body.transformToString("base64");
     const fileData = `data:${contentType};base64,${srcString}`;
 
-    if (process.env.NODE_ENV !== "production") {
-      console.log("Fetching file:", id);
-    }
+    // if (process.env.NODE_ENV !== "production") {
+    //   console.log("Fetching file:", id);
+    // }
 
     res.send(fileData);
   } catch (err) {
@@ -137,7 +143,7 @@ export const deleteFile = async (req, res) => {
 
 export const uploadZipAndExtract = async (req, res) => {
   try {
-    const zipFile = req.files?.[0];
+    const zipFile = req.file || req.files?.[0];
 
     if (
       !zipFile ||
@@ -177,5 +183,23 @@ export const streamFile = async (req, res) => {
     res
       .status(500)
       .json({ error: "Video stream failed", details: err.message });
+  }
+};
+
+//for 3d rendering
+export const streamAnyFile = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const bucketParams = { Bucket: s3Bucket, Key: id };
+
+    const data = await s3Client.send(new GetObjectCommand(bucketParams));
+    const contentType = data.ContentType || "application/octet-stream";
+
+    res.setHeader("Content-Type", contentType);
+    const stream = data.Body;
+    stream.pipe(res);
+  } catch (err) {
+    console.error("❌ File stream error:", err.message);
+    res.status(404).json({ error: "File not found" });
   }
 };

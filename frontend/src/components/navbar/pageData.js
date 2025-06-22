@@ -8,8 +8,8 @@ export const pageData = [
     path: "/post",
   },
   {
-    name: "Profile",
-    path: "/profile",
+    name: "Feed",
+    path: "/feed",
   },
   {
     name: "About",

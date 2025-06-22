@@ -1,7 +1,7 @@
-import User from "../models/user.js";
+import User from "../models/userSchema.js";
 import passport from "passport";
 import jwt from "jsonwebtoken";
-import Mod3d from "../models/mod3d.js";
+import Mod3d from "../models/mod3dSchema.js";
 
 // Retrieve all users
 export const getAllUsers = async (req, res) => {

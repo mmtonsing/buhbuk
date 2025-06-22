@@ -30,8 +30,8 @@ export function PostPage() {
         <h1 className="text-4xl font-extrabold tracking-tight mb-2">
           Create a New Post
         </h1>
-        <p className="text-stone-400 text-sm">
-          Choose a category and start sharing your creativity on BukWarm.
+        <p className="text-stone-400 text-md sm:text-lg lg:text-xl">
+          Start posting — choose a category to share your work.
         </p>
       </div>
 

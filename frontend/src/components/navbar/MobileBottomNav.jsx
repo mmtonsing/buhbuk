@@ -1,4 +1,11 @@
-import { Compass, Home, Search, PlusCircle, User } from "lucide-react";
+import {
+  Compass,
+  Home,
+  Search,
+  PlusCircle,
+  User,
+  Newspaper,
+} from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { MobileExplorePopover } from "./MobileExplorePopover";
@@ -19,10 +26,15 @@ export function MobileBottomNav() {
           Home
         </Link>
 
-        <button className={baseItemClass}>
+        <Link to="/feed" className={baseItemClass}>
+          <Newspaper className="h-6 w-6" />
+          Feed
+        </Link>
+
+        {/* <button className={baseItemClass}>
           <Search className="h-6 w-6" />
           Search
-        </button>
+        </button> */}
 
         <Link to="/post">
           <button className={baseItemClass}>

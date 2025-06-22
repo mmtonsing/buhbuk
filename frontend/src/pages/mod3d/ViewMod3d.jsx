@@ -4,17 +4,20 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { UserBadge } from "../user/UserBadge";
-import { ConfirmModal } from "@/components/customUI/ConfirmModal"; // ✅
+import { ConfirmModal } from "@/components/customUI/ConfirmModal";
 import { DownloadButton } from "@/components/general/DownloadButton";
 import { VideoPreviewModal } from "@/components/general/VideoPreviewModal";
-import { PlayCircle, Box } from "lucide-react";
-import { ComingSoonModal } from "@/components/customUI/ComingSoonModal";
+import { PlayCircle, Box, X } from "lucide-react";
+import Loader from "@/components/customUI/Loader";
+import HybridViewer from "@/components/mod3d/HybridViewer";
 
 export function ViewMod3d() {
   const [mod3d, setMod3d] = useState({});
-  const [showConfirm, setShowConfirm] = useState(false); // ✅
-  const [showVideo, setShowVideo] = useState(false); // ✅ video toggle
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
   const [show3DModal, setShow3DModal] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [downloading, setDownloading] = useState(false);
 
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -22,9 +25,15 @@ export function ViewMod3d() {
 
   useEffect(() => {
     async function loadModel() {
-      const data = await getMod3d(id);
-      data.dateCreated = new Date(data.dateCreated).toString();
-      setMod3d(data);
+      try {
+        const data = await getMod3d(id);
+        data.dateCreated = new Date(data.dateCreated).toString();
+        setMod3d(data);
+      } catch (err) {
+        console.error("❌ Failed to load model", err);
+      } finally {
+        setLoading(false);
+      }
     }
     loadModel();
   }, [id]);
@@ -38,6 +47,17 @@ export function ViewMod3d() {
       console.error(error);
     }
   };
+
+  if (loading) return <Loader message="Loading 3D Model…" />;
+  if (downloading) {
+    return (
+      <Loader
+        message="Preparing download, please wait"
+        color="border-emerald-400 text-emerald-400"
+        overlay={true}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen w-full bg-stone-900 text-stone-100 px-4 py-10">
@@ -66,7 +86,7 @@ export function ViewMod3d() {
         </h1>
         {mod3d.author && (
           <div className="flex justify-between items-center gap-2 text-stone-300 text-sm mb-1">
-            <UserBadge user={mod3d.author} />
+            <UserBadge user={mod3d.author} className="p-2 text-xs" />
             <span>on {mod3d.dateCreated?.slice(4, 15)}</span>
           </div>
         )}
@@ -79,9 +99,7 @@ export function ViewMod3d() {
           />
         </div>
 
-        {/* ✅ Action buttons: View 3D + Download + Preview Video */}
         <div className="flex flex-wrap justify-center gap-4 mt-6">
-          {/* View 3D */}
           <button
             onClick={() => setShow3DModal(true)}
             className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg shadow bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white transition"
@@ -89,29 +107,21 @@ export function ViewMod3d() {
             <Box className="w-5 h-5" />
             View 3D
           </button>
-          <ComingSoonModal
-            isOpen={show3DModal}
-            onClose={() => setShow3DModal(false)}
-          />
-
-          {/* Preview Video */}
           {mod3d.videoId && (
             <button
               onClick={() => setShowVideo(true)}
-              className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-lg shadow 
-                bg-purple-500 hover:bg-purple-600 active:bg-purple-700 text-white transition"
+              className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-lg shadow bg-purple-500 hover:bg-purple-600 active:bg-purple-700 text-white transition"
             >
               <PlayCircle className="w-5 h-5" />
               Preview Video
             </button>
           )}
-
-          {/* Download */}
           {mod3d.modelFiles?.length > 0 && (
             <DownloadButton
               files={mod3d.modelFiles}
-              className="px-5 py-2.5 text-sm font-medium rounded-lg shadow 
-                bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 text-white transition"
+              onStart={() => setDownloading(true)}
+              onEnd={() => setDownloading(false)}
+              className="px-5 py-2.5 text-sm font-medium rounded-lg shadow bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 text-white transition"
             />
           )}
         </div>
@@ -124,8 +134,6 @@ export function ViewMod3d() {
           {mod3d.description}
         </p>
       </div>
-
-      {/* ✅ Confirm modal */}
       <ConfirmModal
         isOpen={showConfirm}
         onClose={() => setShowConfirm(false)}
@@ -133,12 +141,55 @@ export function ViewMod3d() {
         title="Delete Model"
         message="Are you sure you want to delete this model? This action cannot be undone."
       />
-      {/* ✅ Video modal */}
       <VideoPreviewModal
         isOpen={showVideo}
         onClose={() => setShowVideo(false)}
         videoUrl={`/api/file/stream/${mod3d.videoId}`}
       />
+      {show3DModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div
+            ref={(el) => (window.viewerContainer = el)} // ref for fullscreen
+            className="relative w-full max-w-4xl h-[80vh] bg-stone-900 rounded-xl border border-stone-700 shadow-lg flex flex-col overflow-hidden"
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setShow3DModal(false)}
+              className="absolute top-2 right-2 text-stone-400 hover:text-red-600 text-2xl z-10"
+            >
+              <X />
+            </button>
+
+            {/* Fullscreen Toggle Button */}
+            <button
+              onClick={() => {
+                const el = window.viewerContainer;
+                if (!document.fullscreenElement) {
+                  el?.requestFullscreen();
+                } else {
+                  document.exitFullscreen();
+                }
+              }}
+              className="absolute bottom-3 right-4 z-10 px-3 py-1.5 text-5xl font-medium bg-transparent hover:font-extrabold text-white rounded shadow"
+            >
+              ⛶
+            </button>
+
+            {/* Viewer */}
+            <div className="flex-1 flex items-center justify-center">
+              {mod3d.modelFiles?.length > 0 ? (
+                <HybridViewer
+                  modelUrl={`/api/file/raw/${mod3d.modelFiles[0].key}`}
+                />
+              ) : (
+                <p className="text-center text-red-400">
+                  No model available for preview.
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

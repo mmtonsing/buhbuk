@@ -1,22 +1,37 @@
 import express from "express";
-import authMiddleware from "../middleware/auth.js";
-import * as awsController from "../controllers/awsRoutes.js";
+import multer from "multer";
+import authMiddleware from "../middleware/authMiddleware.js";
+import * as awsController from "../controllers/awsController.js";
 
 const router = express.Router();
+const upload = multer();
 
-// Retrieve a file from S3 and return base64 string for rendering (public)
+// Public base64 fetch
 router.get("/public/:id", awsController.retrievePublicFile);
 
-// Upload a .zip file, extract and store contents in S3
-router.post("/zip", authMiddleware, awsController.uploadZipAndExtract);
+// Public binary stream
+router.get("/raw/:id", awsController.streamAnyFile);
 
-// Stream a video file instead of returning base64
+// Video stream
 router.get("/stream/:id", awsController.streamFile);
 
-// Retrieve a file (auth-protected)
+// Auth-protected base64 fetch
 router.get("/:id", authMiddleware, awsController.retrieveFile);
 
-// Upload a single file (auth-protected)
-router.post("/", authMiddleware, awsController.uploadFile);
+// Auth-protected upload
+router.post(
+  "/",
+  authMiddleware,
+  upload.single("file"),
+  awsController.uploadFile
+);
+
+// Zip upload + extract
+router.post(
+  "/zip",
+  authMiddleware,
+  upload.single("file"),
+  awsController.uploadZipAndExtract
+);
 
 export default router;

@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getMod3d, editMod3d, createFile } from "../../api/mod3ds";
+import { getMod3d, editMod3d } from "../../api/mod3ds";
+import { createFile } from "../../utils/createFile"; // ✅ use helper
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { MessageBanner } from "@/components/customUI/MessageBanner";
+import Loader from "@/components/customUI/Loader";
 
 export function EditMod3d() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
 
+  const [loading, setLoading] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
   const [form, setForm] = useState({
     title: "",
@@ -37,7 +40,7 @@ export function EditMod3d() {
         description: mod.description || "",
         price: mod.price || "",
         imageId: mod.imageId || "",
-        modelFiles: mod.modelFiles || [], // use correct key
+        modelFiles: mod.modelFiles || [],
         videoId: mod.videoId || "",
       }));
     }
@@ -68,48 +71,54 @@ export function EditMod3d() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     const updatedData = {
       title: form.title,
       description: form.description,
       price: form.price,
       imageId: form.imageId,
-      modelId: form.modelId,
+      modelFiles: form.modelFiles,
       videoId: form.videoId,
     };
 
     try {
-      // Upload and update files if provided
+      // Upload image if updated
       if (form.imageFile) {
         const imgRes = await createFile(form.imageFile);
-        updatedData.imageId = imgRes.data.key;
+        if (!imgRes?.key) throw new Error("Image upload failed");
+        updatedData.imageId = imgRes.key;
       }
 
+      // ✅ Upload model (zip or single)
       if (form.modelFile) {
-        if (form.modelFile?.name?.endsWith(".zip")) {
-          const zipForm = new FormData();
-          zipForm.append("file", form.modelFile);
+        const ext = form.modelFile.name.split(".").pop().toLowerCase();
 
-          const res = await axiosInstance.post("/file/zip", zipForm, {
-            headers: { "Content-Type": "multipart/form-data" },
-          });
+        if (ext === "zip") {
+          const zipRes = await createFile(form.modelFile, true); // use zip mode
+          if (!zipRes.modelFiles?.length)
+            throw new Error("Zip upload failed or no models extracted");
 
-          updatedData.modelFiles = res.data.modelFiles; // array of files
+          updatedData.modelFiles = zipRes.modelFiles;
         } else {
           const modelRes = await createFile(form.modelFile);
+          if (!modelRes?.key) throw new Error("Model upload failed");
+
           updatedData.modelFiles = [
             {
-              key: modelRes.data.key,
-              type: form.modelFile.name.split(".").pop().toLowerCase(),
+              key: modelRes.key,
+              type: ext,
               originalName: form.modelFile.name,
             },
           ];
         }
       }
 
+      // ✅ Upload video if updated
       if (form.videoFile) {
         const vidRes = await createFile(form.videoFile);
-        updatedData.videoId = vidRes.data.key;
+        if (!vidRes?.key) throw new Error("Video upload failed");
+        updatedData.videoId = vidRes.key;
       }
 
       await editMod3d(id, updatedData);
@@ -119,10 +128,15 @@ export function EditMod3d() {
         navigate(`/viewmod3d/${id}`);
       }, 500);
     } catch (err) {
-      console.error("Failed to update mod:", err);
+      console.error("❌ Failed to update mod:", err);
       alert("Error updating model.");
+    } finally {
+      setLoading(false);
     }
   };
+  if (loading) {
+    return <Loader message="Saving changes, please wait" overlay={true} />;
+  }
 
   return (
     <div className="min-h-screen px-4 py-10 bg-stone-900 text-stone-100">
@@ -181,12 +195,11 @@ export function EditMod3d() {
 
           <div>
             <label className="text-sm text-stone-400 mb-1 block">
-              Replace 3D Model (.zip & .glb recommended, .gltf, .obj, .stl"-Max
-              50MB)
+              Replace 3D Model (.zip, .glb, .gltf, .obj, .stl)
             </label>
             <input
               type="file"
-              accept=".glb, .gltf, .obj, .stl, .zip"
+              accept=".zip,.glb,.gltf,.obj,.stl"
               onChange={handleChange}
               className="w-full bg-stone-700 text-white file:mr-2 file:p-1 file:border-0 file:rounded"
             />
@@ -194,11 +207,11 @@ export function EditMod3d() {
 
           <div>
             <label className="text-sm text-stone-400 mb-1 block">
-              Replace Demo Video (".mp4,.webm,.mov"-Max 20MB)
+              Replace Demo Video (.mp4, .webm, .mov)
             </label>
             <input
               type="file"
-              accept=".mp4, .webm, .mov"
+              accept=".mp4,.webm,.mov"
               onChange={handleChange}
               className="w-full bg-stone-700 text-white file:mr-2 file:p-1 file:border-0 file:rounded"
             />

@@ -1,9 +1,14 @@
 import express from "express";
-
 import "./config/passport.js"; // Initialize passport
-import applyMiddleware from "./middleware/index.js"; // Modular middleware
-import { mod3dRoutes, userRoutes, fileRoutes } from "./routes/index.js";
+import applyMiddleware from "./middleware/indexMiddleware.js"; // Modular middleware
+import {
+  mod3dRoutes,
+  userRoutes,
+  fileRoutes,
+  postRoutes,
+} from "./routes/index.js";
 import { globalLimiter } from "./middleware/rateLimit.js";
+import "./models/index.js"; // ⬅️ This registers all category models globally
 
 const app = express(); // Creates Express app
 
@@ -16,10 +21,7 @@ applyMiddleware(app);
 app.use("/mod3ds", mod3dRoutes); //CRUD for model metadata (title, description, etc.)
 app.use("/user", userRoutes); //Login, register, get logged-in user, logout
 app.use("/file", fileRoutes); //Upload/download actual files to AWS
-// Route Mounting
-app.use("/mod3ds", mod3dRoutes);
-app.use("/user", userRoutes);
-app.use("/file", fileRoutes);
+app.use("/posts", postRoutes);
 
 // Health check route
 app.get("/", (req, res) => {

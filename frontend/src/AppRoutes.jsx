@@ -18,6 +18,8 @@ import { ComingSoon } from "./pages/ComingSoon";
 import { PostPage } from "./pages/main/PostPage";
 import { EditMod3d } from "./pages/mod3d/EditMod3d";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Feed from "./pages/main/Feed";
+import ViewPost from "./pages/main/ViewPost";
 
 export function AppRoutes() {
   const { loading } = useAuth();
@@ -33,9 +35,11 @@ export function AppRoutes() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/feed" element={<Feed />} />
           <Route path="/home3d" element={<Home3d />} />
           <Route path="/viewmod3d/:id" element={<ViewMod3d />} />
           <Route path="/auth" element={<Landing />} />
+          <Route path="/viewpost/:id" element={<ViewPost />} />
           <Route
             path="/blogs"
             element={
