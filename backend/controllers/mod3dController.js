@@ -1,6 +1,6 @@
 import Mod3d from "../models/mod3dSchema.js";
 import Post from "../models/postSchema.js";
-import { deleteFileFromS3 } from "../utils/s3.js";
+import { deleteFileFromS3 } from "../services/s3/deleteFile.js";
 
 const cleanupS3Files = async ({ imageId, videoId, modelFiles }) => {
   try {
@@ -76,7 +76,9 @@ export const retrieveAllPublic = async (req, res) => {
   try {
     const publicMods = await Mod3d.find({
       $or: [{ isPublic: true }, { isPublic: { $exists: false } }],
-    }).populate("author", "username email");
+    })
+      .sort({ createdAt: -1 })
+      .populate("author", "username email profilePic");
 
     res.status(200).json({
       success: true,
@@ -95,7 +97,10 @@ export const retrieveAllPublic = async (req, res) => {
 
 export const retrieveAll = async (req, res) => {
   try {
-    const mod3ds = await Mod3d.find().populate("author", "username email");
+    const mod3ds = await Mod3d.find().populate(
+      "author",
+      "username email profilePic"
+    );
     res.status(200).json({
       success: true,
       message: "Fetched all models",
@@ -114,7 +119,7 @@ export const retrieveAll = async (req, res) => {
 export const retrieveModel = async (req, res) => {
   try {
     const mod3d = await Mod3d.findById(req.params.id)
-      .populate("author", "username email")
+      .populate("author", "username email profilePic")
       .populate("postId");
 
     if (!mod3d)

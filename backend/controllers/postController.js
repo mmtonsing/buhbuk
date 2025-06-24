@@ -5,7 +5,7 @@ export const getPublicPosts = async (req, res) => {
   try {
     const posts = await Post.find({ isPublic: true })
       .sort({ createdAt: -1 })
-      .populate("author", "username")
+      .populate("author", "username profilePic")
       .populate("refId") // load the actual post content
       .limit(10); // return only a preview list
 
@@ -29,7 +29,7 @@ export const getPaginatedPosts = async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .populate("author", "username")
+      .populate("author", "username profilePic")
       .populate("refId");
 
     res.status(200).json({
@@ -46,7 +46,7 @@ export const getPaginatedPosts = async (req, res) => {
 export const getPost = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id)
-      .populate("author", "username")
+      .populate("author", "username profilePic")
       .populate("refId");
 
     if (!post) return res.status(404).json({ error: "Post not found" });
@@ -76,7 +76,9 @@ export const createPost = async (req, res) => {
 // 👤 Get posts by logged-in user
 export const getMyPosts = async (req, res) => {
   try {
-    const posts = await Post.find({ author: req.user._id }).populate("author");
+    const posts = await Post.find({ author: req.user._id }).populate(
+      "author profilePic"
+    );
     res.json(posts);
   } catch (error) {
     res.status(500).json({ message: "Failed to get user posts", error });

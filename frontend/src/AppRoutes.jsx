@@ -20,6 +20,7 @@ import { EditMod3d } from "./pages/mod3d/EditMod3d";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Feed from "./pages/main/Feed";
 import ViewPost from "./pages/main/ViewPost";
+import EmailVerify from "./pages/user/EmailVerify";
 
 export function AppRoutes() {
   const { loading } = useAuth();
@@ -40,6 +41,8 @@ export function AppRoutes() {
           <Route path="/viewmod3d/:id" element={<ViewMod3d />} />
           <Route path="/auth" element={<Landing />} />
           <Route path="/viewpost/:id" element={<ViewPost />} />
+          <Route path="/verify/:token" element={<EmailVerify />} />
+
           <Route
             path="/blogs"
             element={

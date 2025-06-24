@@ -7,7 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { MessageBanner } from "@/components/customUI/MessageBanner";
 import Loader from "@/components/customUI/Loader";
 import { useNavigate } from "react-router-dom";
-import { createFile } from "../../utils/createFile"; // ✅ use shared helper
+import { createFile } from "@/api/fileApi";
+import { InfoTooltip } from "@/components/customUI/InfoTooltip";
 
 export function UploadMod3d() {
   const [title, setTitle] = useState("");
@@ -21,7 +22,10 @@ export function UploadMod3d() {
   const [modelFile, setModelFile] = useState(null);
   const [videoFile, setVideoFile] = useState(null);
 
-  const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+  const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
+  const MAX_MODEL_SIZE = 50 * 1024 * 1024; // 50MB
+  const MAX_VIDEO_SIZE = 20 * 1024 * 1024; // 20MB
+
   const allowedExtensions = [
     "jpg",
     "jpeg",
@@ -126,17 +130,27 @@ export function UploadMod3d() {
       return;
     }
 
-    if (file.size > MAX_FILE_SIZE) {
-      alert("File size exceeds 50MB limit");
-      e.target.value = "";
-      return;
-    }
-
+    // 🛑 File size checks per type
     if (["jpg", "jpeg", "png"].includes(ext)) {
+      if (file.size > MAX_IMAGE_SIZE) {
+        alert("Image file exceeds 10MB limit.");
+        e.target.value = "";
+        return;
+      }
       setImageFile(file);
     } else if (["zip", "glb", "gltf", "obj", "stl"].includes(ext)) {
+      if (file.size > MAX_MODEL_SIZE) {
+        alert("Model file exceeds 50MB limit.");
+        e.target.value = "";
+        return;
+      }
       setModelFile(file);
     } else if (["mp4", "webm", "mov"].includes(ext)) {
+      if (file.size > MAX_VIDEO_SIZE) {
+        alert("Video file exceeds 20MB limit.");
+        e.target.value = "";
+        return;
+      }
       setVideoFile(file);
     }
   };
@@ -180,7 +194,8 @@ export function UploadMod3d() {
       >
         <div>
           <Label className="text-sm text-stone-300 mb-1 block">
-            Model Name
+            Model Name*
+            <InfoTooltip text="Give your model a short, descriptive title (max 100 characters)." />
           </Label>
           <Input
             name="title"
@@ -194,7 +209,10 @@ export function UploadMod3d() {
         </div>
 
         <div>
-          <Label className="text-sm text-stone-300 mb-1 block">Price</Label>
+          <Label className="text-sm text-stone-300 mb-1 block">
+            Price{" "}
+            <InfoTooltip text="Leave empty for free. Otherwise, enter a numeric price (e.g., 10)." />
+          </Label>
           <Input
             name="price"
             value={price}
@@ -214,7 +232,8 @@ export function UploadMod3d() {
 
         <div>
           <Label className="text-sm text-stone-300 mb-1 block">
-            Description
+            Description*
+            <InfoTooltip text="Describe your 3D model (max 300 characters). Markdown not supported." />
           </Label>
           <Textarea
             name="description"
@@ -229,7 +248,8 @@ export function UploadMod3d() {
 
         <div>
           <Label className="text-sm text-stone-300 block mb-2">
-            Upload Thumbnail* (jpg, jpeg, png)
+            Upload Thumbnail*
+            <InfoTooltip text="Image should represent your model. Max size: 10MB. Formats: jpg, jpeg, png." />
           </Label>
           <Input
             type="file"
@@ -243,8 +263,8 @@ export function UploadMod3d() {
 
         <div>
           <Label className="text-sm text-stone-300 block mb-2">
-            Upload 3D Model* (.zip & .glb recommended; also supports .gltf,
-            .obj, .stl - Max 50MB)
+            Upload 3D Model*
+            <InfoTooltip text="Upload a .zip containing your model files or a direct .glb, .obj, .stl, or .gltf file (max 50MB)." />
           </Label>
           <Input
             type="file"
@@ -257,7 +277,8 @@ export function UploadMod3d() {
 
         <div>
           <Label className="text-sm text-stone-300 block mb-2">
-            Upload Demo Video (mp4, webm, mov - Max 20MB)
+            Upload Demo Video
+            <InfoTooltip text="Optional. File must be .mp4, .webm, or .mov (max 20MB). Used for model previews." />
           </Label>
           <Input
             type="file"

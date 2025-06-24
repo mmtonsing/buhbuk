@@ -1,6 +1,6 @@
 import axiosInstance from "./axiosInstance";
 import { extractData } from "@/utils/apiHelper";
-import { getFilePublic } from "./mod3ds";
+import { getFilePublic } from "./fileApi";
 
 // 📰 Fetch latest posts
 export async function getLatestPosts() {

@@ -4,7 +4,7 @@ import LikeWithAuth from "@/context/LikeWithAuth";
 import { timeAgo } from "@/utils/timeAgo";
 
 export function ModCard({ mod3d }) {
-  const displayDate = timeAgo(mod3d?.dateCreated);
+  const displayDate = timeAgo(mod3d?.createdAt);
 
   return (
     <div className="block rounded-xl border border-stone-700 shadow bg-stone-800 hover:bg-stone-700 text-stone-100 overflow-hidden transition-transform hover:scale-105 hover:shadow-xl duration-300 group">

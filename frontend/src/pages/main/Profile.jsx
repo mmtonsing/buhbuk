@@ -7,6 +7,7 @@ import { sortByDateCreated } from "../../utils/sortByDate";
 import { SkeletonCard } from "@/components/customUI/SkeletonCard";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import ProfilePicUploader from "@/components/user/ProfilePicUploader";
 
 export function Profile() {
   const [mod3ds, setMod3ds] = useState([]);
@@ -21,6 +22,7 @@ export function Profile() {
         if (!currentUser) return;
 
         setUser(currentUser);
+        // console.log("Current profilePic key:", currentUser.profilePic);
         const data = await getUserPosts(currentUser.id);
         const sortedPosts = sortByDateCreated(data);
         setMod3ds(sortedPosts);
@@ -56,21 +58,15 @@ export function Profile() {
 
         <div className="grid sm:grid-cols-3 gap-8 text-sm sm:text-base items-start">
           {/* Avatar Section */}
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-28 h-28 rounded-full bg-stone-700 border-4 border-stone-600 overflow-hidden">
-              <img
-                src={user.avatarUrl || "/avatar.jpg"}
-                alt="Avatar"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <Button
-              variant="outline"
-              className="border-stone-600 text-xs text-stone-300 hover:bg-stone-700 px-3 py-1"
-            >
-              Change Picture
-            </Button>
-          </div>
+          <ProfilePicUploader
+            currentPic={user.profilePic}
+            onUploadSuccess={(newKey) => {
+              setUser((prev) => ({
+                ...prev,
+                profilePic: `${newKey}?t=${Date.now()}`,
+              }));
+            }}
+          />
 
           {/* Info Grid */}
           <div className="sm:col-span-2 grid sm:grid-cols-2 gap-6">

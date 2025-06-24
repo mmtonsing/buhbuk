@@ -118,7 +118,7 @@ export function Home() {
                 onClick={handleViewAll}
                 className="px-4 py-2 text-sm sm:px-6 sm:py-2 sm:text-base lg:px-8 lg:py-3 lg:text-lg bg-[#5c3a2d] hover:bg-[#44251f] text-stone-100 rounded-lg transition-all"
               >
-                View All
+                View More
               </Button>
             </div>
           </div>

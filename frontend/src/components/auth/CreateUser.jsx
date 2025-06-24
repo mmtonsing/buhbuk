@@ -44,9 +44,9 @@ export function CreateUser({ onSuccess }) {
     });
 
     if (res.success) {
-      toast.success("✅ Account created successfully!");
+      toast.success("✅ Account created. Check your email to verify!");
       setUser({ username: "", email: "", password: "", confirmPassword: "" });
-      if (onSuccess) onSuccess();
+      if (onSuccess) onSuccess(); // Switch to login screen
     } else {
       toast.error(`❌ ${res.message}`);
     }
@@ -61,7 +61,8 @@ export function CreateUser({ onSuccess }) {
         onChange={handleChange}
         name="username"
         required
-        maxLength={20}
+        minLength={6}
+        maxLength={30}
         className="bg-stone-700 text-white border-stone-600"
       />
       <Input
@@ -70,7 +71,8 @@ export function CreateUser({ onSuccess }) {
         name="email"
         type="email"
         required
-        maxLength={40}
+        minLength={6}
+        maxLength={64}
         className="bg-stone-700 text-white border-stone-600"
       />
       <Input
@@ -79,6 +81,7 @@ export function CreateUser({ onSuccess }) {
         name="password"
         type="password"
         required
+        minLength={6}
         maxLength={20}
         className="bg-stone-700 text-white border-stone-600"
       />
@@ -89,6 +92,7 @@ export function CreateUser({ onSuccess }) {
         value={user.confirmPassword}
         type="password"
         required
+        minLength={6}
         maxLength={20}
         className="bg-stone-700 text-white border-stone-600"
       />

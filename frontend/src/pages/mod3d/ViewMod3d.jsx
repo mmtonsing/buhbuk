@@ -10,6 +10,7 @@ import { VideoPreviewModal } from "@/components/general/VideoPreviewModal";
 import { PlayCircle, Box, X } from "lucide-react";
 import Loader from "@/components/customUI/Loader";
 import HybridViewer from "@/components/mod3d/HybridViewer";
+import { getRenderableModelFile } from "@/utils/getRenderableModelFile"; // ✅ imported utility
 
 export function ViewMod3d() {
   const [mod3d, setMod3d] = useState({});
@@ -48,7 +49,8 @@ export function ViewMod3d() {
     }
   };
 
-  if (loading) return <Loader message="Loading 3D Model…" />;
+  const renderableFile = getRenderableModelFile(mod3d.modelFiles);
+  if (loading) return <Loader message="Loading 3D Model" />;
   if (downloading) {
     return (
       <Loader
@@ -105,7 +107,7 @@ export function ViewMod3d() {
             className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg shadow bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white transition"
           >
             <Box className="w-5 h-5" />
-            View 3D
+            3D View
           </button>
           {mod3d.videoId && (
             <button
@@ -116,14 +118,22 @@ export function ViewMod3d() {
               Preview Video
             </button>
           )}
-          {mod3d.modelFiles?.length > 0 && (
-            <DownloadButton
-              files={mod3d.modelFiles}
-              onStart={() => setDownloading(true)}
-              onEnd={() => setDownloading(false)}
-              className="px-5 py-2.5 text-sm font-medium rounded-lg shadow bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 text-white transition"
-            />
-          )}
+          {mod3d.modelFiles?.length > 0 &&
+            (user ? (
+              <DownloadButton
+                files={mod3d.modelFiles}
+                onStart={() => setDownloading(true)}
+                onEnd={() => setDownloading(false)}
+                className="px-5 py-2.5 text-sm font-medium rounded-lg shadow bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 text-white transition"
+              />
+            ) : (
+              <button
+                disabled
+                className="px-5 py-2.5 text-sm font-medium rounded-lg bg-gray-600 text-white cursor-not-allowed"
+              >
+                🔒 Login to download
+              </button>
+            ))}
         </div>
 
         <h2 className="text-2xl font-semibold mb-2 text-green-400">
@@ -134,6 +144,8 @@ export function ViewMod3d() {
           {mod3d.description}
         </p>
       </div>
+
+      {/* Delete modal */}
       <ConfirmModal
         isOpen={showConfirm}
         onClose={() => setShowConfirm(false)}
@@ -141,18 +153,21 @@ export function ViewMod3d() {
         title="Delete Model"
         message="Are you sure you want to delete this model? This action cannot be undone."
       />
+
+      {/* Video modal */}
       <VideoPreviewModal
         isOpen={showVideo}
         onClose={() => setShowVideo(false)}
         videoUrl={`/api/file/stream/${mod3d.videoId}`}
       />
+
+      {/* 3D Modal */}
       {show3DModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div
-            ref={(el) => (window.viewerContainer = el)} // ref for fullscreen
+            ref={(el) => (window.viewerContainer = el)}
             className="relative w-full max-w-4xl h-[80vh] bg-stone-900 rounded-xl border border-stone-700 shadow-lg flex flex-col overflow-hidden"
           >
-            {/* Close Button */}
             <button
               onClick={() => setShow3DModal(false)}
               className="absolute top-2 right-2 text-stone-400 hover:text-red-600 text-2xl z-10"
@@ -160,7 +175,6 @@ export function ViewMod3d() {
               <X />
             </button>
 
-            {/* Fullscreen Toggle Button */}
             <button
               onClick={() => {
                 const el = window.viewerContainer;
@@ -175,11 +189,12 @@ export function ViewMod3d() {
               ⛶
             </button>
 
-            {/* Viewer */}
             <div className="flex-1 flex items-center justify-center">
-              {mod3d.modelFiles?.length > 0 ? (
+              {renderableFile ? (
                 <HybridViewer
-                  modelUrl={`/api/file/raw/${mod3d.modelFiles[0].key}`}
+                  modelUrl={`/api/file/raw/${encodeURIComponent(
+                    renderableFile.key
+                  )}`}
                 />
               ) : (
                 <p className="text-center text-red-400">

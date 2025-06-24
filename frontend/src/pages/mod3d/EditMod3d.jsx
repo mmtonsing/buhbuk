@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getMod3d, editMod3d } from "../../api/mod3ds";
-import { createFile } from "../../utils/createFile"; // ✅ use helper
+import { createFile } from "@/api/fileApi";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { MessageBanner } from "@/components/customUI/MessageBanner";

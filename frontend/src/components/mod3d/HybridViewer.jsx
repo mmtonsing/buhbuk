@@ -2,17 +2,29 @@ import { Canvas, useLoader } from "@react-three/fiber";
 import { OrbitControls, Html, Center } from "@react-three/drei";
 import { GLTFLoader } from "three-stdlib";
 import { OBJLoader } from "three-stdlib";
+import { STLLoader } from "three-stdlib";
 import { Suspense } from "react";
 
 // Custom loader (centered inside container)
-function InlineLoader({ message = "Loading 3D model..." }) {
+function InlineLoader({ message = "Loading" }) {
   return (
     <Html center>
       <div className="flex flex-col items-center justify-center">
-        <div className="animate-spin rounded-full border-t-4 border-blue-500 h-12 w-12"></div>
+        <div className="animate-spin rounded-full border-t-4 border-pink-600 h-14 w-14"></div>
         <p className="mt-2 text-sm text-white">{message}</p>
       </div>
     </Html>
+  );
+}
+
+function StlModel({ url }) {
+  const geometry = useLoader(STLLoader, url);
+  return (
+    <Center>
+      <mesh geometry={geometry}>
+        <meshStandardMaterial color="gray" />
+      </mesh>
+    </Center>
   );
 }
 
@@ -40,6 +52,7 @@ function ModelLoader({ url }) {
 
   if (ext === "glb" || ext === "gltf") return <GlbModel url={url} />;
   if (ext === "obj") return <ObjModel url={url} />;
+  if (ext === "stl") return <StlModel url={url} />;
 
   return (
     <Html center>

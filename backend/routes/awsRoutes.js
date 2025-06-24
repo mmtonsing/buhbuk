@@ -10,7 +10,7 @@ const upload = multer();
 router.get("/public/:id", awsController.retrievePublicFile);
 
 // Public binary stream
-router.get("/raw/:id", awsController.streamAnyFile);
+router.get("/raw/*splat", awsController.streamAnyFile);
 
 // Video stream
 router.get("/stream/:id", awsController.streamFile);

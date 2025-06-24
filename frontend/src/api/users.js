@@ -1,5 +1,5 @@
 import axiosInstance from "./axiosInstance";
-import { getFilePublic } from "./mod3ds";
+import { getFilePublic } from "./fileApi";
 
 // Get all users
 export async function getUsers() {
@@ -16,6 +16,7 @@ export async function getUsers() {
 export async function getCurrentUser() {
   try {
     const res = await axiosInstance.get("/user/me");
+    // console.log("User data:", res.data);
     return res.data;
   } catch (err) {
     if (err.response?.status === 401) {
@@ -106,5 +107,29 @@ export async function getUserPosts(id) {
   } catch (err) {
     console.error("Unable to retrieve User Posts", err);
     return [];
+  }
+}
+
+export async function updateProfilePic(profilePicKey) {
+  try {
+    const res = await axiosInstance.put("/user/profile-pic", {
+      profilePic: profilePicKey,
+    });
+    return res.data;
+  } catch (err) {
+    console.error("Error updating profile picture:", err);
+    return { success: false };
+  }
+}
+
+export async function resendVerification(email) {
+  try {
+    const res = await axiosInstance.post("/user/resend-verify", { email });
+    return { success: true, message: res.data.message };
+  } catch (err) {
+    return {
+      success: false,
+      message: err.response?.data?.message || "Could not resend verification",
+    };
   }
 }
