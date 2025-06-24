@@ -7,7 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { MessageBanner } from "@/components/customUI/MessageBanner";
 import Loader from "@/components/customUI/Loader";
 import { Label } from "@/components/ui/label";
-import { InfoTooltip } from "@/components/customUI/InfoToolTip";
+import { InfoTooltip } from "@/components/customUI/InfoTooltip";
 
 export function EditMod3d() {
   const { id } = useParams();
