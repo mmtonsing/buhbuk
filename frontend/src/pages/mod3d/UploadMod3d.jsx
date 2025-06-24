@@ -8,7 +8,7 @@ import { MessageBanner } from "@/components/customUI/MessageBanner";
 import Loader from "@/components/customUI/Loader";
 import { useNavigate } from "react-router-dom";
 import { createFile } from "@/api/fileApi";
-// import InfoTooltip from "../../components/customUI/InfoTooltip";
+import InfoTooltip from "@/components/customUI/InfoToolTip.jsx";
 
 export function UploadMod3d() {
   const [title, setTitle] = useState("");
@@ -195,7 +195,7 @@ export function UploadMod3d() {
         <div>
           <Label className="text-sm text-stone-300 mb-1 block">
             Model Name*
-            {/* <InfoTooltip text="Give your model a short, descriptive title (max 100 characters)." /> */}
+            <InfoTooltip text="Give your model a short, descriptive title (max 100 characters)." />
           </Label>
           <Input
             name="title"
@@ -211,7 +211,7 @@ export function UploadMod3d() {
         <div>
           <Label className="text-sm text-stone-300 mb-1 block">
             Price{" "}
-            {/* <InfoTooltip text="Leave empty for free. Otherwise, enter a numeric price (e.g., 10)." /> */}
+            <InfoTooltip text="Leave empty for free. Otherwise, enter a numeric price (e.g., 10)." />
           </Label>
           <Input
             name="price"
@@ -233,7 +233,7 @@ export function UploadMod3d() {
         <div>
           <Label className="text-sm text-stone-300 mb-1 block">
             Description*
-            {/* <InfoTooltip text="Describe your 3D model (max 300 characters). Markdown not supported." /> */}
+            <InfoTooltip text="Describe your 3D model (max 300 characters). Markdown not supported." />
           </Label>
           <Textarea
             name="description"
@@ -249,7 +249,7 @@ export function UploadMod3d() {
         <div>
           <Label className="text-sm text-stone-300 block mb-2">
             Upload Thumbnail*
-            {/* <InfoTooltip text="Image should represent your model. Max size: 10MB. Formats: jpg, jpeg, png." /> */}
+            <InfoTooltip text="Image should represent your model. Max size: 10MB. Formats: jpg, jpeg, png." />
           </Label>
           <Input
             type="file"
@@ -264,7 +264,7 @@ export function UploadMod3d() {
         <div>
           <Label className="text-sm text-stone-300 block mb-2">
             Upload 3D Model*
-            {/* <InfoTooltip text="Upload a .zip containing your model files or a direct .glb, .obj, .stl, or .gltf file (max 50MB)." /> */}
+            <InfoTooltip text="Upload a .zip containing your model files or a direct .glb, .obj, .stl, or .gltf file (max 50MB)." />
           </Label>
           <Input
             type="file"
@@ -278,7 +278,7 @@ export function UploadMod3d() {
         <div>
           <Label className="text-sm text-stone-300 block mb-2">
             Upload Demo Video
-            {/* <InfoTooltip text="Optional. File must be .mp4, .webm, or .mov (max 20MB). Used for model previews." /> */}
+            <InfoTooltip text="Optional. File must be .mp4, .webm, or .mov (max 20MB). Used for model previews." />
           </Label>
           <Input
             type="file"
