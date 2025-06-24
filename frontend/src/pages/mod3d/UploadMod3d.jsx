@@ -8,7 +8,7 @@ import { MessageBanner } from "@/components/customUI/MessageBanner";
 import Loader from "@/components/customUI/Loader";
 import { useNavigate } from "react-router-dom";
 import { createFile } from "@/api/fileApi";
-import InfoTooltip from "@/components/customUI/InfoToolTip";
+import InfoTooltip from "@/components/customUI/InfoToolTip.jsx";
 
 export function UploadMod3d() {
   const [title, setTitle] = useState("");
