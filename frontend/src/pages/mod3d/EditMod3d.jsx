@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { MessageBanner } from "@/components/customUI/MessageBanner";
 import Loader from "@/components/customUI/Loader";
+import { Label } from "@/components/ui/label";
+import { InfoTooltip } from "@/components/customUI/InfoToolTip";
 
 export function EditMod3d() {
   const { id } = useParams();
@@ -139,7 +141,7 @@ export function EditMod3d() {
   }
 
   return (
-    <div className="min-h-screen px-4 py-10 bg-stone-900 text-stone-100">
+    <div className="w-full max-w-3xl mx-auto px-4 py-10 bg-stone-900 min-h-screen text-stone-100">
       {showBanner && (
         <MessageBanner
           message="Model updated successfully!"
@@ -148,12 +150,19 @@ export function EditMod3d() {
         />
       )}
 
-      <div className="max-w-2xl mx-auto bg-stone-800 rounded-xl shadow-md p-6">
-        <h1 className="text-3xl font-bold mb-6 text-amber-400 text-center">
-          Edit 3D Model
-        </h1>
+      <h2 className="text-3xl font-bold mb-8 text-center text-amber-400">
+        Edit 3D Model
+      </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-6 bg-stone-800 p-8 rounded-xl border border-stone-700 shadow-md"
+      >
+        <div>
+          <Label className="text-sm text-stone-300 mb-1 block">
+            Model Name*
+            <InfoTooltip text="Give your model a short, descriptive title (max 100 characters)." />
+          </Label>
           <input
             type="text"
             name="title"
@@ -162,16 +171,13 @@ export function EditMod3d() {
             placeholder="Title"
             className="w-full p-2 rounded bg-stone-700 text-white"
           />
+        </div>
 
-          <textarea
-            name="description"
-            value={form.description}
-            onChange={handleChange}
-            rows={4}
-            placeholder="Description"
-            className="w-full p-2 rounded bg-stone-700 text-white"
-          />
-
+        <div>
+          <Label className="text-sm text-stone-300 mb-1 block">
+            Price{" "}
+            <InfoTooltip text="Leave empty for free. Otherwise, enter a numeric price (e.g., 10)." />
+          </Label>
           <input
             type="number"
             name="price"
@@ -180,48 +186,65 @@ export function EditMod3d() {
             placeholder="Price"
             className="w-full p-2 rounded bg-stone-700 text-white"
           />
+        </div>
 
-          <div>
-            <label className="text-sm text-stone-400 mb-1 block">
-              Replace image
-            </label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleChange}
-              className="w-full bg-stone-700 text-white file:mr-2 file:p-1 file:border-0 file:rounded"
-            />
-          </div>
+        <div>
+          <Label className="text-sm text-stone-300 mb-1 block">
+            Description*
+            <InfoTooltip text="Describe your 3D model (max 300 characters). Markdown not supported." />
+          </Label>
+          <textarea
+            name="description"
+            value={form.description}
+            onChange={handleChange}
+            rows={4}
+            placeholder="Description"
+            className="w-full p-2 rounded bg-stone-700 text-white"
+          />
+        </div>
 
-          <div>
-            <label className="text-sm text-stone-400 mb-1 block">
-              Replace 3D Model (.zip, .glb, .gltf, .obj, .stl)
-            </label>
-            <input
-              type="file"
-              accept=".zip,.glb,.gltf,.obj,.stl"
-              onChange={handleChange}
-              className="w-full bg-stone-700 text-white file:mr-2 file:p-1 file:border-0 file:rounded"
-            />
-          </div>
+        <div>
+          <Label className="text-sm text-stone-300 block mb-2">
+            Replace Image/Thumbnail*
+            <InfoTooltip text="Image should represent your model. Max size: 10MB. Formats: jpg, jpeg, png." />
+          </Label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleChange}
+            className="w-full bg-stone-700 text-white file:mr-2 file:p-1 file:border-0 file:rounded"
+          />
+        </div>
 
-          <div>
-            <label className="text-sm text-stone-400 mb-1 block">
-              Replace Demo Video (.mp4, .webm, .mov)
-            </label>
-            <input
-              type="file"
-              accept=".mp4,.webm,.mov"
-              onChange={handleChange}
-              className="w-full bg-stone-700 text-white file:mr-2 file:p-1 file:border-0 file:rounded"
-            />
-          </div>
+        <div>
+          <Label className="text-sm text-stone-300 block mb-2">
+            Replace 3D Model*
+            <InfoTooltip text="Upload a .zip containing your model files or a direct .glb, .obj, .stl, or .gltf file (max 50MB)." />
+          </Label>
+          <input
+            type="file"
+            accept=".zip,.glb,.gltf,.obj,.stl"
+            onChange={handleChange}
+            className="w-full bg-stone-700 text-white file:mr-2 file:p-1 file:border-0 file:rounded"
+          />
+        </div>
 
-          <Button type="submit" className="w-full">
-            Save Changes
-          </Button>
-        </form>
-      </div>
+        <div>
+          <Label className="text-sm text-stone-300 block mb-2">
+            Replace Demo Video
+            <InfoTooltip text="Optional. File must be .mp4, .webm, or .mov (max 20MB). Used for model previews." />
+          </Label>
+          <input
+            type="file"
+            accept=".mp4,.webm,.mov"
+            onChange={handleChange}
+            className="w-full bg-stone-700 text-white file:mr-2 file:p-1 file:border-0 file:rounded"
+          />
+        </div>
+        <Button type="submit" className="w-full">
+          Save Changes
+        </Button>
+      </form>
     </div>
   );
 }
