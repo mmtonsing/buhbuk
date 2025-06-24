@@ -1,7 +1,7 @@
 // components/customUI/InfoTooltip.jsx
 import { useState } from "react";
 
-export function InfoTooltip({ text }) {
+export default function InfoTooltip({ text }) {
   const [show, setShow] = useState(false);
 
   return (
