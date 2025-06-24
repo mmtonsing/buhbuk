@@ -20,11 +20,11 @@ const loginLimiter = rateLimit({
 });
 
 const verificationLimiter = rateLimit({
-  windowMs: 5 * 60 * 1000, // 5 minutes
+  windowMs: 10 * 60 * 1000, // 10 minutes
   max: 5,
   message: {
     success: false,
-    message: "Too many attempts. Please try again after 5 minutes.",
+    message: "Too many attempts. Please try again after 10 minutes.",
   },
   standardHeaders: true,
   legacyHeaders: false,

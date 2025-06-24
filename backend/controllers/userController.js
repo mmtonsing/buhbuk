@@ -173,17 +173,17 @@ export const loginUser = (req, res, next) => {
     async (err, user, info) => {
       if (err) return next(err);
 
+      if (!user)
+        return res
+          .status(400)
+          .json({ success: false, message: info?.message || "Login failed" });
+
       if (!user.emailVerified) {
         return res.status(400).json({
           success: false,
           message: "Please verify your email before logging in.",
         });
       }
-
-      if (!user)
-        return res
-          .status(400)
-          .json({ success: false, message: info?.message || "Login failed" });
 
       const token = jwt.sign(
         {
