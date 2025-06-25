@@ -23,7 +23,7 @@ router.get("/:id/posts", users.getUserPosts);
 router
   .route("/:id")
   .get(authMiddleware, users.retrieveUser)
-  .put(authMiddleware, users.editUser)
+  .put(authMiddleware, users.updateUserDetails)
   .delete(authMiddleware, users.deleteUser);
 
 // Login and set HTTP-only cookie

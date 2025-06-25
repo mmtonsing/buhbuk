@@ -19,7 +19,9 @@ export async function sendVerificationEmail(toEmail, token) {
       <h2>Welcome to BukWarm</h2>
       <p>Click the link below to verify your email address:</p>
       <a href="${url}">${url}</a>
-      <p>This link expires in 24hrs minutes.</p>
+      <p>This link expires in ${
+        Number(process.env.EMAIL_VERIFICATION_EXPIRES_MS || 86400000) / 3600000
+      } hours</p>
     `,
   };
 

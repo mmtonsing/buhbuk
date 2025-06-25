@@ -24,7 +24,6 @@ export default async function handleZipUpload(zipFile) {
       const ext = entry.path.split(".").pop().toLowerCase();
       const key = `${dateStr}-${uuidv4()}-${entry.path}`;
 
-      console.log(key);
       await s3Client.send(
         new PutObjectCommand({
           Bucket: s3Bucket,

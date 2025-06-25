@@ -14,7 +14,7 @@ router
   .post(authMiddleware, mod3d.uploadModel); // upload new 3D model
 
 // POST /mod3ds/:id/like
-router.post("/:id/like", likes.ToggleLike);
+router.post("/:id/like", likes.toggleLike);
 
 router
   .route("/:id")

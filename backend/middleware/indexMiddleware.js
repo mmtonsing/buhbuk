@@ -7,17 +7,16 @@ import cors from "cors";
 import passport from "passport";
 
 const applyMiddleware = (app) => {
-  // Enables frontend–backend communication with credentials (cookies)
   app.use(
     cors({
-      origin: process.env.CLIENT_URL, // your frontend URL
+      origin: process.env.CLIENT_URL,
       credentials: true,
     })
   );
 
-  app.use(cookieParser()); // Parses cookies (for reading JWT)
-  app.use(express.json()); // Parses incoming JSON
-  app.use(passport.initialize()); // Initializes passport
+  app.use(cookieParser());
+  app.use(express.json());
+  app.use(passport.initialize());
 };
 
 export default applyMiddleware;

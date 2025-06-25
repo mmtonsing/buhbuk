@@ -1,13 +1,12 @@
 import rateLimit from "express-rate-limit";
 
-// Global limiter (e.g., for DDoS protection)
+//e.g., for DDoS protection
 const globalLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
   max: 100,
   message: "Too many requests, please try again later.",
 });
 
-// Login limiter
 const loginLimiter = rateLimit({
   windowMs: 5 * 60 * 1000, // 5 minutes
   max: 10,

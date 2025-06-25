@@ -43,13 +43,12 @@ export async function createUser(user) {
 }
 
 // Edit user
-export async function editUser(id, user) {
+export async function updateUserDetails(data) {
   try {
-    const res = await axiosInstance.put(`/user/${id}`, user);
+    const res = await axiosInstance.put("/user/me", data);
     return res.data;
   } catch (err) {
-    console.error("Error updating user:", err);
-    return null;
+    return err.response?.data || { success: false, message: "Update failed" };
   }
 }
 

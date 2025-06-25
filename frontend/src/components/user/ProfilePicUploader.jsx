@@ -38,6 +38,7 @@ export default function ProfilePicUploader({ currentPic, onUploadSuccess }) {
       if (!update.success) throw new Error();
 
       toast.success("Profile picture updated!");
+      await new Promise((res) => setTimeout(res, 2000));
       onUploadSuccess(key);
       setShowModal(false);
     } catch (err) {
@@ -48,17 +49,17 @@ export default function ProfilePicUploader({ currentPic, onUploadSuccess }) {
     }
   };
 
+  // ✅ Clean currentPic of any existing query and cache-bust
+  const cleanPicKey = currentPic ? currentPic.split("?")[0] : "";
+  const profilePicUrl = cleanPicKey
+    ? `/api/file/raw/${encodeURIComponent(cleanPicKey)}?t=${Date.now()}`
+    : "/avatar.jpg";
+
   return (
     <div className="relative w-24 h-24">
       {/* Profile Image */}
       <img
-        src={
-          preview && !showModal
-            ? preview
-            : currentPic
-            ? `/api/file/raw/${encodeURIComponent(currentPic)}?t=${Date.now()}`
-            : "/avatar.jpg"
-        }
+        src={preview && !showModal ? preview : profilePicUrl}
         alt="Profile"
         className="w-full h-full aspect-square rounded-full object-center object-cover border border-stone-700"
       />

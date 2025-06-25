@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { UserBadge } from "../user/UserBadge";
-import { ConfirmModal } from "@/components/customUI/ConfirmModal";
+import { ConfirmModal } from "@/components/customUI/DeleteConfirmModal";
 import { DownloadButton } from "@/components/general/DownloadButton";
 import { VideoPreviewModal } from "@/components/general/VideoPreviewModal";
 import { PlayCircle, Box, X } from "lucide-react";

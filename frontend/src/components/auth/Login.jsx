@@ -36,7 +36,7 @@ export function Login() {
     if (res.success) {
       const currentUser = await getCurrentUser();
       setUser(currentUser);
-      toast.success(`👋 Welcome home, ${res.username}!`);
+      toast.success(`👋 Welcome, ${res.username}!`);
       navigate(from, { replace: true });
       return;
     }

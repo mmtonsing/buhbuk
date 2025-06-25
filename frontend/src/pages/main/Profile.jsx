@@ -1,74 +1,94 @@
-import { ModCard } from "../../components/mod3d/Mod3dCard";
 import { useState, useEffect } from "react";
-import { getCurrentUser, getUserPosts } from "../../api/users";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { sortByDateCreated } from "../../utils/sortByDate";
+import { useAuth } from "@/context/AuthContext";
+import { getUserPosts, getCurrentUser } from "@/api/users";
+import { sortByDateCreated } from "@/utils/sortByDate";
+import { ModCard } from "@/components/mod3d/Mod3dCard";
 import { SkeletonCard } from "@/components/customUI/SkeletonCard";
-import { Plus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Plus, Edit } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import ProfilePicUploader from "@/components/user/ProfilePicUploader";
+import { EditProfileForm } from "@/components/user/EditProfileForm";
+import { useNavigate } from "react-router-dom";
+import { SuccessModal } from "@/components/customUI/SuccessModal"; // 👈
+import { EmailVerifyModal } from "@/components/customUI/EmailVerifyModal";
 
 export function Profile() {
+  const { user, setUser, loading } = useAuth();
   const [mod3ds, setMod3ds] = useState([]);
-  const [user, setUser] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showVerifyEmailModal, setShowVerifyEmailModal] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function loadUserData() {
+    async function loadUserPosts() {
+      if (!user?.id) return;
       try {
-        const currentUser = await getCurrentUser();
-        if (!currentUser) return;
-
-        setUser(currentUser);
-        // console.log("Current profilePic key:", currentUser.profilePic);
-        const data = await getUserPosts(currentUser.id);
-        const sortedPosts = sortByDateCreated(data);
-        setMod3ds(sortedPosts);
-      } catch (error) {
-        console.error("Error loading profile:", error);
-      } finally {
-        setLoading(false);
+        const data = await getUserPosts(user.id);
+        const sorted = sortByDateCreated(data);
+        setMod3ds(sorted);
+      } catch (err) {
+        console.error("Failed to load user posts:", err);
       }
     }
+    loadUserPosts();
+  }, [user?.id]);
 
-    loadUserData();
-  }, []);
+  if (loading || !user) {
+    return <div className="text-center p-10">Loading user...</div>;
+  }
 
-  const formattedJoinDate = user.joinDate
-    ? new Date(user.joinDate).toDateString()
-    : "N/A";
-
-  const totalUploads = mod3ds.length;
-
-  //Popularity
+  const formattedJoinDate = new Date(user.joinDate).toDateString();
   const totalLikes = mod3ds.reduce(
     (acc, mod) => acc + (mod.likedBy?.length || 0),
     0
   );
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 py-10 text-stone-200 bg-stone-900 min-h-screen">
-      {/* User Info */}
-      <div className="bg-gradient-to-br from-stone-800 to-stone-900 p-6 rounded-2xl shadow-xl border border-stone-700 mb-10 text-stone-200">
+    <div className="w-screen max-w-7xl mx-auto px-4 py-10 text-stone-200 bg-stone-900 min-h-screen">
+      {/* Profile Card */}
+      <div className="bg-gradient-to-br from-stone-800 to-stone-900 p-6 rounded-2xl shadow-xl border border-stone-700 mb-10">
         <h2 className="text-3xl font-bold mb-6 text-stone-100 tracking-wide">
           Your Profile
         </h2>
 
-        <div className="grid sm:grid-cols-3 gap-8 text-sm sm:text-base items-start">
-          {/* Avatar Section */}
-          <ProfilePicUploader
-            currentPic={user.profilePic}
-            onUploadSuccess={(newKey) => {
-              setUser((prev) => ({
-                ...prev,
-                profilePic: `${newKey}?t=${Date.now()}`,
-              }));
-            }}
-          />
+        <div className="grid sm:grid-cols-3 gap-8 items-start">
+          {/* Avatar & Edit Info */}
+          <div className="flex flex-col items-center sm:items-start gap-4">
+            <ProfilePicUploader
+              currentPic={user.profilePic}
+              onUploadSuccess={(newKey) => {
+                const cleanKey = newKey.split("?")[0];
+                const newVersion = Date.now();
+                setUser((prev) => ({
+                  ...prev,
+                  profilePic: cleanKey,
+                  profilePicVersion: newVersion,
+                }));
+              }}
+            />
 
-          {/* Info Grid */}
+            <Button
+              onClick={() => setShowEditForm(true)}
+              className="bg-blue-600 hover:bg-blue-500 text-white w-full sm:w-fit text-sm sm:text-base px-3 py-2"
+            >
+              <Edit size={16} className="mr-2" />
+              Edit Info
+            </Button>
+
+            <div>
+              <Label className="block text-stone-400 text-sm mb-1">
+                Join Date
+              </Label>
+              <p className="text-base font-medium text-stone-100">
+                {formattedJoinDate}
+              </p>
+            </div>
+          </div>
+
+          {/* User Details */}
           <div className="sm:col-span-2 grid sm:grid-cols-2 gap-6">
             <div>
               <Label className="block text-stone-400 text-sm mb-1">
@@ -79,18 +99,20 @@ export function Profile() {
               </p>
             </div>
 
-            <div>
+            <div className="sm:col-span-2">
               <Label className="block text-stone-400 text-sm mb-1">Email</Label>
-              <p className="text-lg font-medium text-stone-100">{user.email}</p>
-            </div>
-
-            <div>
-              <Label className="block text-stone-400 text-sm mb-1">
-                Join Date
-              </Label>
-              <p className="text-lg font-medium text-stone-100">
-                {formattedJoinDate}
-              </p>
+              <div className="flex flex-wrap gap-2 items-center text-sm sm:text-base text-stone-100 break-all">
+                <span className="truncate">{user.email}</span>
+                {user.emailVerified ? (
+                  <span className="text-lime-400 whitespace-nowrap">
+                    ✔ Verified
+                  </span>
+                ) : (
+                  <span className="text-red-400 whitespace-nowrap">
+                    ✖ Not Verified
+                  </span>
+                )}
+              </div>
             </div>
 
             <div className="flex gap-6 items-center mt-2">
@@ -100,7 +122,6 @@ export function Profile() {
                   {mod3ds.length}
                 </p>
               </div>
-              {/* Popularity */}
               <div className="bg-stone-700 px-4 py-2 rounded-lg text-center">
                 <p className="text-sm text-stone-300">Popularity</p>
                 <p className="text-xl font-bold text-lime-400">{totalLikes}</p>
@@ -108,22 +129,74 @@ export function Profile() {
             </div>
           </div>
         </div>
-
-        {/* Placeholder Buttons */}
-        {/* <div className="mt-6 flex gap-4 flex-wrap">
-          <Button className="bg-stone-700 hover:bg-stone-600 text-stone-100">
-            Edit Profile
-          </Button>
-          <Button
-            variant="outline"
-            className="border-stone-600 text-stone-300 hover:bg-stone-700"
-          >
-            Dashboard
-          </Button>
-        </div> */}
       </div>
 
-      {/* Upload Section Title */}
+      {/* Edit Form Modal */}
+      {showEditForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+          <div className="bg-stone-800 border border-stone-700 rounded-xl p-6 w-full max-w-md shadow-lg">
+            <h3 className="text-xl font-bold text-stone-100 mb-4">
+              Edit Your Info
+            </h3>
+
+            <EditProfileForm
+              user={user}
+              onSuccess={async (form) => {
+                const updatedUser = await getCurrentUser();
+                const cleanKey = updatedUser.profilePic?.split("?")[0];
+                const newVersion = Date.now();
+
+                setUser({
+                  ...updatedUser,
+                  profilePic: cleanKey,
+                  profilePicVersion: newVersion,
+                });
+
+                const refreshedPosts = await getUserPosts(updatedUser.id);
+                const updatedPosts = refreshedPosts.map((post) => ({
+                  ...post,
+                  author: {
+                    ...post.author,
+                    username: updatedUser.username,
+                    profilePic: cleanKey,
+                    profilePicVersion: newVersion,
+                  },
+                }));
+
+                setMod3ds(sortByDateCreated(updatedPosts));
+                setShowEditForm(false);
+                setShowSuccessModal(true); // ✅ trigger first
+
+                // Show email verify modal AFTER 1s delay
+                if (form.email && form.email !== user.email) {
+                  setTimeout(() => {
+                    setShowVerifyEmailModal(true); // ✅ trigger second
+                  }, 1000);
+                }
+              }}
+            />
+
+            <div className="mt-6 flex justify-end gap-4">
+              <Button
+                form="edit-profile-form"
+                type="submit"
+                className="bg-blue-600 hover:bg-blue-500 text-white"
+              >
+                Save Changes
+              </Button>
+              <Button
+                onClick={() => setShowEditForm(false)}
+                className="bg-stone-600 hover:bg-stone-500 text-white"
+                type="button"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Upload Section */}
       <div className="mb-6 flex items-center justify-between">
         <h3 className="text-2xl font-semibold tracking-wide text-stone-100">
           Your Uploads
@@ -139,13 +212,8 @@ export function Profile() {
         )}
       </div>
 
-      {loading ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <SkeletonCard key={i} className="bg-stone-700 animate-pulse" />
-          ))}
-        </div>
-      ) : mod3ds.length === 0 ? (
+      {/* Upload Grid */}
+      {mod3ds.length === 0 ? (
         <div className="bg-stone-800 border border-stone-700 rounded-xl p-8 shadow-md text-center text-stone-300">
           <h3 className="text-xl font-semibold text-stone-100 mb-2">
             You haven’t posted anything yet.
@@ -156,12 +224,18 @@ export function Profile() {
           <div className="flex justify-center">
             <Button
               className="bg-[#59322d] hover:bg-[#47211f] text-stone-100 px-6 py-2 text-lg flex items-center gap-2"
-              onClick={() => navigate("/upload")}
+              onClick={() => navigate("/post")}
             >
               <Plus size={20} />
               Start Posting
             </Button>
           </div>
+        </div>
+      ) : loading ? (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <SkeletonCard key={i} className="bg-stone-700 animate-pulse" />
+          ))}
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -170,6 +244,11 @@ export function Profile() {
           ))}
         </div>
       )}
+      <SuccessModal isOpen={showSuccessModal} setIsOpen={setShowSuccessModal} />
+      <EmailVerifyModal
+        isOpen={showVerifyEmailModal}
+        setIsOpen={setShowVerifyEmailModal}
+      />
     </div>
   );
 }

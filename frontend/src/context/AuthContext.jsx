@@ -4,34 +4,30 @@ import { getCurrentUser } from "../api/users";
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null); // stores {id, username, email...}
-  const [loading, setLoading] = useState(true); // show loading state during fetch
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // ✅ Fetch user only once on mount
-  useEffect(() => {
-    async function fetchUser() {
-      try {
-        const user = await getCurrentUser();
-        if (user) {
-          setUser(user);
-        } else {
-          setUser(null);
-        }
-      } catch (err) {
-        if (err?.response?.status !== 401) {
-          console.error("Unexpected error fetching current user:", err);
-        }
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
+  const fetchUser = async () => {
+    try {
+      const data = await getCurrentUser();
+      setUser(data || null);
+    } catch {
+      setUser(null);
     }
+  };
 
-    fetchUser();
+  useEffect(() => {
+    async function init() {
+      await fetchUser();
+      setLoading(false); // ✅ only after user fetch completes
+    }
+    init();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, setUser, loading }}>
+    <AuthContext.Provider
+      value={{ user, setUser, loading, refreshUser: fetchUser }}
+    >
       {children}
     </AuthContext.Provider>
   );
