@@ -1,12 +1,9 @@
-import mongoose from "mongoose";
-import dotenv from "dotenv";
+import connectDB from "../utils/database.js";
 import User from "../models/userSchema.js";
 import { sendReminderEmail } from "../services/email/sendReminderEmail.js";
 
-dotenv.config();
-
 export async function runReminderScript() {
-  await mongoose.connect(process.env.ATLAS_URI);
+  await connectDB(); // Use shared, safe connection method
 
   const twoDaysAgo = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
   const oneDayWindowStart = new Date(
@@ -24,15 +21,7 @@ export async function runReminderScript() {
 
   for (const user of usersToRemind) {
     try {
-      console.log(
-        "Email:",
-        process.env.GMAIL_USER,
-        "Pass:",
-        !!process.env.GMAIL_PASS
-      );
-      console.log(user);
       await sendReminderEmail(user.email, user.verificationToken);
-      console.log("succeed");
       user.reminderSentAt = new Date();
       await user.save();
       console.log(`✉️ Reminder sent to ${user.email}`);
@@ -41,10 +30,5 @@ export async function runReminderScript() {
     }
   }
 
-  await mongoose.disconnect();
-}
-
-// Optional: run manually
-if (process.argv[1] === new URL(import.meta.url).pathname) {
-  runReminderScript();
+  // Don't disconnect — app may still be using Mongo
 }

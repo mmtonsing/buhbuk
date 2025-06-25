@@ -1,12 +1,8 @@
-// scripts/deleteUnverifiedUsers.js
-import mongoose from "mongoose";
-import dotenv from "dotenv";
+import connectDB from "../utils/database.js";
 import User from "../models/userSchema.js";
 
-dotenv.config();
-
 export async function runDeleteScript() {
-  await mongoose.connect(process.env.ATLAS_URI);
+  await connectDB();
 
   const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
 
@@ -17,5 +13,4 @@ export async function runDeleteScript() {
   });
 
   console.log(`🧹 Deleted ${deleted.deletedCount} unverified users`);
-  await mongoose.disconnect();
 }
