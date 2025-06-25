@@ -15,20 +15,22 @@ const UserSchema = new Schema(
       default: "",
     },
     emailVerified: { type: Boolean, default: false },
+    wasEverVerified: { type: Boolean, default: false },
     verificationToken: String,
     verificationExpires: Date,
+    verificationStartedAt: Date,
+    reminderSentAt: Date,
     posts: String,
     joinDate: {
       type: Date,
       default: Date.now,
     },
+    autoDeleteAt: Date,
   },
   {
     timestamps: true,
   }
 );
-
-UserSchema.index({ verificationExpires: 1 }, { expireAfterSeconds: 0 });
 
 UserSchema.plugin(passportLocalMongoose);
 

@@ -55,17 +55,22 @@ export const verifyEmail = asyncHandler(async (req, res) => {
   const { token } = req.params;
   const user = await User.findOne({
     verificationToken: token,
-    verificationExpires: { $gt: new Date() },
+    $or: [
+      { verificationExpires: { $gt: new Date() } },
+      { verificationExpires: { $exists: false } }, // updated user
+      { verificationExpires: null }, // fallback safety
+    ],
   });
 
   if (!user) {
-    return res.status(200).json({
-      success: true,
-      message: "✅Email already verified.",
+    return res.status(400).json({
+      success: false,
+      message: "Invalid or expired verification token",
     });
   }
 
   user.emailVerified = true;
+  user.wasEverVerified = true;
   user.verificationToken = undefined;
   user.verificationExpires = undefined;
   await user.save();
@@ -131,8 +136,11 @@ export const updateUserDetails = asyncHandler(async (req, res) => {
     }
     user.email = email;
     user.emailVerified = false;
+    user.verificationExpires = undefined;
     const token = crypto.randomBytes(32).toString("hex");
     user.verificationToken = token;
+    user.verificationStartedAt = new Date();
+
     await sendVerificationEmail(email, token);
   }
 

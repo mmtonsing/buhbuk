@@ -1,18 +1,10 @@
-import nodemailer from "nodemailer";
-
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_PASS,
-  },
-});
+import { transporter } from "./emailTransporter.js";
 
 export async function sendVerificationEmail(toEmail, token) {
   const url = `${process.env.CLIENT_URL}/verify/${token}`;
-  //   from: `"BukWarm" <${process.env.GMAIL_USER}>`,
+  // from: `"BukWarm" <BukWarm Service>`,
   const mailOptions = {
-    from: `"BukWarm" <BukWarm Service>`,
+    from: `"BukWarm" <${process.env.GMAIL_USER}>`,
     to: toEmail,
     subject: "Verify your BukWarm Account",
     html: `
