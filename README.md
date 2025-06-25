@@ -1,8 +1,8 @@
-🛖 BukWarm
+🛖 BukWarm--
 BukWarm (pronounced Buuk-warm) is a digital hut for creators to share 3D models, graphics, and blogs.
 Inspired by the Paite word "Buk" meaning shelter or nest, it’s a creative and interactive platform built with the MERN stack and cloud-native technologies.
 
-🚀 Tech Stack
+🚀 Tech Stack--
 Frontend: React + Vite + Tailwind CSS
 Backend: Node.js + Express.js
 Database: MongoDB Atlas
@@ -14,7 +14,7 @@ Deployment: Render (frontend, backend, background worker)
 CRON Jobs: Scheduled reminders and cleanup using cron-job.org
 Security: Rate limiting, helmet, CORS, input validation, secure cookies
 
-🌟 Key Features
+🌟 Key Features--
 ✅3D Model Upload: Upload and view .glb files interactively using React Three Fiber
 🖼️ Graphics & Blogs: Post creative artwork or write blog entries
 👤 User Profiles: Customizable profiles with profile pic upload
@@ -26,12 +26,12 @@ Security: Rate limiting, helmet, CORS, input validation, secure cookies
 🛠️ Maintenance Scripts: /reminder and /cleanup background tasks triggered via cron
 📦 Modular Codebase: Clean separation of services, utils, controllers, and routes
 
-🕐 CRON Maintenance
+🕐 CRON Maintenance--
 ⏳ /reminder: Sends verification reminder emails after 2 days
 🧹 /cleanup: Deletes unverified accounts older than 3 days
 🔒 Secured using secret tokens in the URL (?secret=...), invoked by cron-job.org
 
-🗂️ Deployment Notes
+🗂️ Deployment Notes--
 Frontend & Backend deployed separately on Render
 Environment variables used for all sensitive configs (.env)
 Server supports public/private routing and scalable media storage
