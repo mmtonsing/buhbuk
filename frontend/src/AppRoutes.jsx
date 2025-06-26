@@ -11,7 +11,7 @@ import { Profile } from "./pages/main/Profile";
 import { ViewMod3d } from "./pages/mod3d/ViewMod3d";
 import { UploadMod3d } from "./pages/mod3d/UploadMod3d";
 import { Layout } from "./components/layout/Layout";
-import { UserModels } from "./pages/user/UserModels";
+import { UserPosts } from "./pages/user/UserPosts";
 import { Home } from "./pages/main/Home";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { ComingSoon } from "./pages/ComingSoon";
@@ -65,7 +65,7 @@ export function AppRoutes() {
           <Route element={<ProtectedRoute />}>
             <Route path="/profile" element={<Profile />} />
             <Route path="/uploadmod3d" element={<UploadMod3d />} />
-            <Route path="/user/:id" element={<UserModels />} />
+            <Route path="/user/:id" element={<UserPosts />} />
             <Route path="/post" element={<PostPage />} />
             <Route path="/edit/:id" element={<EditMod3d />} />
           </Route>

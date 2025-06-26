@@ -18,7 +18,7 @@ router.put("/profile-pic", authMiddleware, users.updateProfilePic);
 
 router.get("/verify/:token", verificationLimiter, users.verifyEmail);
 
-router.get("/:id/posts", users.getUserPosts);
+// router.get("/:id/posts", users.getUserPosts);
 
 router
   .route("/:id")

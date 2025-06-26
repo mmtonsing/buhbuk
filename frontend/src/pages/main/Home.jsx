@@ -7,7 +7,7 @@ import { SkeletonCard } from "../../components/customUI/SkeletonCard";
 import { HomeSidebarNav } from "@/components/navbar/HomeSidebarNav";
 import { useState, useEffect } from "react";
 import { getLatestPosts } from "@/api/posts";
-import { PostCard } from "@/components/PostCard";
+import { PostCard } from "@/components/posts/PostCard";
 
 const Latest3dPreview = lazy(() =>
   import("../../components/mod3d/Latest3dPreview")
@@ -23,9 +23,15 @@ export function Home() {
 
   useEffect(() => {
     async function fetchLatestPosts() {
-      const posts = await getLatestPosts();
-      setLatestPosts(posts.slice(0, 6));
+      try {
+        const posts = await getLatestPosts();
+        console.log("Response in Home.jsx:", posts);
+        setLatestPosts(posts.slice(0, 6));
+      } catch (err) {
+        console.error("Failed to fetch latest posts", err);
+      }
     }
+
     fetchLatestPosts();
   }, []);
 
@@ -95,11 +101,15 @@ export function Home() {
               View More
             </Button>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {latestPosts.map((post) => (
-              <PostCard key={post._id} post={post} />
-            ))}
-          </div>
+          {latestPosts.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {latestPosts.map((post) => (
+                <PostCard key={post._id} post={post} />
+              ))}
+            </div>
+          ) : (
+            <p className="text-stone-400 text-center">No recent posts yet.</p>
+          )}
         </div>
       </section>
 

@@ -20,20 +20,12 @@ const UserSchema = new Schema(
     verificationExpires: Date,
     verificationStartedAt: Date,
     reminderSentAt: Date,
-    posts: String,
-    joinDate: {
-      type: Date,
-      default: Date.now,
-    },
     autoDeleteAt: Date,
   },
   {
     timestamps: true,
   }
 );
-
 UserSchema.plugin(passportLocalMongoose);
 
 export default mongoose.model("User", UserSchema);
-
-// posts: [{ type: Schema.Types.ObjectId, ref: "Post" }];

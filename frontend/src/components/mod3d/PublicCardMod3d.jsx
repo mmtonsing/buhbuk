@@ -6,7 +6,7 @@ import { timeAgo } from "@/utils/timeAgo";
 export function PublicCard({ mod3d }) {
   if (!mod3d) return null;
 
-  const displayDate = timeAgo(mod3d?.dateCreated);
+  const displayDate = timeAgo(mod3d?.createdAt);
   const imageSrc =
     mod3d.image || (mod3d.imageId ? `/api/file/public/${mod3d.imageId}` : null);
 

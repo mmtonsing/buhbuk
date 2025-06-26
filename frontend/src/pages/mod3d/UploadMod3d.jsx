@@ -9,6 +9,7 @@ import Loader from "@/components/customUI/Loader";
 import { useNavigate } from "react-router-dom";
 import { createFile } from "@/api/fileApi";
 import InfoTooltip from "@/components/customUI/InfoToolTip.jsx";
+import { getFileExtension } from "@/utils/fileValidators";
 
 export function UploadMod3d() {
   const [title, setTitle] = useState("");
@@ -45,7 +46,6 @@ export function UploadMod3d() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (price && isNaN(price)) {
       setPriceError("Price must be a number");
       return;
@@ -53,41 +53,39 @@ export function UploadMod3d() {
 
     try {
       setLoading(true);
-
       if (!imageFile || !(imageFile instanceof File)) {
         throw new Error("Please upload a valid thumbnail image.");
       }
 
-      const imageRes = await createFile(imageFile);
-      const imageId = imageRes.key;
+      // Upload image (thumbnail)
+      const { key: imageId } = await createFile(imageFile);
 
-      // Upload model(s)
+      // Upload model (single or zip)
       let modelFiles = [];
-      const ext = modelFile.name.split(".").pop().toLowerCase();
+      const modelExt = getFileExtension(modelFile); // ✅ correct
 
-      if (ext === "zip") {
-        const zipRes = await createFile(modelFile, true);
-        if (zipRes.modelFiles) {
-          modelFiles = zipRes.modelFiles;
-        } else {
-          throw new Error("Zip upload failed or no models extracted.");
+      if (modelExt === "zip") {
+        const { modelFiles: extractedFiles } = await createFile(modelFile);
+        if (!extractedFiles || extractedFiles.length === 0) {
+          throw new Error("No models extracted from ZIP.");
         }
+        modelFiles = extractedFiles;
       } else {
-        const modelRes = await createFile(modelFile);
+        const { key } = await createFile(modelFile);
         modelFiles = [
           {
-            key: modelRes.key,
-            type: ext,
+            key,
+            type: modelExt,
             originalName: modelFile.name,
           },
         ];
       }
 
-      // Upload video (optional)
+      // Upload video if present
       let videoId = null;
       if (videoFile) {
-        const videoRes = await createFile(videoFile);
-        videoId = videoRes.key;
+        const { key } = await createFile(videoFile);
+        videoId = key;
       }
 
       const payload = {
@@ -102,15 +100,12 @@ export function UploadMod3d() {
       const newMod = await uploadMod3d(payload);
       resetForm();
       setMessage({ text: "✅ Model uploaded successfully!", type: "success" });
-
-      setTimeout(() => {
-        navigate(`/viewmod3d/${newMod._id}`);
-      }, 800);
+      setTimeout(() => navigate(`/viewmod3d/${newMod._id}`), 800);
     } catch (err) {
       console.error("Upload failed", err);
       setLoading(false);
       setMessage({
-        text: "❌ Upload failed. Please try again.",
+        text: err?.message || "❌ Upload failed. Please try again.",
         type: "error",
       });
     }

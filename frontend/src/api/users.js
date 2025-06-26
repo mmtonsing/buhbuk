@@ -1,62 +1,44 @@
+// api/userApi.js
 import axiosInstance from "./axiosInstance";
 import { getFilePublic } from "./fileApi";
+import { extractData } from "@/utils/apiHelper";
 
-// Get all users
-export async function getUsers() {
-  try {
-    const res = await axiosInstance.get("/user");
-    return res.data;
-  } catch (err) {
-    console.error("Error fetching users:", err);
-    return [];
-  }
-}
-
-// Get current user from secure cookie
+// Get current user
 export async function getCurrentUser() {
   try {
-    const res = await axiosInstance.get("/user/me");
-    // console.log("User data:", res.data);
-    return res.data;
+    const { data } = await extractData(axiosInstance.get("/user/me"));
+    return data;
   } catch (err) {
-    if (err.response?.status === 401) {
-      return null; // ✅ just return null, don't redirect!
-    }
-    throw err; // let other errors bubble up
+    if (err.message === "Unauthorized") return null;
+    throw err;
   }
 }
 
-// Create a user
+// Create user
 export async function createUser(user) {
   try {
-    const res = await axiosInstance.post("/user", user);
-    return {
-      success: true,
-      message: res.data.message || "User created successfully",
-    };
+    const { message } = await extractData(axiosInstance.post("/user", user));
+    return { success: true, message };
   } catch (err) {
-    return {
-      success: false,
-      message: err.response?.data?.message || "Account creation failed",
-    };
+    return { success: false, message: err.message };
   }
 }
 
 // Edit user
 export async function updateUserDetails(data) {
   try {
-    const res = await axiosInstance.put("/user/me", data);
-    return res.data;
+    const { message } = await extractData(axiosInstance.put("/user/me", data));
+    return { success: true, message };
   } catch (err) {
-    return err.response?.data || { success: false, message: "Update failed" };
+    return { success: false, message: err.message };
   }
 }
 
 // Delete user
 export async function deleteUser(id) {
   try {
-    const res = await axiosInstance.delete(`/user/${id}`);
-    return res.data;
+    const { data } = await extractData(axiosInstance.delete(`/user/${id}`));
+    return data;
   } catch (err) {
     console.error("Error deleting user:", err);
     return null;
@@ -66,16 +48,18 @@ export async function deleteUser(id) {
 // Login / Verify user
 export async function verifyUser(user) {
   try {
-    const res = await axiosInstance.post("/user/login", user);
+    const { data, message } = await extractData(
+      axiosInstance.post("/user/login", user)
+    );
     return {
       success: true,
-      message: res.data.message || "Login successful",
-      username: res.data.username,
+      message,
+      username: data.username,
     };
   } catch (err) {
     return {
       success: false,
-      message: err.response?.data?.message || "Login failed",
+      message: err.message,
     };
   }
 }
@@ -83,17 +67,17 @@ export async function verifyUser(user) {
 // Logout
 export async function logoutUser() {
   try {
-    await axiosInstance.post("/user/logout");
+    await extractData(axiosInstance.post("/user/logout"));
   } catch (err) {
     console.error("Logout failed:", err);
   }
 }
 
-//Get user posts
+// Get user posts
 export async function getUserPosts(id) {
   try {
-    const res = await axiosInstance.get(`/user/${id}/posts`);
-    const posts = res.data.posts || [];
+    const { data } = await extractData(axiosInstance.get(`/user/${id}/posts`));
+    const posts = data.posts || [];
 
     const postsWithImages = await Promise.all(
       posts.map(async (mod3d) => {
@@ -109,26 +93,38 @@ export async function getUserPosts(id) {
   }
 }
 
+// Update profile picture
 export async function updateProfilePic(profilePicKey) {
   try {
-    const res = await axiosInstance.put("/user/profile-pic", {
-      profilePic: profilePicKey,
-    });
-    return res.data;
+    const { data } = await extractData(
+      axiosInstance.put("/user/profile-pic", { profilePic: profilePicKey })
+    );
+    return { success: true, profilePic: data.profilePic };
   } catch (err) {
     console.error("Error updating profile picture:", err);
     return { success: false };
   }
 }
 
+// Resend verification
 export async function resendVerification(email) {
   try {
-    const res = await axiosInstance.post("/user/resend-verify", { email });
-    return { success: true, message: res.data.message };
+    const { message } = await extractData(
+      axiosInstance.post("/user/resend-verify", { email })
+    );
+    return { success: true, message };
   } catch (err) {
-    return {
-      success: false,
-      message: err.response?.data?.message || "Could not resend verification",
-    };
+    return { success: false, message: err.message };
+  }
+}
+
+// Get all users
+export async function getUsers() {
+  try {
+    const { data } = await extractData(axiosInstance.get("/user"));
+    return data.users;
+  } catch (err) {
+    console.error("Error fetching users:", err);
+    return [];
   }
 }

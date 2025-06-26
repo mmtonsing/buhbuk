@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getPublicMod3ds } from "../../api/mod3ds";
-import { PublicCard } from "../general/PublicCard";
+import { PublicCard } from "./PublicCardMod3d";
 import { SkeletonCard } from "../customUI/SkeletonCard";
 
 export default function Latest3dPreview() {

@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { getUserPosts, getCurrentUser } from "@/api/users";
+import { getCurrentUser } from "@/api/users.js";
+import { getMyPosts } from "@/api/posts";
 import { sortByDateCreated } from "@/utils/sortByDate";
-import { ModCard } from "@/components/mod3d/Mod3dCard";
+import { PostCard } from "@/components/posts/PostCard";
 import { SkeletonCard } from "@/components/customUI/SkeletonCard";
 import { Plus, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,13 +13,16 @@ import { EditProfileForm } from "@/components/user/EditProfileForm";
 import { useNavigate } from "react-router-dom";
 import { SuccessModal } from "@/components/customUI/SuccessModal"; // 👈
 import { EmailVerifyModal } from "@/components/customUI/EmailVerifyModal";
+import { CategoryFilter } from "@/components/general/CategoryFilter";
+import { CATEGORY_LABELS } from "@/utils/constants";
 
 export function Profile() {
   const { user, setUser, loading } = useAuth();
-  const [mod3ds, setMod3ds] = useState([]);
+  const [posts, setPosts] = useState([]);
   const [showEditForm, setShowEditForm] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showVerifyEmailModal, setShowVerifyEmailModal] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   const navigate = useNavigate();
 
@@ -26,9 +30,8 @@ export function Profile() {
     async function loadUserPosts() {
       if (!user?.id) return;
       try {
-        const data = await getUserPosts(user.id);
-        const sorted = sortByDateCreated(data);
-        setMod3ds(sorted);
+        const data = await getMyPosts();
+        setPosts(sortByDateCreated(data));
       } catch (err) {
         console.error("Failed to load user posts:", err);
       }
@@ -40,11 +43,19 @@ export function Profile() {
     return <div className="text-center p-10">Loading user...</div>;
   }
 
-  const formattedJoinDate = new Date(user.joinDate).toDateString();
-  const totalLikes = mod3ds.reduce(
-    (acc, mod) => acc + (mod.likedBy?.length || 0),
+  console.log(user);
+  const formattedJoinDate = new Date(user.createdAt).toDateString();
+  const totalLikes = posts.reduce(
+    (acc, post) => acc + (post.likedBy?.length || 0),
     0
   );
+
+  const filteredPosts =
+    selectedCategory === "All"
+      ? posts
+      : posts.filter((post) => post.category === selectedCategory);
+
+  const categories = Object.keys(CATEGORY_LABELS);
 
   return (
     <div className="w-screen max-w-7xl mx-auto px-4 py-10 text-stone-200 bg-stone-900 min-h-screen">
@@ -119,7 +130,7 @@ export function Profile() {
               <div className="bg-stone-700 px-4 py-2 rounded-lg text-center">
                 <p className="text-sm text-stone-300">Total Posts</p>
                 <p className="text-xl font-bold text-amber-400">
-                  {mod3ds.length}
+                  {posts.length}
                 </p>
               </div>
               <div className="bg-stone-700 px-4 py-2 rounded-lg text-center">
@@ -152,7 +163,7 @@ export function Profile() {
                   profilePicVersion: newVersion,
                 });
 
-                const refreshedPosts = await getUserPosts(updatedUser.id);
+                const refreshedPosts = await getMyPosts(updatedUser.id);
                 const updatedPosts = refreshedPosts.map((post) => ({
                   ...post,
                   author: {
@@ -163,7 +174,7 @@ export function Profile() {
                   },
                 }));
 
-                setMod3ds(sortByDateCreated(updatedPosts));
+                setPosts(sortByDateCreated(updatedPosts));
                 setShowEditForm(false);
                 setShowSuccessModal(true); // ✅ trigger first
 
@@ -201,7 +212,7 @@ export function Profile() {
         <h3 className="text-2xl font-semibold tracking-wide text-stone-100">
           Your Uploads
         </h3>
-        {mod3ds.length > 0 && (
+        {posts.length > 0 && (
           <Button
             className="bg-[#59322d] hover:bg-[#47211f] text-stone-100 flex items-center gap-2"
             onClick={() => navigate("/upload")}
@@ -212,8 +223,15 @@ export function Profile() {
         )}
       </div>
 
+      {/* Category Filter */}
+      <CategoryFilter
+        selected={selectedCategory}
+        onChange={setSelectedCategory}
+        categories={categories}
+      />
+
       {/* Upload Grid */}
-      {mod3ds.length === 0 ? (
+      {posts.length === 0 ? (
         <div className="bg-stone-800 border border-stone-700 rounded-xl p-8 shadow-md text-center text-stone-300">
           <h3 className="text-xl font-semibold text-stone-100 mb-2">
             You haven’t posted anything yet.
@@ -239,8 +257,8 @@ export function Profile() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {mod3ds.map((mod3d) => (
-            <ModCard key={mod3d._id} mod3d={mod3d} />
+          {filteredPosts.map((post) => (
+            <PostCard key={post._id} post={post} />
           ))}
         </div>
       )}

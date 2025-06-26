@@ -1,3 +1,4 @@
+// models/postSchema.js
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
@@ -6,44 +7,37 @@ const PostSchema = new Schema(
     category: {
       type: String,
       required: true,
-      enum: ["Mod3d", "Graphic", "Blog", "Culture"], // extendable
+      enum: ["Mod3d", "Graphic", "Blog", "Culture"], // future-proofed
     },
-
     refId: {
       type: Schema.Types.ObjectId,
       required: true,
-      refPath: "category", // dynamic reference to the actual content model
+      refPath: "category",
     },
-
     author: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
+    likes: { type: Number, default: 0 },
+    likedBy: [{ type: Schema.Types.ObjectId, ref: "User" }],
 
-    isPublic: {
-      type: Boolean,
-      default: true,
-    },
+    // 🔑 Common Display Fields
+    title: { type: String, required: true },
+    imageUrl: { type: String }, // ✅ full public S3 image URL or presigned
+    summary: { type: String }, // for blogs or short description
 
-    dateCreated: {
-      type: Date,
-      default: Date.now,
-    },
+    // 🔒 Access Control
+    isPublic: { type: Boolean, default: true },
+    isPremium: { type: Boolean, default: false },
+    price: { type: Number, default: 0 },
 
-    subcategory: {
-      type: String,
-      default: null, // e.g. "Paite", "Mizo", "Thadou"
-    },
-
-    tags: {
-      type: [String],
-      default: [], // e.g. ["language", "poetry", "tribaltech"]
-      index: true, // Optional: enables search by tag
-    },
+    // 🏷️ Meta
+    subcategory: { type: String, default: null }, // e.g., "Paite", "Zou"
+    tags: { type: [String], default: [], index: true },
   },
   {
-    timestamps: true, // adds createdAt and updatedAt
+    timestamps: true, // includes createdAt, updatedAt
   }
 );
 

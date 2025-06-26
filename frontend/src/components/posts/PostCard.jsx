@@ -7,15 +7,38 @@ export function PostCard({ post }) {
   if (!post) return null;
 
   const { _id, category, author, refId, createdAt } = post;
-  const imageSrc =
-    post.image || (refId?.imageId ? `/api/file/public/${refId.imageId}` : null);
-  const postDate = createdAt || refId?.dateCreated;
-  const postTitle = refId?.title || "Untitled";
+
+  // ✅ If refId is missing or the populated object is not found
+  if (!refId || typeof refId !== "object") {
+    console.warn("⚠️ Skipping PostCard render, refId is missing:", post);
+    return null; // or show a fallback
+  }
+
+  const imageId = refId.imageId || refId.image || null;
+  const imageSrc = imageId
+    ? `/api/file/raw/${encodeURIComponent(imageId)}`
+    : null;
+
+  const postDate = createdAt || refId.dateCreated;
+  const postTitle = refId.title || "Untitled";
   const displayCategory = category === "Mod3d" ? "3D Model" : category;
+
+  const getViewRoute = () => {
+    switch (category) {
+      case "Mod3d":
+        return `/viewmod3d/${refId._id}`;
+      case "Graphic":
+        return `/graphics/${refId._id}`;
+      case "Blog":
+        return `/blogs/${refId._id}`;
+      default:
+        return `/viewpost/${_id}`;
+    }
+  };
 
   return (
     <div className="block rounded-xl border border-stone-700 shadow bg-stone-800 hover:bg-stone-700 text-stone-100 overflow-hidden transition-transform hover:scale-105 hover:shadow-xl duration-300 group">
-      <Link to={`/viewpost/${_id}`}>
+      <Link to={getViewRoute()}>
         <div className="flex justify-center items-center bg-stone-900 h-52">
           {imageSrc ? (
             <img
@@ -37,10 +60,9 @@ export function PostCard({ post }) {
       <div className="px-4 pb-4 space-y-2">
         <div className="flex items-center justify-between text-xs text-stone-400 pt-1">
           {author && <UserBadge user={author} />}
-          <LikeWithAuth modId={refId?._id} likedBy={refId?.likedBy} />
+          {refId._id && <LikeWithAuth postId={_id} likedBy={post.likedBy} />}
         </div>
 
-        {/* TimeAgo + Category in one row */}
         <div className="flex items-center justify-between text-xs text-stone-400 pt-1">
           <span>{timeAgo(postDate)}</span>
           <span className="text-amber-400 font-semibold">

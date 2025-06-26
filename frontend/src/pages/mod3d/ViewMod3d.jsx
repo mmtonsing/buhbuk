@@ -10,7 +10,7 @@ import { VideoPreviewModal } from "@/components/general/VideoPreviewModal";
 import { PlayCircle, Box, X } from "lucide-react";
 import Loader from "@/components/customUI/Loader";
 import HybridViewer from "@/components/mod3d/HybridViewer";
-import { getRenderableModelFile } from "@/utils/getRenderableModelFile"; // ✅ imported utility
+import { getRenderableModelFile } from "@/utils/getRenderableModelFile";
 
 export function ViewMod3d() {
   const [mod3d, setMod3d] = useState({});
@@ -28,6 +28,7 @@ export function ViewMod3d() {
     async function loadModel() {
       try {
         const data = await getMod3d(id);
+        console.log("✅ Mod3d from API:", data); // <-- Add this
         data.dateCreated = new Date(data.dateCreated).toString();
         setMod3d(data);
       } catch (err) {
@@ -94,11 +95,15 @@ export function ViewMod3d() {
         )}
 
         <div className="w-full bg-black p-4 rounded-lg mb-6">
-          <img
-            src={mod3d.image}
-            alt={mod3d.title}
-            className="max-h-[400px] mx-auto object-contain"
-          />
+          {mod3d.imageId ? (
+            <img
+              src={`/api/file/stream/${mod3d.imageId}`}
+              alt={mod3d.title}
+              className="max-h-[400px] mx-auto object-contain"
+            />
+          ) : (
+            <p className="text-center text-red-400">No image available</p>
+          )}
         </div>
 
         <div className="flex flex-wrap justify-center gap-4 mt-6">

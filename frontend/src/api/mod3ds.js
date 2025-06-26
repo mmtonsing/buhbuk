@@ -2,13 +2,13 @@ import axiosInstance from "./axiosInstance";
 import { extractData } from "../utils/apiHelper";
 import { getFilePublic, getFile } from "./fileApi";
 
-// 🔍 Get public mod3ds (e.g. home page)
+// 🔍 Public models
 export async function getPublicMod3ds() {
   try {
-    const mod3ds = await extractData(axiosInstance.get("/mod3ds/public"));
+    const { data } = await extractData(axiosInstance.get("/mod3ds/public"));
 
     const mod3dsWithImages = await Promise.all(
-      mod3ds.map(async (mod) => {
+      data.map(async (mod) => {
         const image = mod.imageId ? await getFilePublic(mod.imageId) : null;
         return { ...mod, image };
       })
@@ -21,13 +21,13 @@ export async function getPublicMod3ds() {
   }
 }
 
-// 🔍 Get all mod3ds (admin or user dashboard)
+// 🔍 All models
 export async function getMod3ds() {
   try {
-    const mod3ds = await extractData(axiosInstance.get("/mod3ds"));
+    const { data } = await extractData(axiosInstance.get("/mod3ds"));
 
     const mod3dsWithImages = await Promise.all(
-      mod3ds.map(async (mod) => {
+      data.map(async (mod) => {
         const image = mod.imageId ? await getFile(mod.imageId) : null;
         return { ...mod, image };
       })
@@ -40,44 +40,51 @@ export async function getMod3ds() {
   }
 }
 
-// 🔍 Get single mod3d (view page)
+// 🔍 Single model
 export async function getMod3d(id) {
   try {
-    const mod = await extractData(axiosInstance.get(`/mod3ds/${id}`));
-    const image = mod.imageId ? await getFilePublic(mod.imageId) : null;
-    return { ...mod, image };
+    const { data } = await extractData(axiosInstance.get(`/mod3ds/${id}`));
+    console.log("data", data);
+    const image = data.imageId ? await getFilePublic(data.imageId) : null;
+    return { ...data, image };
   } catch (err) {
     console.error("⚠️ Error fetching mod3d:", err.message);
     throw err;
   }
 }
 
-// ⬆️ Upload new mod3d (image + modelFiles + optional video) then to database
+// ⬆️ Upload model
 export async function uploadMod3d(payload) {
   try {
-    return extractData(axiosInstance.post("/mod3ds", payload));
+    const { data, message } = await extractData(
+      axiosInstance.post("/mod3ds", payload)
+    );
+    return { success: true, data, message };
   } catch (err) {
-    console.error("⚠️ Failed to upload mod3d:", err.message);
-    throw err;
+    return { success: false, message: err.message };
   }
 }
 
-// ✏️ Edit mod3d (image replacement logic handled in backend)
+// ✏️ Edit model
 export async function editMod3d(id, updatedMod3d) {
   try {
-    return extractData(axiosInstance.put(`/mod3ds/${id}`, updatedMod3d));
+    const { data, message } = await extractData(
+      axiosInstance.put(`/mod3ds/${id}`, updatedMod3d)
+    );
+    return { success: true, data, message };
   } catch (err) {
-    console.error("⚠️ Failed to edit mod3d:", err.message);
-    throw err;
+    return { success: false, message: err.message };
   }
 }
 
-// 🗑 Delete mod3d (deletes from DB + S3 via backend)
+// 🗑 Delete model
 export async function deleteMod3d(id) {
   try {
-    return extractData(axiosInstance.delete(`/mod3ds/${id}`));
+    const { message } = await extractData(
+      axiosInstance.delete(`/mod3ds/${id}`)
+    );
+    return { success: true, message };
   } catch (err) {
-    console.error("⚠️ Failed to delete mod3d:", err.message);
-    throw err;
+    return { success: false, message: err.message };
   }
 }

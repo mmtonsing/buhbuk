@@ -1,98 +1,61 @@
 import axiosInstance from "./axiosInstance";
 import { extractData } from "@/utils/apiHelper";
-import { getFilePublic } from "./fileApi";
 
-// 📰 Fetch latest posts
-export async function getLatestPosts() {
-  const rawPosts = await extractData(axiosInstance.get("/posts/public"));
+// 📰 Fetch latest preview posts (limited)
+export async function getLatestPosts({ category, tag } = {}) {
+  const params = {};
+  if (category) params.category = category;
+  if (tag) params.tag = tag;
 
-  const enrichedPosts = await Promise.all(
-    rawPosts.map(async (post) => {
-      let image = null;
-
-      if (!post.refId) {
-        console.warn("⚠️ Post is missing refId:", post._id);
-      }
-
-      if (post.category === "Mod3d") {
-        if (!post.refId?.imageId) {
-          console.warn("⚠️ Mod3d post missing imageId:", post._id, post.refId);
-        } else {
-          try {
-            image = await getFilePublic(post.refId.imageId);
-            if (!image) {
-              console.warn("⚠️ Image fetch returned null:", post.refId.imageId);
-            }
-          } catch (err) {
-            console.warn(
-              "❌ Error fetching image from getFilePublic:",
-              err.message
-            );
-          }
-        }
-      }
-
-      return { ...post, image };
-    })
-  );
-
-  return enrichedPosts;
+  const res = await axiosInstance.get("/posts/public", { params });
+  const { data } = await extractData(res);
+  return data.posts || [];
 }
 
+// ❌ We no longer use this — and if you ever re-enable it, remove getFilePublic
+// 📰 Get feed with pagination not useed anymoreeeeee
 export async function getFeedPosts(page = 1, limit = 9) {
-  const { data } = await axiosInstance.get(
-    `/posts/feed?page=${page}&limit=${limit}`
-  );
-
-  const rawPosts = data.posts;
-
-  const enrichedPosts = await Promise.all(
-    rawPosts.map(async (post) => {
-      let image = null;
-
-      if (post.category === "Mod3d" && post.refId?.imageId) {
-        try {
-          image = await getFilePublic(post.refId.imageId);
-        } catch (err) {
-          console.warn(
-            "⚠️ Failed to fetch image for post:",
-            post._id,
-            err.message
-          );
-        }
-      }
-
-      return { ...post, image };
-    })
+  const { data } = await extractData(
+    axiosInstance.get(`/posts/feed?page=${page}&limit=${limit}`)
   );
 
   return {
-    posts: enrichedPosts,
-    totalPages: data.totalPages,
+    posts: data.posts, // imageUrl should come from backend
     currentPage: data.currentPage,
+    totalPages: data.totalPages,
   };
 }
 
-// Get all public posts
+// Get all public posts (preview)
 export async function getPublicPosts() {
-  const { data } = await axiosInstance.get("/posts/public");
+  const { data } = await extractData(axiosInstance.get("/posts/public"));
   return data;
 }
 
-// Get my posts (auth)
+// Get posts created by owner
 export async function getMyPosts() {
-  const { data } = await axiosInstance.get("/posts/me");
+  const { data } = await extractData(axiosInstance.get(`/posts/user/me`));
+
   return data;
 }
 
-// Create a post after uploading content (e.g., Mod3d, Graphic, Blog)
-export async function createPost(category, refId) {
-  const { data } = await axiosInstance.post("/posts", { category, refId });
+export async function getUserPosts(userId) {
+  const { data } = await extractData(
+    axiosInstance.get(`/posts/user/${userId}`)
+  );
   return data;
+}
+
+// Create a post (usually after uploading a model/graphic/blog)
+export async function createPost(category, refId) {
+  const { data, message } = await extractData(
+    axiosInstance.post("/posts", { category, refId })
+  );
+  return { data, message };
 }
 
 // Delete a post
 export async function deletePost(id) {
-  const { data } = await axiosInstance.delete(`/posts/${id}`);
-  return data;
+  const { message } = await extractData(axiosInstance.delete(`/posts/${id}`));
+  return { success: true, message };
 }

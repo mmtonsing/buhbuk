@@ -8,6 +8,7 @@ import { deleteFileFromS3 } from "../services/s3/deleteFile.js";
 import { setAuthCookie } from "../utils/auth/setAuthCookie.js";
 import { sendVerificationEmail } from "../services/email/sendVerificationEmail.js";
 import { getVerificationExpiryTime } from "../utils/timeUtils.js";
+import { successRes, errorRes } from "../utils/responseHelper.js";
 //#endregion
 
 //#region Authentication
@@ -17,25 +18,21 @@ export const loginUser = (req, res, next) => {
     { session: false },
     asyncHandler(async (err, user, info) => {
       if (err) return next(err);
-      if (!user)
-        return res
-          .status(400)
-          .json({ success: false, message: info?.message || "Login failed" });
-
+      if (!user) return errorRes(res, info?.message || "Login failed", 400);
       if (!user.emailVerified) {
-        return res.status(400).json({
-          success: false,
-          message: "Please verify your email before logging in.",
-        });
+        return errorRes(
+          res,
+          "Please verify your email before logging in.",
+          400
+        );
       }
 
       setAuthCookie(res, user);
-
-      res.json({
-        success: true,
-        message: "Logged in successfully",
-        username: user.username,
-      });
+      return successRes(
+        res,
+        { username: user.username },
+        "Logged in successfully"
+      );
     })
   )(req, res, next);
 };
@@ -46,126 +43,60 @@ export const logoutUser = asyncHandler(async (req, res) => {
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
   });
-  res.json({ success: true, message: "Logged out successfully" });
+  return successRes(res, {}, "Logged out successfully");
 });
 //#endregion
 
 //#region Email Verification
 export const verifyEmail = asyncHandler(async (req, res) => {
   const { token } = req.params;
+
   const user = await User.findOne({
     verificationToken: token,
     $or: [
       { verificationExpires: { $gt: new Date() } },
-      { verificationExpires: { $exists: false } }, // updated user
-      { verificationExpires: null }, // fallback safety
+      { verificationExpires: { $exists: false } },
+      { verificationExpires: null },
     ],
   });
 
-  if (!user) {
-    return res.status(400).json({
-      success: false,
-      message: "Invalid or expired verification token",
-    });
-  }
+  if (!user) return errorRes(res, "Invalid or expired verification token", 400);
 
   user.emailVerified = true;
   user.wasEverVerified = true;
   user.verificationToken = undefined;
   user.verificationExpires = undefined;
   await user.save();
+
   setAuthCookie(res, user);
-  res.json({ success: true, message: "✅ Email verified successfully!" });
+  return successRes(res, {}, "✅ Email verified successfully!");
 });
 
 export const resendVerification = asyncHandler(async (req, res) => {
   const { email } = req.body;
-  if (!email) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Email is required" });
-  }
+  if (!email) return errorRes(res, "Email is required", 400);
 
   const user = await User.findOne({ email });
-  if (!user) {
-    return res
-      .status(404)
-      .json({ success: false, message: "No account with that email" });
-  }
-  if (user.emailVerified) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Email already verified" });
-  }
+  if (!user) return errorRes(res, "No account with that email", 404);
+  if (user.emailVerified) return errorRes(res, "Email already verified", 400);
 
   const token = crypto.randomBytes(32).toString("hex");
   user.verificationToken = token;
   user.verificationExpires = getVerificationExpiryTime();
-
   await user.save();
+
   await sendVerificationEmail(email, token);
-  res.json({ success: true, message: "Verification email resent" });
+  return successRes(res, {}, "Verification email resent");
 });
 //#endregion
 
-//#region user CRUD
-export const updateUserDetails = asyncHandler(async (req, res) => {
-  const userId = req.user.id;
-  const { username, email, currentPassword, newPassword } = req.body;
-
-  const user = await User.findById(userId);
-  if (!user)
-    return res.status(404).json({ success: false, message: "User not found" });
-
-  if (username && username !== user.username) {
-    const existingUsername = await User.findOne({ username });
-    if (existingUsername) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Username already taken" });
-    }
-    user.username = username;
-  }
-
-  if (email && email !== user.email) {
-    const existingEmail = await User.findOne({ email });
-    if (existingEmail) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Email already in use" });
-    }
-    user.email = email;
-    user.emailVerified = false;
-    user.verificationExpires = undefined;
-    const token = crypto.randomBytes(32).toString("hex");
-    user.verificationToken = token;
-    user.verificationStartedAt = new Date();
-
-    await sendVerificationEmail(email, token);
-  }
-
-  if (currentPassword && newPassword) {
-    const isValid = await user.authenticate(currentPassword);
-    if (!isValid.user) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Incorrect current password" });
-    }
-    await user.setPassword(newPassword);
-  }
-
-  await user.save();
-  setAuthCookie(res, user);
-  res.json({ success: true, message: "Profile updated successfully" });
-});
-
+//#region User CRUD
 export const createUser = asyncHandler(async (req, res) => {
   const { username, password, email } = req.body;
   const errors = [];
 
   const existingEmail = await User.findOne({ email });
   if (existingEmail) errors.push("Email");
-
   const existingUsername = await User.findOne({ username });
   if (existingUsername) errors.push("Username");
 
@@ -174,7 +105,7 @@ export const createUser = asyncHandler(async (req, res) => {
       errors.length === 2
         ? "Username and Email already in use"
         : `${errors[0]} already in use`;
-    return res.status(400).json({ success: false, message });
+    return errorRes(res, message, 400);
   }
 
   const token = crypto.randomBytes(32).toString("hex");
@@ -184,80 +115,121 @@ export const createUser = asyncHandler(async (req, res) => {
   registeredUser.verificationExpires = getVerificationExpiryTime();
   registeredUser.verificationStartedAt = new Date();
   await registeredUser.save();
+
   await sendVerificationEmail(email, token);
-  res.status(200).json({
-    success: true,
-    message: "Registration successful. Please check your email to verify.",
-  });
+  return successRes(
+    res,
+    {},
+    "Registration successful. Please check your email to verify."
+  );
+});
+
+export const updateUserDetails = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  const { username, email, currentPassword, newPassword } = req.body;
+
+  const user = await User.findById(userId);
+  if (!user) return errorRes(res, "User not found", 404);
+
+  if (username && username !== user.username) {
+    const existingUsername = await User.findOne({ username });
+    if (existingUsername) return errorRes(res, "Username already taken", 400);
+    user.username = username;
+  }
+
+  if (email && email !== user.email) {
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) return errorRes(res, "Email already in use", 400);
+
+    user.email = email;
+    user.emailVerified = false;
+    user.verificationExpires = undefined;
+
+    const token = crypto.randomBytes(32).toString("hex");
+    user.verificationToken = token;
+    user.verificationStartedAt = new Date();
+
+    await sendVerificationEmail(email, token);
+  }
+
+  if (currentPassword && newPassword) {
+    const isValid = await user.authenticate(currentPassword);
+    if (!isValid.user) return errorRes(res, "Incorrect current password", 400);
+    await user.setPassword(newPassword);
+  }
+
+  await user.save();
+  setAuthCookie(res, user);
+  return successRes(res, {}, "Profile updated successfully");
 });
 
 export const getUserInfo = asyncHandler(async (req, res) => {
-  const user = req.user;
-  res.json({
-    id: user.id,
+  const user = await User.findById(req.user._id).select(
+    "username email createdAt profilePic emailVerified"
+  );
+  if (!user) return errorRes(res, "User not found", 404);
+  return successRes(res, {
+    id: user._id,
     username: user.username,
     email: user.email,
-    joinDate: user.joinDate,
+    createdAt: user.createdAt,
     profilePic: user.profilePic,
     emailVerified: user.emailVerified,
   });
 });
+//#endregion
 
+//#region Not used yet
 export const retrieveUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
-  res.json(user);
+  return successRes(res, { user });
 });
 
 export const deleteUser = asyncHandler(async (req, res) => {
   const user = await User.findByIdAndDelete(req.params.id);
-  res.json(user);
+  return successRes(res, { user });
 });
 
 export const getAllUsers = asyncHandler(async (req, res) => {
   const users = await User.find({});
-  res.json(users);
+  return successRes(res, { users });
 });
 //#endregion
 
-//#region user specifics
+//#region User specifics
 export const getUserPosts = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  if (!id || id.length !== 24) {
-    return res.status(400).json({
-      success: false,
-      message: "Invalid user ID",
-      posts: [],
-    });
-  }
+  if (!id || id.length !== 24) return errorRes(res, "Invalid user ID", 400);
+
   const posts = await Mod3d.find({ author: id })
     .populate("author", "username email profilePic")
     .sort({ dateCreated: -1 });
-  res.status(200).json({ success: true, posts });
+
+  return successRes(res, { posts });
 });
 
 export const updateProfilePic = asyncHandler(async (req, res) => {
-  const userId = req.user.id;
+  const userId = req.user._id;
   const { profilePic: newKey } = req.body;
-  if (!newKey) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Missing profilePic key" });
-  }
+
+  if (!newKey) return errorRes(res, "Missing profilePic key", 400);
+
   const user = await User.findById(userId);
-  if (!user) {
-    return res.status(404).json({ success: false, message: "User not found" });
-  }
+  if (!user) return errorRes(res, "User not found", 404);
+
   const oldKey = user.profilePic;
   if (oldKey) {
     try {
       await deleteFileFromS3(oldKey);
     } catch (err) {
-      console.warn("Failed to delete old profile pic:", err);
+      console.warn("⚠️ Failed to delete old profile pic:", err);
     }
   }
+
   user.profilePic = newKey;
-  const updated = await user.save();
-  setAuthCookie(res, updated);
-  res.status(200).json({ success: true, profilePic: updated.profilePic });
+  await user.save();
+  setAuthCookie(res, user);
+
+  return successRes(res, { profilePic: user.profilePic });
 });
 //#endregion

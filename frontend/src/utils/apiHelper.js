@@ -1,4 +1,20 @@
 // utils/apiHelper.js
-export function extractData(promise) {
-  return promise.then((res) => res.data.data);
+export async function extractData(promise) {
+  try {
+    const res = await promise;
+    const payload = res.data;
+
+    if ("success" in payload && !payload.success) {
+      throw new Error(payload.message || "Unknown API error");
+    }
+
+    return {
+      data: payload.data ?? {},
+      message: payload.message ?? "",
+    };
+  } catch (err) {
+    throw new Error(
+      err.response?.data?.message || err.message || "Unexpected error"
+    );
+  }
 }

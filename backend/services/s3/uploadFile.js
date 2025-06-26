@@ -1,6 +1,7 @@
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import s3Client from "./s3Client.js";
 import { v4 as uuidv4 } from "uuid";
+import { getS3PublicUrl } from "./getS3PublicUrl.js";
 
 const s3Bucket = process.env.AWS_BUCKET_NAME;
 
@@ -83,6 +84,7 @@ export async function uploadFileToS3(file) {
 
   return {
     key,
+    url: getS3PublicUrl(key),
     etag: data.ETag,
     type: file.mimetype,
     size: file.size,

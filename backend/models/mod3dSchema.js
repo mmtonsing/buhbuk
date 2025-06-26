@@ -1,12 +1,14 @@
+// models/mod3dSchema.js
 import mongoose from "mongoose";
-
 const { Schema } = mongoose;
 
 const Mod3dSchema = new Schema(
   {
-    title: String,
+    title: { type: String, required: true },
     description: String,
     price: Number,
+    isPublic: { type: Boolean, default: true }, // ✅ added earlier
+    postId: { type: Schema.Types.ObjectId, ref: "Post" }, // ✅ add this
 
     imageId: { type: String, required: true },
     videoId: String,
@@ -17,37 +19,10 @@ const Mod3dSchema = new Schema(
         originalName: { type: String, required: true },
       },
     ],
-
-    likes: { type: Number, default: 0 },
-    likedBy: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
-
-    isPublic: {
-      type: Boolean,
-      default: true,
-    },
-
-    author: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-    },
-
-    postId: {
-      type: Schema.Types.ObjectId,
-      ref: "Post",
-    },
-
-    dateCreated: {
-      type: Date,
-      default: Date.now,
-    },
+    author: { type: Schema.Types.ObjectId, ref: "User", required: true },
   },
   {
-    timestamps: true, // adds createdAt and updatedAt
+    timestamps: true,
   }
 );
 
