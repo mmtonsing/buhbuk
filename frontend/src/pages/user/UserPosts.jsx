@@ -18,12 +18,11 @@ export function UserPosts() {
     async function loadPosts() {
       try {
         setLoading(true);
-        const result = await getUserPosts(id);
+        const data = await getUserPosts(id);
+        setPosts(data.posts);
 
-        setPosts(result);
-
-        if (result.length > 0 && result[0].author) {
-          setUser(result[0].author);
+        if (data.posts.length > 0 && data.posts[0].author) {
+          setUser(data.posts[0].author);
         }
       } catch (err) {
         console.error("❌ Failed to load user posts", err);
@@ -72,11 +71,7 @@ export function UserPosts() {
                 </div>
                 <div className="relative w-24 h-24">
                   <img
-                    src={
-                      user.profilePic
-                        ? `/api/file/raw/${encodeURIComponent(user.profilePic)}`
-                        : "/avatar.jpg"
-                    }
+                    src={user.profilePicUrl || "/avatar.jpg"}
                     alt="User avatar"
                     className="w-full h-full aspect-square rounded-full object-center object-cover border border-stone-700"
                   />{" "}

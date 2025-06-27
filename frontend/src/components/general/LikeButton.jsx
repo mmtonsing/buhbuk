@@ -1,49 +1,53 @@
 import { Heart } from "lucide-react";
 import { useState } from "react";
-import { toggleLikeAPI } from "../../api/likes";
-import { useNavigate } from "react-router-dom"; // ✅ Needed to redirect
+import { togglePostLike } from "@/api/posts"; // ✅ correct API
+import { useNavigate } from "react-router-dom";
 
 export function LikeButton({
-  modId,
+  postId,
   userId,
   initialLiked = false,
   initialCount = 0,
   onToggle,
-  onUnauthenticatedClick,
+  onUnauthenticatedClick, // optional override
 }) {
   const [liked, setLiked] = useState(initialLiked);
   const [likeCount, setLikeCount] = useState(initialCount);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const toggleLike = async (e) => {
+  const handleLike = async (e) => {
     e.preventDefault();
     e.stopPropagation();
 
-    // No user? Redirect to login
-    //If not logged in, redirect with banner message
     if (!userId) {
-      navigate("/auth", {
-        state: { message: "You must be logged in to like a post." },
-      });
+      if (onUnauthenticatedClick) {
+        onUnauthenticatedClick(e);
+      } else {
+        navigate("/auth", {
+          state: { message: "You must be logged in to like a post." },
+        });
+      }
       return;
     }
 
     if (loading) return;
     setLoading(true);
 
-    const newLiked = !liked;
-    setLiked(newLiked);
-    setLikeCount((prev) => prev + (newLiked ? 1 : -1));
+    const optimisticLiked = !liked;
+    setLiked(optimisticLiked);
+    setLikeCount((prev) => prev + (optimisticLiked ? 1 : -1));
 
     try {
-      await toggleLikeAPI(modId, userId);
-      onToggle?.(newLiked);
+      const { data } = await togglePostLike(postId);
+      setLiked(data.liked);
+      setLikeCount(data.count);
+      onToggle?.(data);
     } catch (err) {
+      console.error("❌ Like failed:", err);
       // rollback
-      setLiked(!newLiked);
-      setLikeCount((prev) => prev + (newLiked ? -1 : 1));
-      console.error("Like failed:", err);
+      setLiked(!optimisticLiked);
+      setLikeCount((prev) => prev + (optimisticLiked ? -1 : 1));
     } finally {
       setLoading(false);
     }
@@ -51,7 +55,7 @@ export function LikeButton({
 
   return (
     <button
-      onClick={toggleLike}
+      onClick={handleLike}
       disabled={loading}
       className="flex items-center gap-1 text-sm text-stone-300 hover:text-pink-500 transition"
     >

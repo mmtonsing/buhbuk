@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { UserBadge } from "@/pages/user/UserBadge";
-import LikeWithAuth from "@/context/LikeWithAuth";
+import LikeHandler from "@/context/LikeHandler";
 import { timeAgo } from "@/utils/timeAgo";
 
 export function ModCard({ mod3d }) {
@@ -34,7 +34,7 @@ export function ModCard({ mod3d }) {
           {mod3d.author && (
             <UserBadge user={mod3d.author} key={mod3d.author._id} />
           )}
-          <LikeWithAuth modId={mod3d._id} likedBy={mod3d.likedBy} />
+          <LikeHandler postId={mod3d.postId} likedBy={mod3d.likedBy} />
         </div>
         <div className="flex items-center justify-between pt-1 text-xs text-stone-400">
           <p>{displayDate}</p>

@@ -11,7 +11,7 @@ export default function Feed() {
     async function fetchLatestPosts() {
       try {
         const posts = await getLatestPosts();
-        setPosts(posts.slice(0, 6));
+        setPosts(posts);
       } catch (err) {
         console.error("Failed to fetch latest posts", err);
       }

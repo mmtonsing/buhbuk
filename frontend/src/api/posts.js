@@ -35,7 +35,6 @@ export async function getPublicPosts() {
 // Get posts created by owner
 export async function getMyPosts() {
   const { data } = await extractData(axiosInstance.get(`/posts/user/me`));
-
   return data;
 }
 
@@ -58,4 +57,12 @@ export async function createPost(category, refId) {
 export async function deletePost(id) {
   const { message } = await extractData(axiosInstance.delete(`/posts/${id}`));
   return { success: true, message };
+}
+
+// Like or unlike a post (all types: Mod3d, Blog, etc.)
+export async function togglePostLike(postId) {
+  const { data, message } = await extractData(
+    axiosInstance.post(`/posts/${postId}/like`)
+  );
+  return { data, message };
 }

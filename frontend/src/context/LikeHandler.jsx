@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { LikeButton } from "../components/general/LikeButton";
 
-export default function LikeWithAuth({ modId, likedBy = [] }) {
+export default function LikeHandler({ postId, likedBy = [] }) {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
 
@@ -31,7 +31,7 @@ export default function LikeWithAuth({ modId, likedBy = [] }) {
 
   return (
     <LikeButton
-      modId={modId}
+      postId={postId}
       userId={currentUserId}
       initialLiked={isLiked}
       initialCount={likeCount}

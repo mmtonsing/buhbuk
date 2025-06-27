@@ -15,12 +15,12 @@ export function About() {
               Wildly Original.
             </h2>
             <p className="text-base md:text-lg leading-relaxed">
-              BukWarm blends the essence of <em>“Buk”</em> — a hut or bird’s
-              nest in the Paite language — and <em>“Warm”</em>, the comfort of
-              belonging and expression. It's more than a creative platform —
-              it’s a digital fireplace where artists, coders, storytellers, and
-              curious souls gather, collaborate, and share their creations with
-              the world.
+              BukWarm blends the essence of <em>“Buk”</em> —meaning hut, bird's
+              nest or basically a shelter in the Paite language — and{" "}
+              <em>“Warm”</em>, the comfort of belonging and expression. It's
+              more than a creative platform — it’s a digital fireplace where
+              artists, coders, storytellers, and curious souls gather,
+              collaborate, and share their creations with the world.
             </p>
           </section>
 

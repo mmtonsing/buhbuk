@@ -25,7 +25,6 @@ export function Home() {
     async function fetchLatestPosts() {
       try {
         const posts = await getLatestPosts();
-        console.log("Response in Home.jsx:", posts);
         setLatestPosts(posts.slice(0, 6));
       } catch (err) {
         console.error("Failed to fetch latest posts", err);

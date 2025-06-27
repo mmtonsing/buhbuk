@@ -28,7 +28,6 @@ export function ViewMod3d() {
     async function loadModel() {
       try {
         const data = await getMod3d(id);
-        console.log("✅ Mod3d from API:", data); // <-- Add this
         data.dateCreated = new Date(data.dateCreated).toString();
         setMod3d(data);
       } catch (err) {
@@ -97,7 +96,7 @@ export function ViewMod3d() {
         <div className="w-full bg-black p-4 rounded-lg mb-6">
           {mod3d.imageId ? (
             <img
-              src={`/api/file/stream/${mod3d.imageId}`}
+              src={mod3d.imageUrl}
               alt={mod3d.title}
               className="max-h-[400px] mx-auto object-contain"
             />
@@ -163,7 +162,7 @@ export function ViewMod3d() {
       <VideoPreviewModal
         isOpen={showVideo}
         onClose={() => setShowVideo(false)}
-        videoUrl={`/api/file/stream/${mod3d.videoId}`}
+        videoUrl={mod3d.videoUrl}
       />
 
       {/* 3D Modal */}

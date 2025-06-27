@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { getCurrentUser } from "@/api/users.js";
 import { getMyPosts } from "@/api/posts";
@@ -10,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import ProfilePicUploader from "@/components/user/ProfilePicUploader";
 import { EditProfileForm } from "@/components/user/EditProfileForm";
-import { useNavigate } from "react-router-dom";
 import { SuccessModal } from "@/components/customUI/SuccessModal"; // 👈
 import { EmailVerifyModal } from "@/components/customUI/EmailVerifyModal";
 import { CategoryFilter } from "@/components/general/CategoryFilter";
@@ -31,7 +31,7 @@ export function Profile() {
       if (!user?.id) return;
       try {
         const data = await getMyPosts();
-        setPosts(sortByDateCreated(data));
+        setPosts(sortByDateCreated(data.posts));
       } catch (err) {
         console.error("Failed to load user posts:", err);
       }
@@ -43,7 +43,6 @@ export function Profile() {
     return <div className="text-center p-10">Loading user...</div>;
   }
 
-  console.log(user);
   const formattedJoinDate = new Date(user.createdAt).toDateString();
   const totalLikes = posts.reduce(
     (acc, post) => acc + (post.likedBy?.length || 0),
@@ -70,14 +69,19 @@ export function Profile() {
           <div className="flex flex-col items-center sm:items-start gap-4">
             <ProfilePicUploader
               currentPic={user.profilePic}
-              onUploadSuccess={(newKey) => {
-                const cleanKey = newKey.split("?")[0];
-                const newVersion = Date.now();
-                setUser((prev) => ({
-                  ...prev,
-                  profilePic: cleanKey,
-                  profilePicVersion: newVersion,
-                }));
+              onUploadSuccess={async () => {
+                try {
+                  const updatedUser = await getCurrentUser();
+                  const { posts: updatedPosts } = await getMyPosts();
+
+                  setUser(updatedUser);
+                  setPosts(sortByDateCreated(updatedPosts));
+                } catch (err) {
+                  console.error(
+                    "Failed to update after profile picture change:",
+                    err
+                  );
+                }
               }}
             />
 
@@ -154,26 +158,9 @@ export function Profile() {
               user={user}
               onSuccess={async (form) => {
                 const updatedUser = await getCurrentUser();
-                const cleanKey = updatedUser.profilePic?.split("?")[0];
-                const newVersion = Date.now();
+                const { posts: updatedPosts } = await getMyPosts();
 
-                setUser({
-                  ...updatedUser,
-                  profilePic: cleanKey,
-                  profilePicVersion: newVersion,
-                });
-
-                const refreshedPosts = await getMyPosts(updatedUser.id);
-                const updatedPosts = refreshedPosts.map((post) => ({
-                  ...post,
-                  author: {
-                    ...post.author,
-                    username: updatedUser.username,
-                    profilePic: cleanKey,
-                    profilePicVersion: newVersion,
-                  },
-                }));
-
+                setUser(updatedUser);
                 setPosts(sortByDateCreated(updatedPosts));
                 setShowEditForm(false);
                 setShowSuccessModal(true); // ✅ trigger first
