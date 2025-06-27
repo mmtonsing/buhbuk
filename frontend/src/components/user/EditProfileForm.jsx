@@ -59,6 +59,8 @@ export function EditProfileForm({ user, onSuccess }) {
           value={form.username}
           onChange={handleChange}
           placeholder="Username"
+          minLength={6}
+          maxLength={30}
         />
         <Input
           name="email"
@@ -66,6 +68,8 @@ export function EditProfileForm({ user, onSuccess }) {
           onChange={handleChange}
           placeholder="Email"
           type="email"
+          minLength={6}
+          maxLength={64}
         />
         <Input
           name="currentPassword"
@@ -73,6 +77,8 @@ export function EditProfileForm({ user, onSuccess }) {
           onChange={handleChange}
           placeholder="Current password"
           type="password"
+          minLength={6}
+          maxLength={20}
         />
         <Input
           name="newPassword"
@@ -80,6 +86,8 @@ export function EditProfileForm({ user, onSuccess }) {
           onChange={handleChange}
           placeholder="New password"
           type="password"
+          minLength={6}
+          maxLength={20}
         />
         <Input
           name="confirmPassword"
@@ -87,6 +95,8 @@ export function EditProfileForm({ user, onSuccess }) {
           onChange={handleChange}
           placeholder="Confirm new password"
           type="password"
+          minLength={6}
+          maxLength={20}
         />
         {form.newPassword && (
           <p className="text-sm">
