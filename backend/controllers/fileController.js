@@ -7,6 +7,8 @@ import { streamS3File } from "../services/s3/streamFile.js";
 import handleZipUpload from "../services/s3/uploadZipHandler.js";
 import { isValidZip } from "../utils/validators.js";
 import { successRes, errorRes } from "../utils/responseHelper.js";
+// import { canAccessFile } from "../utils/canAccessFile.js";
+// import Post from "../models/postSchema.js";
 //#endregion
 
 //#region 🎯 Retrieve Files
@@ -69,6 +71,11 @@ export const streamFile = asyncHandler(async (req, res) => {
   const key = req.params.id;
   if (!key) return errorRes(res, "Missing file key", 400);
 
+  // const user = req.user || null;
+
+  // const hasAccess = await canAccessFile(user, key);
+  // if (!hasAccess) return errorRes(res, "Unauthorized to access this file", 403);
+
   await streamS3File(key, res);
 });
 
@@ -76,6 +83,16 @@ export const streamAnyFile = asyncHandler(async (req, res) => {
   const key = decodeURIComponent(req.params.splat);
   if (!key) return errorRes(res, "Missing S3 key", 400);
 
+  // const user = req.user || null;
+  // const hasAccess = await canAccessFile(user, key); // ✅ Correct usage
+  // if (!hasAccess) return errorRes(res, "Unauthorized access", 403);
+
   await streamS3File(key, res);
 });
 //#endregion
+
+// const assertAccessAndStream = async (key, user, res) => {
+//   const allowed = await canAccessFile(user, key);
+//   if (!allowed) throw new Error("Unauthorized");
+//   await streamS3File(key, res);
+// };

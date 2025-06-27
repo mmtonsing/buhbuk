@@ -9,7 +9,6 @@ import { setAuthCookie } from "../utils/auth/setAuthCookie.js";
 import { sendVerificationEmail } from "../services/email/sendVerificationEmail.js";
 import { getVerificationExpiryTime } from "../utils/timeUtils.js";
 import { successRes, errorRes } from "../utils/responseHelper.js";
-import { resolveMediaUrls } from "../utils/resolveMediaUrls.js";
 import { resolveUserUrls } from "../utils/resolveUserUrls.js";
 //#endregion
 

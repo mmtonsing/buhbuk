@@ -48,6 +48,7 @@ export const getPublicPosts = asyncHandler(async (req, res) => {
   return successRes(res, { posts: validPosts }, "Fetched public posts");
 });
 
+//not used yet
 export const getPaginatedPosts = asyncHandler(async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 9;
@@ -110,6 +111,7 @@ export const getPostsByUser = asyncHandler(async (req, res) => {
       videoUrl: enriched.videoUrl || null,
     };
   });
+  return successRes(res, { posts: enrichedPosts }, "Fetched your posts");
 });
 
 export const getPost = asyncHandler(async (req, res) => {
@@ -156,6 +158,7 @@ export const getMyPosts = asyncHandler(async (req, res) => {
         videoUrl: enriched.videoUrl || null,
       };
     });
+  return successRes(res, { posts: enrichedPosts }, "Fetched your posts");
 });
 //#endregion
 

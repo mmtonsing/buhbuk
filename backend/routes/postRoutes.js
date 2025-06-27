@@ -7,6 +7,7 @@ import {
   getPost,
   getPostsByUser,
 } from "../controllers/postController.js";
+import * as likes from "../controllers/likeController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 import { getPaginatedPosts } from "../controllers/postController.js";
 
@@ -18,7 +19,9 @@ router.get("/user/me", authMiddleware, getMyPosts); // dashboard
 router.get("/user/:id", getPostsByUser);
 
 router.post("/", authMiddleware, createPost); // auto-create post
-// routes/posts.js
+
+router.post("/:id/like", authMiddleware, likes.toggleLike);
+
 router.get("/:id", getPost);
 
 router.delete("/:id", authMiddleware, deletePost); // remove post

@@ -71,7 +71,7 @@ export async function uploadFileToS3(file) {
 
   const now = new Date();
   const dateStr = now.toISOString().slice(0, 10);
-  const key = `${dateStr}-${uuidv4()}-${file.originalname}`;
+  const key = `public/${dateStr}-${uuidv4()}-${file.originalname}`;
 
   const command = new PutObjectCommand({
     Bucket: s3Bucket,

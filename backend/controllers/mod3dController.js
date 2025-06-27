@@ -39,6 +39,10 @@ export const uploadModel = asyncHandler(async (req, res) => {
     modelFiles = [],
   } = req.body;
 
+  // const imageUrl = getS3PublicUrl(
+  //   imageId.startsWith("public/") ? imageId : `public/${imageId}`
+  // );
+
   const imageUrl = getS3PublicUrl(imageId);
 
   const mod3d = new Mod3d({
@@ -90,14 +94,24 @@ export const retrieveAllPublic = asyncHandler(async (req, res) => {
     .sort({ createdAt: -1 })
     .populate("author", "username email profilePic emailVerified");
 
-  const enriched = publicMods.map((mod) => {
-    const enrichedMod = resolveMediaUrls(mod);
-    const enrichedAuthor = resolveUserUrls(mod.author);
-    return {
-      ...enrichedMod,
-      author: enrichedAuthor,
-    };
-  });
+  const enriched = await Promise.all(
+    publicMods.map(async (mod) => {
+      const enrichedMod = resolveMediaUrls(mod);
+      const enrichedAuthor = resolveUserUrls(mod.author);
+
+      const post = await Post.findOne({
+        category: "Mod3d",
+        refId: mod._id,
+      }).select("_id likedBy");
+
+      return {
+        ...enrichedMod,
+        postId: post?._id || null,
+        likedBy: post?.likedBy || [],
+        author: enrichedAuthor,
+      };
+    })
+  );
 
   return successRes(res, enriched, "Fetched public models");
 });

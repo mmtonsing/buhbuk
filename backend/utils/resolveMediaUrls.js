@@ -6,7 +6,11 @@ export function resolveMediaUrls(content) {
 
   return {
     ...obj,
-    imageUrl: obj.imageId ? getS3PublicUrl(obj.imageId) : null,
-    videoUrl: obj.videoId ? getS3PublicUrl(obj.videoId) : null,
+    imageUrl: obj.imageId?.startsWith("public/")
+      ? getS3PublicUrl(obj.imageId)
+      : null,
+    videoUrl: obj.videoId?.startsWith("public/")
+      ? getS3PublicUrl(obj.videoId)
+      : null,
   };
 }

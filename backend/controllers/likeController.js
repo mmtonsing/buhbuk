@@ -34,13 +34,14 @@ export const toggleLike = asyncHandler(async (req, res) => {
     liked = false;
   }
 
+  post.likes = post.likedBy.length; // ✅ Sync the count
   await post.save();
 
   return successRes(
     res,
     {
       liked,
-      count: post.likedBy.length,
+      count: post.likes,
     },
     liked ? "Liked successfully" : "Unliked successfully"
   );

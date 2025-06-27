@@ -22,7 +22,7 @@ export default async function handleZipUpload(zipFile) {
     if (entry.type === "File" && /\.(glb|obj|stl)$/i.test(entry.path)) {
       const buffer = await entry.buffer();
       const ext = entry.path.split(".").pop().toLowerCase();
-      const key = `${dateStr}-${uuidv4()}-${entry.path}`;
+      const key = `public/${dateStr}-${uuidv4()}-${entry.path}`;
 
       await s3Client.send(
         new PutObjectCommand({
@@ -43,7 +43,7 @@ export default async function handleZipUpload(zipFile) {
   }
 
   // Upload the original ZIP file too
-  const zipKey = `${dateStr}-${uuidv4()}-${zipFile.originalname}`;
+  const zipKey = `public/${dateStr}-${uuidv4()}-${zipFile.originalname}`;
   await s3Client.send(
     new PutObjectCommand({
       Bucket: s3Bucket,
