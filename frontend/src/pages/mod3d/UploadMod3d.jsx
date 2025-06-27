@@ -97,10 +97,12 @@ export function UploadMod3d() {
         videoId,
       };
 
-      const newMod = await uploadMod3d(payload);
+      const { success, data } = await uploadMod3d(payload);
+      if (!success) throw new Error("Failed to upload model");
+
       resetForm();
       setMessage({ text: "✅ Model uploaded successfully!", type: "success" });
-      setTimeout(() => navigate(`/viewmod3d/${newMod._id}`), 800);
+      setTimeout(() => navigate(`/viewmod3d/${data._id}`), 800);
     } catch (err) {
       console.error("Upload failed", err);
       setLoading(false);

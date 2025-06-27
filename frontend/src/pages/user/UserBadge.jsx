@@ -1,15 +1,7 @@
 import { Link } from "react-router-dom";
-import { UserCircle } from "lucide-react";
 
 export function UserBadge({ user, className = "" }) {
   if (!user) return null;
-
-  const cleanKey = user.profilePic?.split("?")[0];
-  const version = user.profilePicVersion || 0;
-
-  const profilePicUrl = cleanKey
-    ? `/api/file/raw/${encodeURIComponent(cleanKey)}?v=${version}`
-    : "/avatar.jpg";
 
   return (
     <Link
@@ -18,7 +10,7 @@ export function UserBadge({ user, className = "" }) {
     >
       <div className="w-6 h-6 rounded-full overflow-hidden bg-stone-900 border border-stone-600 flex items-center justify-center group-hover:border-blue-400">
         <img
-          src={profilePicUrl}
+          src={user.profilePicUrl}
           alt="User avatar"
           className="w-full h-full object-cover"
           onError={(e) => {

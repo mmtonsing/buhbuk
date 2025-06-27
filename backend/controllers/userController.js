@@ -9,6 +9,8 @@ import { setAuthCookie } from "../utils/auth/setAuthCookie.js";
 import { sendVerificationEmail } from "../services/email/sendVerificationEmail.js";
 import { getVerificationExpiryTime } from "../utils/timeUtils.js";
 import { successRes, errorRes } from "../utils/responseHelper.js";
+import { resolveMediaUrls } from "../utils/resolveMediaUrls.js";
+import { resolveUserUrls } from "../utils/resolveUserUrls.js";
 //#endregion
 
 //#region Authentication
@@ -168,6 +170,9 @@ export const getUserInfo = asyncHandler(async (req, res) => {
     "username email createdAt profilePic emailVerified"
   );
   if (!user) return errorRes(res, "User not found", 404);
+
+  const enriched = resolveUserUrls(user);
+
   return successRes(res, {
     id: user._id,
     username: user.username,
@@ -175,24 +180,8 @@ export const getUserInfo = asyncHandler(async (req, res) => {
     createdAt: user.createdAt,
     profilePic: user.profilePic,
     emailVerified: user.emailVerified,
+    profilePicUrl: enriched.profilePicUrl,
   });
-});
-//#endregion
-
-//#region Not used yet
-export const retrieveUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
-  return successRes(res, { user });
-});
-
-export const deleteUser = asyncHandler(async (req, res) => {
-  const user = await User.findByIdAndDelete(req.params.id);
-  return successRes(res, { user });
-});
-
-export const getAllUsers = asyncHandler(async (req, res) => {
-  const users = await User.find({});
-  return successRes(res, { users });
 });
 //#endregion
 
@@ -205,7 +194,11 @@ export const getUserPosts = asyncHandler(async (req, res) => {
     .populate("author", "username email profilePic")
     .sort({ dateCreated: -1 });
 
-  return successRes(res, { posts });
+  const enriched = posts.map((post) => ({
+    ...post.toObject(),
+    author: resolveUserUrls(post.author),
+  }));
+  return successRes(res, { posts: enriched });
 });
 
 export const updateProfilePic = asyncHandler(async (req, res) => {
@@ -230,6 +223,31 @@ export const updateProfilePic = asyncHandler(async (req, res) => {
   await user.save();
   setAuthCookie(res, user);
 
-  return successRes(res, { profilePic: user.profilePic });
+  const enriched = resolveUserUrls(user);
+  return successRes(res, {
+    profilePic: user.profilePic,
+    profilePicUrl: enriched.profilePicUrl,
+  });
+});
+//#endregion
+
+//#region Not used yet
+export const retrieveUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+  if (!user) return errorRes(res, "User not found", 404);
+
+  const enriched = resolveUserUrls(user);
+  return successRes(res, { user: enriched });
+});
+
+export const deleteUser = asyncHandler(async (req, res) => {
+  const user = await User.findByIdAndDelete(req.params.id);
+  return successRes(res, { user });
+});
+
+export const getAllUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({});
+  const enrichedUsers = users.map(resolveUserUrls);
+  return successRes(res, { users: enrichedUsers });
 });
 //#endregion

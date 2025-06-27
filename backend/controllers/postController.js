@@ -2,6 +2,8 @@
 import asyncHandler from "express-async-handler";
 import Post from "../models/postSchema.js";
 import { successRes, errorRes } from "../utils/responseHelper.js";
+import { resolveMediaUrls } from "../utils/resolveMediaUrls.js";
+import { resolveUserUrls } from "../utils/resolveUserUrls.js";
 //#endregion
 
 //#region 📤 Create Post
@@ -26,13 +28,22 @@ export const createPost = asyncHandler(async (req, res) => {
 export const getPublicPosts = asyncHandler(async (req, res) => {
   const posts = await Post.find({ isPublic: true })
     .populate("author", "username profilePic")
-    .populate({
-      path: "refId",
-      select: "-__v",
-    })
+    .populate({ path: "refId", select: "-__v" })
     .sort({ createdAt: -1 });
 
-  const validPosts = posts.filter((post) => post.refId); // remove orphaned posts
+  const validPosts = posts
+    .filter((post) => post.refId)
+    .map((post) => {
+      const enriched = resolveMediaUrls(post.refId);
+      const enrichedAuthor = resolveUserUrls(post.author);
+      return {
+        ...post.toObject(),
+        author: enrichedAuthor,
+        refId: enriched,
+        imageUrl: enriched.imageUrl || null,
+        videoUrl: enriched.videoUrl || null,
+      };
+    });
 
   return successRes(res, { posts: validPosts }, "Fetched public posts");
 });
@@ -51,10 +62,22 @@ export const getPaginatedPosts = asyncHandler(async (req, res) => {
     .populate("author", "username profilePic")
     .populate("refId");
 
+  const enrichedPosts = posts.map((post) => {
+    const enriched = resolveMediaUrls(post.refId);
+    const enrichedAuthor = resolveUserUrls(post.author);
+    return {
+      ...post.toObject(),
+      author: enrichedAuthor,
+      refId: enriched,
+      imageUrl: enriched.imageUrl || null,
+      videoUrl: enriched.videoUrl || null,
+    };
+  });
+
   return successRes(
     res,
     {
-      posts,
+      posts: enrichedPosts,
       currentPage: page,
       totalPages: Math.ceil(total / limit),
     },
@@ -76,10 +99,19 @@ export const getPostsByUser = asyncHandler(async (req, res) => {
     .populate("author", "username emailVerified email profilePic")
     .populate("refId");
 
-  return successRes(res, posts, "Fetched user's posts");
+  const enrichedPosts = posts.map((post) => {
+    const enriched = resolveMediaUrls(post.refId);
+    const enrichedAuthor = resolveUserUrls(post.author);
+    return {
+      ...post.toObject(),
+      author: enrichedAuthor,
+      refId: enriched,
+      imageUrl: enriched.imageUrl || null,
+      videoUrl: enriched.videoUrl || null,
+    };
+  });
 });
 
-//not used yet
 export const getPost = asyncHandler(async (req, res) => {
   const post = await Post.findById(req.params.id)
     .populate("author", "username profilePic")
@@ -87,7 +119,20 @@ export const getPost = asyncHandler(async (req, res) => {
 
   if (!post) return errorRes(res, "Post not found", 404);
 
-  return successRes(res, post, "Fetched post");
+  const enriched = resolveMediaUrls(post.refId);
+  const enrichedAuthor = resolveUserUrls(post.author);
+
+  return successRes(
+    res,
+    {
+      ...post.toObject(),
+      author: enrichedAuthor,
+      refId: enriched,
+      imageUrl: enriched.imageUrl || null,
+      videoUrl: enriched.videoUrl || null,
+    },
+    "Fetched post"
+  );
 });
 //#endregion
 
@@ -98,9 +143,19 @@ export const getMyPosts = asyncHandler(async (req, res) => {
     .populate("author", "username profilePic")
     .populate("refId");
 
-  const validPosts = posts.filter((post) => post.refId);
-
-  return successRes(res, validPosts, "Fetched my posts");
+  const enrichedPosts = posts
+    .filter((post) => post.refId)
+    .map((post) => {
+      const enriched = resolveMediaUrls(post.refId);
+      const enrichedAuthor = resolveUserUrls(post.author);
+      return {
+        ...post.toObject(),
+        author: enrichedAuthor,
+        refId: enriched,
+        imageUrl: enriched.imageUrl || null,
+        videoUrl: enriched.videoUrl || null,
+      };
+    });
 });
 //#endregion
 

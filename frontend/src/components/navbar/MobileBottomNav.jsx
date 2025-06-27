@@ -1,11 +1,4 @@
-import {
-  Compass,
-  Home,
-  Search,
-  PlusCircle,
-  User,
-  Newspaper,
-} from "lucide-react";
+import { Home, PlusCircle, User, Newspaper } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { MobileExplorePopover } from "./MobileExplorePopover";

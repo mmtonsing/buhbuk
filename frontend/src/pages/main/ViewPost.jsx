@@ -14,18 +14,19 @@ export default function ViewPost() {
         const { data } = await axiosInstance.get(`/posts/${id}`);
         setPost(data);
 
-        // 🔀 Redirect if it's a Mod3d post (or other categories later)
-        if (data.category === "Mod3d" && data.refId?._id) {
-          navigate(`/viewmod3d/${data.refId._id}`, { replace: true });
+        // 🔀 Redirect to respective view page based on category
+        const category = data.category;
+        const refId = data.refId?._id;
+
+        if (category === "Mod3d" && refId) {
+          navigate(`/viewmod3d/${refId}`, { replace: true });
+        } else if (category === "Blog" && refId) {
+          navigate(`/viewblog/${refId}`, { replace: true });
+        } else if (category === "Art" && refId) {
+          navigate(`/viewart/${refId}`, { replace: true });
+        } else {
+          setLoading(false); // stay on fallback page
         }
-        if (data.category === "Blog") {
-          navigate(`/viewblog/${data.refId._id}`);
-        }
-        setLoading(false);
-        if (data.category === "Art") {
-          navigate(`/viewart/${data.refId._id}`);
-        }
-        setLoading(false);
       } catch (err) {
         console.error("Failed to load post", err);
         setLoading(false);
@@ -36,22 +37,25 @@ export default function ViewPost() {
   }, [id, navigate]);
 
   if (loading) return <div className="p-4 text-stone-400">Loading...</div>;
-
   if (!post) return <div className="p-4 text-red-500">Post not found.</div>;
 
-  // Optional fallback if no redirect happened
+  // 🧩 Optional fallback view if redirect did not occur (e.g. unknown category)
   return (
     <div className="p-4 max-w-3xl mx-auto text-white">
-      <h1 className="text-2xl font-bold mb-2">
-        {post.refId?.title || "Untitled"}
-      </h1>
+      <h1 className="text-2xl font-bold mb-2">{post.title || "Untitled"}</h1>
       <p className="text-sm text-stone-400 mb-4">Category: {post.category}</p>
-      <img
-        src={post.image || `/api/file/public/${post.refId?.imageId}`}
-        alt="Post preview"
-        className="w-full h-auto max-h-[400px] object-contain bg-stone-800"
-      />
-      {/* You can optionally render other post details here */}
+
+      {post.imageUrl ? (
+        <img
+          src={post.imageUrl}
+          alt="Post preview"
+          className="w-full h-auto max-h-[400px] object-contain bg-stone-800"
+        />
+      ) : (
+        <div className="text-stone-400">No image available</div>
+      )}
+
+      {/* You can render post.summary or other fields here */}
     </div>
   );
 }

@@ -1,20 +1,11 @@
 import axiosInstance from "./axiosInstance";
 import { extractData } from "../utils/apiHelper";
-import { getFilePublic, getFile } from "./fileApi";
 
 // 🔍 Public models
 export async function getPublicMod3ds() {
   try {
     const { data } = await extractData(axiosInstance.get("/mod3ds/public"));
-
-    const mod3dsWithImages = await Promise.all(
-      data.map(async (mod) => {
-        const image = mod.imageId ? await getFilePublic(mod.imageId) : null;
-        return { ...mod, image };
-      })
-    );
-
-    return mod3dsWithImages;
+    return data;
   } catch (err) {
     console.error("⚠️ Error fetching public mod3ds:", err.message);
     return [];
@@ -25,15 +16,7 @@ export async function getPublicMod3ds() {
 export async function getMod3ds() {
   try {
     const { data } = await extractData(axiosInstance.get("/mod3ds"));
-
-    const mod3dsWithImages = await Promise.all(
-      data.map(async (mod) => {
-        const image = mod.imageId ? await getFile(mod.imageId) : null;
-        return { ...mod, image };
-      })
-    );
-
-    return mod3dsWithImages;
+    return data;
   } catch (err) {
     console.error("⚠️ Error fetching mod3ds:", err.message);
     throw err;
@@ -44,9 +27,7 @@ export async function getMod3ds() {
 export async function getMod3d(id) {
   try {
     const { data } = await extractData(axiosInstance.get(`/mod3ds/${id}`));
-    console.log("data", data);
-    const image = data.imageId ? await getFilePublic(data.imageId) : null;
-    return { ...data, image };
+    return data;
   } catch (err) {
     console.error("⚠️ Error fetching mod3d:", err.message);
     throw err;

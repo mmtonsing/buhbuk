@@ -7,8 +7,7 @@ export function PublicCard({ mod3d }) {
   if (!mod3d) return null;
 
   const displayDate = timeAgo(mod3d?.createdAt);
-  const imageSrc =
-    mod3d.image || (mod3d.imageId ? `/api/file/public/${mod3d.imageId}` : null);
+  const imageSrc = mod3d.imageUrl;
 
   return (
     <div className="block rounded-xl border border-stone-700 shadow bg-stone-800 hover:bg-stone-700 text-stone-100 overflow-hidden transition-transform hover:scale-105 hover:shadow-xl duration-300 group">

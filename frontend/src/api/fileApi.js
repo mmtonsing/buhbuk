@@ -38,25 +38,3 @@ export async function createFile(file) {
 
   return resData.data; // ✅ returns { key: "...", ... }
 }
-
-// Get public file (no auth)
-export async function getFilePublic(id) {
-  try {
-    const { data } = await axiosInstance.get(`/file/public/${id}`);
-    return data;
-  } catch (err) {
-    console.error("⚠️ Failed to fetch public file:", err.message);
-    return null;
-  }
-}
-
-//  Get file (auth)
-export async function getFile(id) {
-  try {
-    const { data } = await axiosInstance.get(`/file/${id}`);
-    return data;
-  } catch (err) {
-    console.error("⚠️ Failed to fetch file:", err.message);
-    return null;
-  }
-}

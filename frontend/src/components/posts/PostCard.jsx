@@ -14,11 +14,7 @@ export function PostCard({ post }) {
     return null; // or show a fallback
   }
 
-  const imageId = refId.imageId || refId.image || null;
-  const imageSrc = imageId
-    ? `/api/file/raw/${encodeURIComponent(imageId)}`
-    : null;
-
+  const imageSrc = refId.imageUrl || null;
   const postDate = createdAt || refId.dateCreated;
   const postTitle = refId.title || "Untitled";
   const displayCategory = category === "Mod3d" ? "3D Model" : category;

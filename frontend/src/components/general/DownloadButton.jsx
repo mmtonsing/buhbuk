@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Download as DownloadIcon } from "lucide-react";
-import Loader from "@/components/customUI/Loader"; // optional fallback loader
 
 export function DownloadButton({ files = [], className = "", onStart, onEnd }) {
   const [downloading, setDownloading] = useState(false);

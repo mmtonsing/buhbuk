@@ -5,6 +5,8 @@ import Post from "../models/postSchema.js";
 import { deleteFileFromS3 } from "../services/s3/deleteFile.js";
 import { successRes, errorRes } from "../utils/responseHelper.js";
 import { getS3PublicUrl } from "../services/s3/getS3PublicUrl.js";
+import { resolveUserUrls } from "../utils/resolveUserUrls.js";
+import { resolveMediaUrls } from "../utils/resolveMediaUrls.js";
 //#endregion
 
 //#region 🧹 Cleanup S3
@@ -88,7 +90,16 @@ export const retrieveAllPublic = asyncHandler(async (req, res) => {
     .sort({ createdAt: -1 })
     .populate("author", "username email profilePic emailVerified");
 
-  return successRes(res, publicMods, "Fetched public models");
+  const enriched = publicMods.map((mod) => {
+    const enrichedMod = resolveMediaUrls(mod);
+    const enrichedAuthor = resolveUserUrls(mod.author);
+    return {
+      ...enrichedMod,
+      author: enrichedAuthor,
+    };
+  });
+
+  return successRes(res, enriched, "Fetched public models");
 });
 
 export const retrieveAll = asyncHandler(async (req, res) => {
@@ -96,7 +107,17 @@ export const retrieveAll = asyncHandler(async (req, res) => {
     "author",
     "username email profilePic"
   );
-  return successRes(res, mod3ds, "Fetched all models");
+
+  const enriched = mod3ds.map((mod) => {
+    const enrichedMod = resolveMediaUrls(mod);
+    const enrichedAuthor = resolveUserUrls(mod.author);
+    return {
+      ...enrichedMod,
+      author: enrichedAuthor,
+    };
+  });
+
+  return successRes(res, enriched, "Fetched all models");
 });
 //#endregion
 
@@ -115,7 +136,17 @@ export const retrieveModel = asyncHandler(async (req, res) => {
 
   if (!mod3d) return errorRes(res, "Model not found", 404);
 
-  return successRes(res, mod3d, "Fetched 3D model");
+  const enriched = resolveMediaUrls(mod3d);
+  const enrichedAuthor = resolveUserUrls(mod3d.author);
+
+  return successRes(
+    res,
+    {
+      ...enriched,
+      author: enrichedAuthor,
+    },
+    "Fetched 3D model"
+  );
 });
 //#endregion
 
@@ -149,7 +180,11 @@ export const editModel = asyncHandler(async (req, res) => {
     new: true,
   });
 
-  return successRes(res, updated, "Model updated successfully");
+  return successRes(
+    res,
+    resolveMediaUrls(updated),
+    "Model updated successfully"
+  );
 });
 //#endregion
 

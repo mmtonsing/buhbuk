@@ -1,6 +1,5 @@
 // api/userApi.js
 import axiosInstance from "./axiosInstance";
-import { getFilePublic } from "./fileApi";
 import { extractData } from "@/utils/apiHelper";
 
 // Get current user
@@ -77,16 +76,7 @@ export async function logoutUser() {
 export async function getUserPosts(id) {
   try {
     const { data } = await extractData(axiosInstance.get(`/user/${id}/posts`));
-    const posts = data.posts || [];
-
-    const postsWithImages = await Promise.all(
-      posts.map(async (mod3d) => {
-        const image = await getFilePublic(mod3d.imageId, true);
-        return { ...mod3d, image };
-      })
-    );
-
-    return postsWithImages;
+    return data.posts || [];
   } catch (err) {
     console.error("Unable to retrieve User Posts", err);
     return [];
@@ -99,7 +89,11 @@ export async function updateProfilePic(profilePicKey) {
     const { data } = await extractData(
       axiosInstance.put("/user/profile-pic", { profilePic: profilePicKey })
     );
-    return { success: true, profilePic: data.profilePic };
+    return {
+      success: true,
+      profilePic: data.profilePic,
+      profilePicUrl: data.profilePicUrl, // ✅ new
+    };
   } catch (err) {
     console.error("Error updating profile picture:", err);
     return { success: false };
