@@ -13,7 +13,7 @@ export async function extractData(promise) {
       message: payload.message ?? "",
     };
   } catch (err) {
-    console.error("extractData error:", err); // 🔥 Add this if not present
+    // console.error("extractData error:", err); // 🔥 Add this if not present
     throw new Error(
       err.response?.data?.message || err.message || "Unexpected error"
     );
