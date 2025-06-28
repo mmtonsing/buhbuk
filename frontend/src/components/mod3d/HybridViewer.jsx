@@ -4,6 +4,7 @@ import { GLTFLoader } from "three-stdlib";
 import { OBJLoader } from "three-stdlib";
 import { STLLoader } from "three-stdlib";
 import { Suspense } from "react";
+import { useEffect, useRef } from "react";
 
 // Custom loader (centered inside container)
 function InlineLoader({ message = "Loading" }) {
@@ -64,16 +65,39 @@ function ModelLoader({ url }) {
 }
 
 export default function HybridViewer({ modelUrl }) {
+  const canvasRef = useRef();
+
+  useEffect(() => {
+    const canvas = canvasRef.current?.querySelector("canvas");
+    if (!canvas) return;
+
+    const handleContextLost = (e) => {
+      e.preventDefault();
+      console.warn("⚠️ WebGL context lost.");
+    };
+
+    canvas.addEventListener("webglcontextlost", handleContextLost, false);
+
+    return () => {
+      canvas.removeEventListener("webglcontextlost", handleContextLost);
+    };
+  }, []);
+
   return (
-    <div className="w-full h-full bg-stone-900 rounded-xl overflow-hidden relative">
-      <Canvas camera={{ position: [0, 0, 5] }}>
-        <ambientLight />
-        <directionalLight position={[5, 5, 5]} intensity={1.2} />
-        <Suspense fallback={<InlineLoader />}>
-          <ModelLoader url={modelUrl} />
-        </Suspense>
-        <OrbitControls />
-      </Canvas>
+    <div
+      ref={canvasRef}
+      className="w-full h-full bg-stone-900 rounded-xl overflow-hidden relative"
+    >
+      {modelUrl && (
+        <Canvas camera={{ position: [0, 0, 5] }}>
+          <ambientLight />
+          <directionalLight position={[5, 5, 5]} intensity={1.2} />
+          <Suspense fallback={<InlineLoader />}>
+            <ModelLoader url={modelUrl} />
+          </Suspense>
+          <OrbitControls />
+        </Canvas>
+      )}
     </div>
   );
 }
