@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SuccessModal } from "../customUI/SuccessModal";
 import { toast } from "sonner";
+import { validateUserForm } from "@/utils/validateUserForm";
+
 export function CreateUser({ onSuccess }) {
   const [user, setUser] = useState({
     username: "",
@@ -12,29 +14,27 @@ export function CreateUser({ onSuccess }) {
     confirmPassword: "",
   });
 
-  const [error, setError] = useState("");
-  const [showSuccess, setShowSuccess] = useState(false); // ✅ modal control
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  const isPasswordMatch = user.password === user.confirmPassword;
 
   function handleChange(e) {
     const { name, value } = e.target;
-    const updatedUser = { ...user, [name]: value };
-    setUser(updatedUser);
-
-    if (
-      (name === "password" || name === "confirmPassword") &&
-      updatedUser.confirmPassword &&
-      updatedUser.password === updatedUser.confirmPassword
-    ) {
-      setError("");
-    }
+    setUser((prev) => ({ ...prev, [name]: value }));
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setError("");
 
-    if (user.password !== user.confirmPassword) {
-      setError("Passwords do not match");
+    const error = validateUserForm(user, {
+      checkUsername: true,
+      checkEmail: true,
+      checkPassword: true,
+      checkConfirmPassword: true,
+    });
+
+    if (error) {
+      toast.error(`❌ ${error}`);
       return;
     }
 
@@ -45,19 +45,13 @@ export function CreateUser({ onSuccess }) {
     });
 
     if (res.success) {
-      setShowSuccess(true); // ✅ trigger modal
+      setShowSuccess(true);
       setUser({ username: "", email: "", password: "", confirmPassword: "" });
-
-      // Redirect or switch after modal disappears
-      setTimeout(() => {
-        if (onSuccess) onSuccess();
-      }, 3000); // Wait for modal to close
+      setTimeout(() => onSuccess?.(), 3000);
     } else {
       toast.error(`❌ ${res.message}`);
     }
   }
-
-  const isPasswordMatch = user.password === user.confirmPassword;
 
   return (
     <>
@@ -67,8 +61,6 @@ export function CreateUser({ onSuccess }) {
           onChange={handleChange}
           name="username"
           required
-          minLength={6}
-          maxLength={30}
           className="bg-stone-700 text-white border-stone-600"
         />
         <Input
@@ -77,8 +69,6 @@ export function CreateUser({ onSuccess }) {
           name="email"
           type="email"
           required
-          minLength={6}
-          maxLength={64}
           className="bg-stone-700 text-white border-stone-600"
         />
         <Input
@@ -87,8 +77,6 @@ export function CreateUser({ onSuccess }) {
           name="password"
           type="password"
           required
-          minLength={6}
-          maxLength={20}
           className="bg-stone-700 text-white border-stone-600"
         />
         <Input
@@ -98,14 +86,10 @@ export function CreateUser({ onSuccess }) {
           value={user.confirmPassword}
           type="password"
           required
-          minLength={6}
-          maxLength={20}
           className="bg-stone-700 text-white border-stone-600"
         />
         <p className="text-sm">
-          {error ? (
-            <span className="text-red-500">❌ {error}</span>
-          ) : user.confirmPassword.length > 0 ? (
+          {user.confirmPassword.length > 0 && (
             <span
               className={isPasswordMatch ? "text-green-500" : "text-red-500"}
             >
@@ -113,13 +97,13 @@ export function CreateUser({ onSuccess }) {
                 ? "✅ Passwords match"
                 : "❌ Passwords do not match"}
             </span>
-          ) : null}
+          )}
         </p>
         <Button type="submit" className="bg-orange-600 hover:bg-orange-700">
           Create Account
         </Button>
       </form>
-      {/* ✅ Success Modal */}
+
       <SuccessModal
         isOpen={showSuccess}
         setIsOpen={setShowSuccess}

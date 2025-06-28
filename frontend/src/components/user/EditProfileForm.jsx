@@ -1,10 +1,10 @@
-// components/user/EditProfileForm.jsx
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/context/AuthContext";
 import { getCurrentUser, updateUserDetails } from "@/api/users";
 import { EmailVerifyModal } from "@/components/customUI/EmailVerifyModal";
 import { toast } from "sonner";
+import { validateUserForm } from "@/utils/validateUserForm";
 
 export function EditProfileForm({ user, onSuccess }) {
   const { setUser: setAuthUser, refreshUser } = useAuth();
@@ -22,14 +22,21 @@ export function EditProfileForm({ user, onSuccess }) {
 
   function handleChange(e) {
     const { name, value } = e.target;
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm((prev) => ({ ...prev, [name]: value }));
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
 
-    if (form.newPassword && !isPasswordMatch) {
-      toast.error("❌ New passwords do not match");
+    const error = validateUserForm(form, {
+      checkUsername: true,
+      checkEmail: true,
+      checkCurrentPassword: true,
+      checkNewPassword: true,
+    });
+
+    if (error) {
+      toast.error(`❌ ${error}`);
       return;
     }
 
@@ -41,7 +48,7 @@ export function EditProfileForm({ user, onSuccess }) {
       const updated = await getCurrentUser();
       setAuthUser(updated);
       await refreshUser();
-      onSuccess?.(form); // pass full form back
+      onSuccess?.(form);
     } else {
       toast.error(`❌ ${res.message}`);
     }
@@ -59,8 +66,7 @@ export function EditProfileForm({ user, onSuccess }) {
           value={form.username}
           onChange={handleChange}
           placeholder="Username"
-          minLength={6}
-          maxLength={30}
+          className="bg-stone-700 text-white border-stone-600"
         />
         <Input
           name="email"
@@ -68,26 +74,23 @@ export function EditProfileForm({ user, onSuccess }) {
           onChange={handleChange}
           placeholder="Email"
           type="email"
-          minLength={6}
-          maxLength={64}
+          className="bg-stone-700 text-white border-stone-600"
         />
         <Input
           name="currentPassword"
           value={form.currentPassword}
           onChange={handleChange}
-          placeholder="Current password"
+          placeholder="Current password (mandatory to save changes)"
           type="password"
-          minLength={6}
-          maxLength={20}
+          className="bg-stone-700 text-white border-stone-600"
         />
         <Input
           name="newPassword"
           value={form.newPassword}
           onChange={handleChange}
-          placeholder="New password"
+          placeholder="New password (optional)"
           type="password"
-          minLength={6}
-          maxLength={20}
+          className="bg-stone-700 text-white border-stone-600"
         />
         <Input
           name="confirmPassword"
@@ -95,15 +98,16 @@ export function EditProfileForm({ user, onSuccess }) {
           onChange={handleChange}
           placeholder="Confirm new password"
           type="password"
-          minLength={6}
-          maxLength={20}
+          className="bg-stone-700 text-white border-stone-600"
         />
         {form.newPassword && (
           <p className="text-sm">
             {isPasswordMatch ? (
-              <span className="text-green-500">✅ Passwords match</span>
+              <span className="text-green-500">✅ New Passwords match</span>
             ) : (
-              <span className="text-red-500">❌ Passwords do not match</span>
+              <span className="text-red-500">
+                ❌ New Passwords do not match
+              </span>
             )}
           </p>
         )}
@@ -116,4 +120,3 @@ export function EditProfileForm({ user, onSuccess }) {
     </>
   );
 }
-//

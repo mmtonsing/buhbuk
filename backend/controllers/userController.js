@@ -132,6 +132,13 @@ export const updateUserDetails = asyncHandler(async (req, res) => {
   const user = await User.findById(userId);
   if (!user) return errorRes(res, "User not found", 404);
 
+  // 🛑 Require currentPassword for any change
+  if (!currentPassword)
+    return errorRes(res, "Current password is required", 400);
+
+  const isValid = await user.authenticate(currentPassword);
+  if (!isValid.user) return errorRes(res, "Incorrect current password", 400);
+
   if (username && username !== user.username) {
     const existingUsername = await User.findOne({ username });
     if (existingUsername) return errorRes(res, "Username already taken", 400);
@@ -153,9 +160,8 @@ export const updateUserDetails = asyncHandler(async (req, res) => {
     await sendVerificationEmail(email, token);
   }
 
-  if (currentPassword && newPassword) {
-    const isValid = await user.authenticate(currentPassword);
-    if (!isValid.user) return errorRes(res, "Incorrect current password", 400);
+  // ✅ Update password if requested
+  if (newPassword) {
     await user.setPassword(newPassword);
   }
 
