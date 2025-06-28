@@ -1,4 +1,3 @@
-// utils/apiHelper.js
 export async function extractData(promise) {
   try {
     const res = await promise;
@@ -13,17 +12,19 @@ export async function extractData(promise) {
       message: payload.message ?? "",
     };
   } catch (err) {
-    const status = err.response?.status;
-    const url = err.config?.url;
+    const status = err?.response?.status;
 
-    if (status === 401 && import.meta.env.DEV) {
-      console.info(`🔐 Skipped 401 for guest request(only dev): ${url}`);
-    } else {
-      console.error("❌ API Error:(only dev)", err);
+    if (status === 401) {
+      // ✅ silent for guest
+      throw new Error("Unauthorized");
     }
-    // console.error("extractData error:", err); // 🔥 Add this if not present
+
+    if (import.meta.env.DEV) {
+      console.error("❌ API Error (DEV):", err);
+    }
+
     throw new Error(
-      err.response?.data?.message || err.message || "Unexpected error"
+      err?.response?.data?.message || err.message || "Unexpected error"
     );
   }
 }
