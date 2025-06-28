@@ -12,10 +12,14 @@ export function SuccessModal({
   setIsOpen,
   message = "Changes saved!",
   duration = 2500, // ✅ allow external control
+  onClose,
 }) {
   useEffect(() => {
     if (isOpen) {
-      const timer = setTimeout(() => setIsOpen(false), duration);
+      const timer = setTimeout(() => {
+        setIsOpen(false);
+        onClose?.();
+      }, duration);
       return () => clearTimeout(timer);
     }
   }, [isOpen, duration]);
@@ -33,8 +37,8 @@ export function SuccessModal({
           leaveTo="opacity-0 scale-95"
         >
           <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-            <div className="bg-stone-800 border border-stone-700 rounded-xl px-6 py-4 shadow-xl text-center max-w-xs w-full">
-              <DialogTitle className="text-white text-lg font-medium">
+            <div className="bg-stone-800 border border-stone-700 rounded-xl px-6 py-4 shadow-xl text-center max-w-md w-full">
+              <DialogTitle className="text-white text-lg font-medium whitespace-pre-line">
                 ✅ {message}
               </DialogTitle>
             </div>

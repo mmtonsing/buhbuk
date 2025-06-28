@@ -15,6 +15,7 @@ export function CreateUser({ onSuccess }) {
   });
 
   const [showSuccess, setShowSuccess] = useState(false);
+  const [successEmail, setSuccessEmail] = useState("");
 
   const isPasswordMatch = user.password === user.confirmPassword;
 
@@ -45,9 +46,10 @@ export function CreateUser({ onSuccess }) {
     });
 
     if (res.success) {
+      setSuccessEmail(user.email);
       setShowSuccess(true);
       setUser({ username: "", email: "", password: "", confirmPassword: "" });
-      setTimeout(() => onSuccess?.(), 3000);
+      // setTimeout(() => onSuccess?.(), 3000);
     } else {
       toast.error(`❌ ${res.message}`);
     }
@@ -107,8 +109,9 @@ export function CreateUser({ onSuccess }) {
       <SuccessModal
         isOpen={showSuccess}
         setIsOpen={setShowSuccess}
-        message="Account created. Please verify your email."
-        duration={3000}
+        message={`Verification link sent to:\n📧${successEmail}\n\n📬 Check your inbox or spam folder.\n\n⏳ It might take a few minutes to arrive.\n🚀 You can explore while you wait.`}
+        duration={10000}
+        onClose={onSuccess}
       />
     </>
   );
