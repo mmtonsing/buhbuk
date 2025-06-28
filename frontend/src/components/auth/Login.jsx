@@ -13,7 +13,8 @@ import {
 export function Login() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { setUser } = useAuth();
+  // const { setUser } = useAuth();
+  const { refreshUser } = useAuth();
 
   const [formData, setFormData] = useState({
     identifier: "",
@@ -34,8 +35,10 @@ export function Login() {
     const res = await verifyUser(formData);
 
     if (res.success) {
-      const currentUser = await getCurrentUser();
-      setUser(currentUser);
+      // const currentUser = await getCurrentUser();
+      // setUser(currentUser);
+      // setUser({ username: res.username });
+      await refreshUser();
       toast.success(`👋 Welcome, ${res.username}!`);
       navigate(from, { replace: true });
       return;

@@ -12,6 +12,9 @@ export function AuthProvider({ children }) {
       const data = await getCurrentUser();
       setUser(data || null);
     } catch {
+      if (import.meta.env.DEV) {
+        console.info("Auth fetchUser: not logged in (expected for guests)");
+      }
       setUser(null);
     }
   };
