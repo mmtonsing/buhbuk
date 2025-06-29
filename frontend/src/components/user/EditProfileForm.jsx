@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
+import { getCurrentUser, updateUserDetails } from "@/api/usersApi";
 import { useAuth } from "@/context/AuthContext";
-import { getCurrentUser, updateUserDetails } from "@/api/users";
+import { Input } from "@/components/ui/input";
 import { EmailVerifyModal } from "@/components/customUI/EmailVerifyModal";
-import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import { validateUserForm } from "@/utils/validateUserForm";
+import { toast } from "sonner";
 
-export function EditProfileForm({ user, onSuccess }) {
+export function EditProfileForm({ user, onSuccess, onSubmit, onCancel }) {
   const { setUser: setAuthUser, refreshUser } = useAuth();
   const [form, setForm] = useState({
     username: user.username,
@@ -35,20 +36,16 @@ export function EditProfileForm({ user, onSuccess }) {
       checkNewPassword: true,
     });
 
-    if (error) {
-      toast.error(`❌ ${error}`);
-      return;
-    }
+    if (error) return toast.error(`❌ ${error}`);
 
     setLoading(true);
     const res = await updateUserDetails(form);
     setLoading(false);
 
     if (res.success) {
-      const updated = await getCurrentUser();
-      setAuthUser(updated);
       await refreshUser();
       onSuccess?.(form);
+      onSubmit?.();
     } else {
       toast.error(`❌ ${res.message}`);
     }
@@ -111,6 +108,22 @@ export function EditProfileForm({ user, onSuccess }) {
             )}
           </p>
         )}
+        <div className="mt-6 flex justify-end gap-4">
+          <Button
+            form="edit-profile-form"
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-500 text-white"
+          >
+            Save Changes
+          </Button>
+          <Button
+            onClick={onCancel}
+            className="bg-stone-600 hover:bg-stone-500 text-white"
+            type="button"
+          >
+            Cancel
+          </Button>
+        </div>
       </form>
 
       <EmailVerifyModal

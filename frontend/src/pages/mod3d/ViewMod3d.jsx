@@ -1,13 +1,13 @@
-import { getMod3d, deleteMod3d } from "../../api/mod3ds";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { PlayCircle, Box, X } from "lucide-react";
+import { getMod3d, deleteMod3d } from "@/api/mod3dsApi";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
-import { UserBadge } from "../user/UserBadge";
+import { UserBadge } from "@/components/user/UserBadge";
 import { ConfirmModal } from "@/components/customUI/DeleteConfirmModal";
 import { DownloadButton } from "@/components/general/DownloadButton";
 import { VideoPreviewModal } from "@/components/general/VideoPreviewModal";
-import { PlayCircle, Box, X } from "lucide-react";
 import Loader from "@/components/customUI/Loader";
 import HybridViewer from "@/components/mod3d/HybridViewer";
 import { getRenderableModelFile } from "@/utils/getRenderableModelFile";

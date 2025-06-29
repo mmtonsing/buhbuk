@@ -1,7 +1,6 @@
-import { getPublicMod3ds } from "../../api/mod3ds";
 import { useState, useEffect } from "react";
-import { ModCard } from "../../components/mod3d/Mod3dCard";
-import { sortByDateCreated } from "../../utils/sortByDate";
+import { getPublicPosts } from "@/api/postsApi";
+import { ModCard } from "@/components/mod3d/Mod3dCard";
 import { SkeletonCard } from "@/components/customUI/SkeletonCard";
 
 export function Home3d() {
@@ -11,9 +10,8 @@ export function Home3d() {
   useEffect(() => {
     async function loadMod3ds() {
       try {
-        const data = await getPublicMod3ds();
-        const sorted = sortByDateCreated(data);
-        setMod3ds(sorted);
+        const posts = await getPublicPosts({ category: "Mod3d" });
+        setMod3ds(posts);
       } catch (err) {
         console.error("Failed to load models:", err);
       } finally {
@@ -50,8 +48,8 @@ export function Home3d() {
         All 3D Models
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-        {mod3ds.map((mod3d) => (
-          <ModCard key={mod3d._id} mod3d={mod3d} />
+        {mod3ds.map((post) => (
+          <ModCard key={post._id} post={post} />
         ))}
       </div>
     </div>

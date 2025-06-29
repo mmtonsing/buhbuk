@@ -46,11 +46,11 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  --color-warmbg: #FFF8F0;
-  --color-warmtext: #5C3D2E;
-  --color-warmaccent: #EBDCCB;
-  --color-deepbrown: #3B2F2F;
-  --color-fadedbrown: #6B4F3F;
+  --color-warmbg: #fff8f0;
+  --color-warmtext: #5c3d2e;
+  --color-warmaccent: #ebdccb;
+  --color-deepbrown: #3b2f2f;
+  --color-fadedbrown: #6b4f3f;
   --color-pinky: #ffafcc;
 }
 
@@ -77,7 +77,7 @@
   --accent: oklch(0.967 0.001 286.375);
   --accent-foreground: oklch(0.21 0.006 285.885);
 
-  --gray: oklch(0.554 0.046 257.417)
+  --gray: oklch(0.554 0.046 257.417);
 
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.92 0.004 286.32);

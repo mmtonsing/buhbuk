@@ -1,25 +1,15 @@
 import axiosInstance from "./axiosInstance";
 import { extractData } from "../utils/apiHelper";
 
-// 🔍 Public models
-export async function getPublicMod3ds() {
+// ⬆️ Upload model
+export async function uploadMod3d(payload) {
   try {
-    const { data } = await extractData(axiosInstance.get("/mod3ds/public"));
-    return data;
+    const { data, message } = await extractData(
+      axiosInstance.post("/mod3ds", payload)
+    );
+    return { success: true, data, message };
   } catch (err) {
-    console.error("⚠️ Error fetching public mod3ds:", err.message);
-    return [];
-  }
-}
-
-// 🔍 All models
-export async function getMod3ds() {
-  try {
-    const { data } = await extractData(axiosInstance.get("/mod3ds"));
-    return data;
-  } catch (err) {
-    console.error("⚠️ Error fetching mod3ds:", err.message);
-    throw err;
+    return { success: false, message: err.message };
   }
 }
 
@@ -31,18 +21,6 @@ export async function getMod3d(id) {
   } catch (err) {
     console.error("⚠️ Error fetching mod3d:", err.message);
     throw err;
-  }
-}
-
-// ⬆️ Upload model
-export async function uploadMod3d(payload) {
-  try {
-    const { data, message } = await extractData(
-      axiosInstance.post("/mod3ds", payload)
-    );
-    return { success: true, data, message };
-  } catch (err) {
-    return { success: false, message: err.message };
   }
 }
 
@@ -69,3 +47,25 @@ export async function deleteMod3d(id) {
     return { success: false, message: err.message };
   }
 }
+
+// // 🔍 Public models
+// export async function getPublicMod3ds() {
+//   try {
+//     const { data } = await extractData(axiosInstance.get("/mod3ds/public"));
+//     return data;
+//   } catch (err) {
+//     console.error("⚠️ Error fetching public mod3ds:", err.message);
+//     return [];
+//   }
+// }
+
+// // 🔍 All models
+// export async function getMod3ds() {
+//   try {
+//     const { data } = await extractData(axiosInstance.get("/mod3ds"));
+//     return data;
+//   } catch (err) {
+//     console.error("⚠️ Error fetching mod3ds:", err.message);
+//     throw err;
+//   }
+// }

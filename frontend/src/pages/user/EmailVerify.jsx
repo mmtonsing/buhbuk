@@ -1,15 +1,14 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axiosInstance from "@/api/axiosInstance";
-import { getCurrentUser } from "@/api/users";
 import { useAuth } from "@/context/AuthContext";
+import axiosInstance from "@/api/axiosInstance";
 
 export default function EmailVerify() {
   const { token } = useParams();
   const [message, setMessage] = useState("Verifying...");
   const navigate = useNavigate();
   const didVerify = useRef(false);
-  const { setUser } = useAuth(); // ✅ get setUser from context
+  const { refreshUser } = useAuth();
 
   useEffect(() => {
     if (didVerify.current) return; // guard against the second invocation
@@ -18,10 +17,7 @@ export default function EmailVerify() {
       try {
         const res = await axiosInstance.get(`/user/verify/${token}`);
         setMessage(res.data.message || "✅ Email verified, You can now login.");
-
-        const updated = await getCurrentUser();
-        if (updated) setUser(updated);
-        // await refreshUser(); // ✅ re-fetch current user
+        await refreshUser();
       } catch (err) {
         const msg =
           err.response?.data?.message ||

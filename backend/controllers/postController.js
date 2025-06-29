@@ -26,10 +26,22 @@ export const createPost = asyncHandler(async (req, res) => {
 
 //#region 🔍 Public Posts (Preview & Feed)
 export const getPublicPosts = asyncHandler(async (req, res) => {
-  const posts = await Post.find({ isPublic: true })
+  const { category, tag, sort = "latest", limit } = req.query;
+
+  const filter = { isPublic: true };
+  if (category) filter.category = category;
+  if (tag) filter.tags = tag;
+
+  let query = Post.find(filter)
     .populate("author", "username profilePic")
-    .populate({ path: "refId", select: "-__v" })
-    .sort({ createdAt: -1 });
+    .populate({ path: "refId", select: "-__v" });
+
+  const parsedLimit = parseInt(limit, 10);
+  if (!isNaN(parsedLimit)) {
+    query = query.limit(parsedLimit);
+  }
+
+  let posts = await query;
 
   const validPosts = posts
     .filter((post) => post.refId)
@@ -44,6 +56,22 @@ export const getPublicPosts = asyncHandler(async (req, res) => {
         videoUrl: enriched.videoUrl || null,
       };
     });
+
+  // Sorting (same as before)
+  if (sort === "trending") {
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+    validPosts.sort((a, b) => {
+      const aRecent = new Date(a.createdAt) > oneWeekAgo;
+      const bRecent = new Date(b.createdAt) > oneWeekAgo;
+      const aScore = (a.likedBy?.length || 0) + (aRecent ? 5 : 0);
+      const bScore = (b.likedBy?.length || 0) + (bRecent ? 5 : 0);
+      return bScore - aScore;
+    });
+  } else {
+    validPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  }
 
   return successRes(res, { posts: validPosts }, "Fetched public posts");
 });
@@ -87,7 +115,7 @@ export const getPaginatedPosts = asyncHandler(async (req, res) => {
 });
 //#endregion
 
-//#region 📄 Get Posts
+//#region 📄 Get Posts By User
 export const getPostsByUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
 

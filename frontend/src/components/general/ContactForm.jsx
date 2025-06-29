@@ -21,7 +21,7 @@ const ContactForm = () => {
   };
 
   return (
-    <div className="max-w-xl mx-auto p-6 mt-10 bg-stone-800 text-stone-100 rounded-2xl shadow-lg">
+    <div className="w-full mx-auto p-6 mt-10 bg-stone-800 text-stone-100 rounded-2xl shadow-lg">
       <h2 className="text-3xl font-bold mb-4 text-center text-orange-400">
         🧡 Send a Message to the Nest
       </h2>

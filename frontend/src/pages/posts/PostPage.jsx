@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
+import { Sparkles } from "lucide-react"; // optional icon for flair
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Sparkles } from "lucide-react"; // optional icon for flair
 
 const categories = [
   {

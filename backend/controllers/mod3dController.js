@@ -76,6 +76,10 @@ export const uploadModel = asyncHandler(async (req, res) => {
     price: price || 0,
   });
 
+  // ✅ Link postId
+  mod3d.postId = post._id;
+  await mod3d.save();
+
   await Mod3d.updateOne({ _id: mod3d._id }, { postId: post._id });
 
   return successRes(
@@ -87,34 +91,34 @@ export const uploadModel = asyncHandler(async (req, res) => {
 //#endregion
 
 //#region 🟢 Retrieve All
-export const retrieveAllPublic = asyncHandler(async (req, res) => {
-  const publicMods = await Mod3d.find({
-    $or: [{ isPublic: true }, { isPublic: { $exists: false } }],
-  })
-    .sort({ createdAt: -1 })
-    .populate("author", "username email profilePic emailVerified");
+// export const retrieveAllPublic = asyncHandler(async (req, res) => {
+//   const publicMods = await Mod3d.find({
+//     $or: [{ isPublic: true }, { isPublic: { $exists: false } }],
+//   })
+//     .sort({ createdAt: -1 })
+//     .populate("author", "username email profilePic emailVerified");
 
-  const enriched = await Promise.all(
-    publicMods.map(async (mod) => {
-      const enrichedMod = resolveMediaUrls(mod);
-      const enrichedAuthor = resolveUserUrls(mod.author);
+//   const enriched = await Promise.all(
+//     publicMods.map(async (mod) => {
+//       const enrichedMod = resolveMediaUrls(mod);
+//       const enrichedAuthor = resolveUserUrls(mod.author);
 
-      const post = await Post.findOne({
-        category: "Mod3d",
-        refId: mod._id,
-      }).select("_id likedBy");
+//       const post = await Post.findOne({
+//         category: "Mod3d",
+//         refId: mod._id,
+//       }).select("_id likedBy");
 
-      return {
-        ...enrichedMod,
-        postId: post?._id || null,
-        likedBy: post?.likedBy || [],
-        author: enrichedAuthor,
-      };
-    })
-  );
+//       return {
+//         ...enrichedMod,
+//         postId: post?._id || null,
+//         likedBy: post?.likedBy || [],
+//         author: enrichedAuthor,
+//       };
+//     })
+//   );
 
-  return successRes(res, enriched, "Fetched public models");
-});
+//   return successRes(res, enriched, "Fetched public models");
+// });
 
 export const retrieveAll = asyncHandler(async (req, res) => {
   const mod3ds = await Mod3d.find().populate(

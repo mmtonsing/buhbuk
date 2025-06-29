@@ -1,6 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment } from "react";
 
 export function EmailVerifyModal({ isOpen, setIsOpen }) {
   useEffect(() => {

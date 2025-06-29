@@ -33,17 +33,6 @@ export async function updateUserDetails(data) {
   }
 }
 
-// Delete user
-export async function deleteUser(id) {
-  try {
-    const { data } = await extractData(axiosInstance.delete(`/user/${id}`));
-    return data;
-  } catch (err) {
-    console.error("Error deleting user:", err);
-    return null;
-  }
-}
-
 // Login / Verify user
 export async function verifyUser(user) {
   try {
@@ -69,17 +58,6 @@ export async function logoutUser() {
     await extractData(axiosInstance.post("/user/logout"));
   } catch (err) {
     console.error("Logout failed:", err);
-  }
-}
-
-// Get user posts
-export async function getUserPosts(id) {
-  try {
-    const { data } = await extractData(axiosInstance.get(`/user/${id}/posts`));
-    return data.posts || [];
-  } catch (err) {
-    console.error("Unable to retrieve User Posts", err);
-    return [];
   }
 }
 
@@ -120,5 +98,16 @@ export async function getUsers() {
   } catch (err) {
     console.error("Error fetching users:", err);
     return [];
+  }
+}
+
+// Delete user
+export async function deleteUser(id) {
+  try {
+    const { data } = await extractData(axiosInstance.delete(`/user/${id}`));
+    return data;
+  } catch (err) {
+    console.error("Error deleting user:", err);
+    return null;
   }
 }

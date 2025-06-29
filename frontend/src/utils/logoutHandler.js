@@ -1,4 +1,4 @@
-import { logoutUser, getCurrentUser } from "../api/users";
+import { logoutUser, getCurrentUser } from "../api/usersApi";
 import { toast } from "sonner";
 
 export async function handleLogout(navigate, setUser) {

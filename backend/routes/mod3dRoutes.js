@@ -5,7 +5,7 @@ import * as mod3d from "../controllers/mod3dController.js";
 const router = express.Router();
 
 // GET: Latest public 3D models for home page
-router.get("/public", mod3d.retrieveAllPublic);
+// router.get("/public", mod3d.retrieveAllPublic);
 
 router
   .route("/")

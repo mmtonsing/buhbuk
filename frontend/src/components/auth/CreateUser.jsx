@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { createUser } from "../../api/users";
+import { createUser } from "@/api/usersApi";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SuccessModal } from "../customUI/SuccessModal";
-import { toast } from "sonner";
 import { validateUserForm } from "@/utils/validateUserForm";
+import { toast } from "sonner";
 
 export function CreateUser({ onSuccess }) {
   const [user, setUser] = useState({

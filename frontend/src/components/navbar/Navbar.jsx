@@ -1,15 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
-import { handleLogout } from "../../utils/logoutHandler";
-import { useAuth } from "../../context/AuthContext";
-import { useScrollTrigger } from "../../utils/useScrollTrigger";
-import { DesktopNav } from "./DesktopNav";
-import DesktopUser from "./DesktopUser";
-import MobileNav from "./MobileNavSheet";
-import { MobileBottomNav } from "./MobileBottomNav";
+import { useAuth } from "@/context/AuthContext";
+import { handleLogout } from "@/utils/logoutHandler";
+import { useScrollTrigger } from "@/utils/useScrollTrigger";
+import { DesktopNav } from "./desktop/DesktopNav";
+import DesktopUser from "./desktop/DesktopUser";
+import MobileNav from "./mobile/MobileNavSheet";
+import { MobileBottomNav } from "./mobile/mobileBottomNav";
 import { HutIcon } from "../../assets/HutIcon";
 
 export function Navbar() {
-  const { user, setUser } = useAuth();
+  const { setUser } = useAuth();
   const navigate = useNavigate();
   const scrolled = useScrollTrigger(20); // adds shadow after scroll
 
@@ -25,7 +25,7 @@ export function Navbar() {
           : "bg-gradient-to-r from-[#4b2e2b] to-[#6b4226] text-stone-100"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         {/* Logo + Title */}
         {/* <div className="flex items-center gap-3">
           <HutIcon className="w-10 h-10 text-green-600 drop-shadow-md" />

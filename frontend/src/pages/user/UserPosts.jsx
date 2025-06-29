@@ -1,11 +1,11 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { getUserPosts } from "@/api/postsApi";
 import { PostCard } from "@/components/posts/PostCard";
-import { SkeletonCard } from "../../components/customUI/SkeletonCard";
-import { getUserPosts } from "../../api/posts";
-import { CATEGORY_LABELS } from "@/utils/constants";
+import { SkeletonCard } from "@/components/customUI/SkeletonCard";
 import { CategoryFilter } from "@/components/general/CategoryFilter";
 import { Label } from "@/components/ui/label";
+import { CATEGORY_LABELS } from "@/utils/constants";
 
 export function UserPosts() {
   const { id } = useParams();

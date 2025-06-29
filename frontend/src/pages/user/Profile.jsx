@@ -1,23 +1,22 @@
 import { useState, useEffect } from "react";
+import { Plus, Edit } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import { getCurrentUser } from "@/api/users.js";
-import { getMyPosts } from "@/api/posts";
-import { sortByDateCreated } from "@/utils/sortByDate";
+import { getMyPosts } from "@/api/postsApi";
 import { PostCard } from "@/components/posts/PostCard";
 import { SkeletonCard } from "@/components/customUI/SkeletonCard";
-import { Plus, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import ProfilePicUploader from "@/components/user/ProfilePicUploader";
 import { EditProfileForm } from "@/components/user/EditProfileForm";
-import { SuccessModal } from "@/components/customUI/SuccessModal"; // 👈
+import { SuccessModal } from "@/components/customUI/SuccessModal";
 import { EmailVerifyModal } from "@/components/customUI/EmailVerifyModal";
 import { CategoryFilter } from "@/components/general/CategoryFilter";
 import { CATEGORY_LABELS } from "@/utils/constants";
+import { sortByDateCreated } from "@/utils/sortByDate";
 
 export function Profile() {
-  const { user, setUser, loading } = useAuth();
+  const { user, setUser, loading, refreshUser } = useAuth();
   const [posts, setPosts] = useState([]);
   const [showEditForm, setShowEditForm] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -31,6 +30,7 @@ export function Profile() {
       if (!user?.id) return;
       try {
         const data = await getMyPosts();
+        console.log("Updated posts after profile pic change:", data.posts);
         setPosts(sortByDateCreated(data.posts));
       } catch (err) {
         console.error("Failed to load user posts:", err);
@@ -71,10 +71,8 @@ export function Profile() {
               currentPic={user.profilePic}
               onUploadSuccess={async () => {
                 try {
-                  const updatedUser = await getCurrentUser();
+                  await refreshUser();
                   const { posts: updatedPosts } = await getMyPosts();
-
-                  setUser(updatedUser);
                   setPosts(sortByDateCreated(updatedPosts));
                 } catch (err) {
                   console.error(
@@ -154,13 +152,12 @@ export function Profile() {
               Edit Your Info
             </h3>
 
+            {/* Edit User Profile */}
             <EditProfileForm
               user={user}
               onSuccess={async (form) => {
-                const updatedUser = await getCurrentUser();
+                await refreshUser();
                 const { posts: updatedPosts } = await getMyPosts();
-
-                setUser(updatedUser);
                 setPosts(sortByDateCreated(updatedPosts));
                 setShowEditForm(false);
                 setShowSuccessModal(true); // ✅ trigger first
@@ -172,24 +169,9 @@ export function Profile() {
                   }, 1000);
                 }
               }}
+              onSubmit={() => setShowEditForm(false)} // closes modal
+              onCancel={() => setShowEditForm(false)} // ✅ this will now handle Cancel
             />
-
-            <div className="mt-6 flex justify-end gap-4">
-              <Button
-                form="edit-profile-form"
-                type="submit"
-                className="bg-blue-600 hover:bg-blue-500 text-white"
-              >
-                Save Changes
-              </Button>
-              <Button
-                onClick={() => setShowEditForm(false)}
-                className="bg-stone-600 hover:bg-stone-500 text-white"
-                type="button"
-              >
-                Cancel
-              </Button>
-            </div>
           </div>
         </div>
       )}

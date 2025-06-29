@@ -5,7 +5,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Compass } from "lucide-react";
-import { ExploreRedirectButton } from "./ExploreRedirectButton";
+import { ExploreRedirectButton } from "../ExploreRedirectButton";
 import { useState } from "react";
 
 export function MobileExplorePopover() {

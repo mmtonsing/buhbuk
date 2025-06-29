@@ -12,13 +12,11 @@ export function SuccessModal({
   setIsOpen,
   message = "Changes saved!",
   duration = 2500, // ✅ allow external control
-  onClose,
 }) {
   useEffect(() => {
     if (isOpen) {
       const timer = setTimeout(() => {
         setIsOpen(false);
-        onClose?.();
       }, duration);
       return () => clearTimeout(timer);
     }

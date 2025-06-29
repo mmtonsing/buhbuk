@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { createFile } from "@/api/fileApi";
-import { updateProfilePic } from "@/api/users";
+import { updateProfilePic } from "@/api/usersApi";
 import { toast } from "sonner";
 import { Pencil } from "lucide-react";
 

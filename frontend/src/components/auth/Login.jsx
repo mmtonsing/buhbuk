@@ -1,14 +1,10 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
+import { verifyUser, resendVerification } from "@/api/usersApi";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { useAuth } from "../../context/AuthContext";
-import {
-  getCurrentUser,
-  verifyUser,
-  resendVerification,
-} from "../../api/users";
 
 export function Login() {
   const navigate = useNavigate();

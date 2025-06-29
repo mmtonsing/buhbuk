@@ -8,6 +8,7 @@ const Mod3dSchema = new Schema(
     description: String,
     price: Number,
     isPublic: { type: Boolean, default: true }, // ✅ added earlier
+
     postId: { type: Schema.Types.ObjectId, ref: "Post" }, // ✅ add this
 
     imageId: { type: String, required: true },

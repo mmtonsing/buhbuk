@@ -10,7 +10,11 @@ export function UserBadge({ user, className = "" }) {
     >
       <div className="w-6 h-6 rounded-full overflow-hidden bg-stone-900 border border-stone-600 flex items-center justify-center group-hover:border-blue-400">
         <img
-          src={user.profilePicUrl || "/avatar.jpg"}
+          src={
+            user.profilePicUrl
+              ? `${user.profilePicUrl}?t=${new Date().getTime()}`
+              : "/avatar.jpg"
+          }
           alt="User avatar"
           className="w-full h-full object-cover"
           onError={(e) => {

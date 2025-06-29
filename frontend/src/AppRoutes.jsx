@@ -1,25 +1,23 @@
-// AppRoutes.jsx
-// import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { Toaster } from "sonner";
 import { useAuth } from "./context/AuthContext";
 import Loader from "./components/customUI/Loader";
-import { About } from "./pages/static/About";
-import { Contact } from "./pages/static/Contact";
-import { Landing } from "./pages/main/Landing";
+import { About } from "./pages/main/About";
+import { Contact } from "./pages/main/Contact";
+import { Landing } from "./pages/user/Landing";
 import { Home3d } from "./pages/mod3d/Home3d";
-import { Profile } from "./pages/main/Profile";
+import { Profile } from "./pages/user/Profile";
 import { ViewMod3d } from "./pages/mod3d/ViewMod3d";
 import { UploadMod3d } from "./pages/mod3d/UploadMod3d";
 import { Layout } from "./components/layout/Layout";
 import { UserPosts } from "./pages/user/UserPosts";
 import { Home } from "./pages/main/Home";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
-import { ComingSoon } from "./pages/ComingSoon";
-import { PostPage } from "./pages/main/PostPage";
+import { ComingSoon } from "./pages/main/ComingSoon";
+import { PostPage } from "./pages/posts/PostPage";
 import { EditMod3d } from "./pages/mod3d/EditMod3d";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Feed from "./pages/main/Feed";
-import ViewPost from "./pages/main/ViewPost";
+import Feed from "./pages/posts/Feed";
+import ViewPost from "./pages/posts/ViewPost";
 import EmailVerify from "./pages/user/EmailVerify";
 
 export function AppRoutes() {

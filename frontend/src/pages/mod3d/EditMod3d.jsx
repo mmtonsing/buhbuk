@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getMod3d, editMod3d } from "../../api/mod3ds";
-import { createFile } from "@/api/fileApi";
-import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
+import { getMod3d, editMod3d } from "@/api/mod3dsApi";
+import { createFile } from "@/api/fileApi";
 import { MessageBanner } from "@/components/customUI/MessageBanner";
 import Loader from "@/components/customUI/Loader";
 import { Label } from "@/components/ui/label";
 import InfoTooltip from "@/components/customUI/InfoToolTip.jsx";
+import { Button } from "@/components/ui/button";
 
 export function EditMod3d() {
   const { id } = useParams();

@@ -1,15 +1,15 @@
 import { useState, useRef } from "react";
-import { uploadMod3d } from "../../api/mod3ds";
+import { useNavigate } from "react-router-dom";
+import { uploadMod3d } from "@/api/mod3dsApi";
+import { createFile } from "@/api/fileApi";
+import { getFileExtension } from "@/utils/fileValidators";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { MessageBanner } from "@/components/customUI/MessageBanner";
 import Loader from "@/components/customUI/Loader";
-import { useNavigate } from "react-router-dom";
-import { createFile } from "@/api/fileApi";
 import InfoTooltip from "@/components/customUI/InfoToolTip.jsx";
-import { getFileExtension } from "@/utils/fileValidators";
 
 export function UploadMod3d() {
   const [title, setTitle] = useState("");

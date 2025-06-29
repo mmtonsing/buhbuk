@@ -1,6 +1,6 @@
 import { Heart } from "lucide-react";
 import { useState } from "react";
-import { togglePostLike } from "@/api/posts"; // ✅ correct API
+import { togglePostLike } from "@/api/postsApi"; // ✅ correct API
 import { useNavigate } from "react-router-dom";
 
 export function LikeButton({

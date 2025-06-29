@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getLatestPosts } from "@/api/posts";
+import { getPublicPosts } from "@/api/postsApi";
 import { PostCard } from "@/components/posts/PostCard";
 import { SkeletonCard } from "@/components/customUI/SkeletonCard";
 
@@ -10,7 +10,7 @@ export default function Feed() {
   useEffect(() => {
     async function fetchLatestPosts() {
       try {
-        const posts = await getLatestPosts();
+        const posts = await getPublicPosts();
         setPosts(posts);
       } catch (err) {
         console.error("Failed to fetch latest posts", err);

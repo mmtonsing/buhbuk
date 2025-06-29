@@ -4,7 +4,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
-import { ExploreRedirectButton } from "./ExploreRedirectButton";
+import { ExploreRedirectButton } from "../ExploreRedirectButton";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 

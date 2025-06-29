@@ -1,8 +1,8 @@
-import { CreateUser } from "../../components/auth/CreateUser";
-import { Login } from "../../components/auth/Login";
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
 import { useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { CreateUser } from "@/components/auth/CreateUser";
+import { Login } from "@/components/auth/Login";
+import { Button } from "@/components/ui/button";
 import { MessageBanner } from "@/components/customUI/MessageBanner";
 
 export function Landing() {

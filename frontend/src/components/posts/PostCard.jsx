@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
-import { UserBadge } from "@/pages/user/UserBadge";
+import { useAuth } from "@/context/AuthContext";
 import LikeHandler from "@/context/LikeHandler";
+import { UserBadge } from "@/components/user/UserBadge";
 import { timeAgo } from "@/utils/timeAgo";
 
 export function PostCard({ post }) {
@@ -55,7 +56,12 @@ export function PostCard({ post }) {
 
       <div className="px-4 pb-4 space-y-2">
         <div className="flex items-center justify-between text-xs text-stone-400 pt-1">
-          {author && <UserBadge user={author} />}
+          {author && (
+            <UserBadge
+              key={`${post._id}-${author.profilePicUrl}`}
+              user={author}
+            />
+          )}
           {refId._id && <LikeHandler postId={_id} likedBy={post.likedBy} />}
         </div>
 
