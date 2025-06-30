@@ -5,9 +5,9 @@ import { PostCard } from "@/components/posts/PostCard";
 import { Button } from "@/components/ui/button";
 
 const SORT_OPTIONS = [
+  { value: "trending", label: "Trending" },
   { value: "latest", label: "Latest" },
   { value: "popular", label: "Popular" },
-  { value: "trending", label: "Trending" },
 ];
 
 export default function Feed() {

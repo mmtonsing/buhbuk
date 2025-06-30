@@ -30,7 +30,7 @@ export default function DesktopUser() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="hidden md:flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium text-stone-100 hover:bg-stone-800 hover:text-orange-300 transition-colors">
-        <User className="h-5 w-5 text-orange-300" />
+        <User className="h-5 w-5 text-green-500" />
         <span>{user.username}</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent
@@ -44,9 +44,9 @@ export default function DesktopUser() {
         <DropdownMenuItem onClick={() => navigate("/profile")}>
           Profile
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => navigate("/settings")}>
+        {/* <DropdownMenuItem onClick={() => navigate("/settings")}>
           Settings
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
         <DropdownMenuSeparator className="bg-stone-700" />
         <DropdownMenuItem
           onClick={handleLogout}
