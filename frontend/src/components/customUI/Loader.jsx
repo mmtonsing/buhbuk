@@ -1,5 +1,5 @@
 export default function Loader({
-  message = "Loading BukWarm...",
+  message = "Loading BuhBuk...",
   size = "h-16 w-16",
   color = "border-blue-500 text-blue-600",
   overlay = false,

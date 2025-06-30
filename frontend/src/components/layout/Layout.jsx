@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 
 export function Layout() {
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex justify-center w-screen mt-20 pb-[4.5rem] md:pb-0">
         <Outlet />
@@ -14,7 +14,7 @@ export function Layout() {
           <p>© {new Date().getFullYear()} BuhBuk. All rights reserved.</p>
         </div>
       </footer>
-    </>
+    </div>
   );
 }
 // mt-[7.5rem] xl:mt-20 //xl+-> mt-20 small to large screen- mt 7.5rem i.e.30
