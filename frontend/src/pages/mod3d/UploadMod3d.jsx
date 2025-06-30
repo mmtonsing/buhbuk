@@ -172,7 +172,7 @@ export function UploadMod3d() {
     );
 
   return (
-    <div className="w-full max-w-3xl mx-auto px-4 py-10 bg-stone-900 min-h-screen text-stone-100">
+    <div className="flex flex-col flex-1 w-full h-auto max-w-3xl mx-auto px-4 py-4 bg-stone-1000 text-stone-100">
       {message && (
         <MessageBanner
           message={message.text}

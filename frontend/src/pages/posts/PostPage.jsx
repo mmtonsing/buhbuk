@@ -25,7 +25,7 @@ export function PostPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col min-h-screen w-full bg-gradient-to-b from-stone-900 to-stone-950 text-white py-14 px-6">
+    <div className="flex flex-col flex-1 w-full h-auto bg-gradient-to-b from-stone-900 to-stone-950 text-white py-14 px-6">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-extrabold tracking-tight mb-2">
           Create a New Post

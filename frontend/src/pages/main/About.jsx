@@ -2,9 +2,9 @@ import { CardAction } from "@/components/ui/card";
 
 export function About() {
   return (
-    <div className="flex flex-col min-h-screen w-screen bg-stone-900 text-stone-200">
+    <div className="flex flex-col flex-1 w-full h-auto bg-stone-900 text-stone-200">
       <div className="scroll-mt-20 py-16 bg-stone-800 flex-1">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-center text-5xl font-extrabold tracking-tight text-[#d5bdaf] mb-10">
             About BuhBuk
           </h1>

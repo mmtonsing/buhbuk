@@ -62,7 +62,7 @@ export function ViewMod3d() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-stone-900 text-stone-100 px-4 py-10">
+    <div className="flex flex-col flex-1 min-h-screen w-full bg-stone-900 text-stone-100 px-4 py-10">
       <div className="max-w-3xl mx-auto bg-stone-800 rounded-xl shadow-lg p-6 border border-stone-700">
         <div className="flex justify-between items-center mb-4">
           <Button onClick={() => navigate(-1)} variant="outline">

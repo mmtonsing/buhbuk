@@ -47,7 +47,7 @@ export function Home3d() {
   const handleLoadMore = () => loadMod3ds(page + 1);
 
   return (
-    <div className="flex flex-col min-h-screen w-full max-w-7xl mx-auto px-4 py-10">
+    <div className="flex flex-col flex-1 min-h-screen w-full max-w-7xl mx-auto px-4 py-10">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-3xl font-bold text-stone-100">All 3D Models</h2>
         <div className="mb-6 flex justify-end gap-4">
