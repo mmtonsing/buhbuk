@@ -40,9 +40,40 @@ export function Home() {
 
   return (
     <div className="flex flex-col min-h-screen w-screen bg-stone-900 text-stone-200">
-      <section
+      {/* HomeBanner */}
+      <section className="relative w-full h-[70vh] md:h-[80vh] lg:h-[90vh] text-white overflow-hidden">
+        {/* Full Image */}
+        <img
+          src="/homebackground.JPG"
+          alt="Background"
+          className="absolute inset-0 w-full h-full object-cover object-center"
+        />
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/60" />
+        {/* Foreground content */}
+        <div className="relative z-10 flex items-center justify-center h-full px-4">
+          <div className="max-w-3xl text-center">
+            <h1 className="text-5xl font-extrabold mb-4 tracking-tight drop-shadow-lg">
+              Welcome to BuhBuk
+            </h1>
+            <p className="text-xl mb-4">
+              BuhBuk is our granary of creativity. Whether you create, explore,
+              or support
+            </p>
+            <p className="text-xl mb-4">— you belong here —</p>
+            <h2 className="text-lg mb-8 italic text-amber-200">
+              Where every story, sketch, and spark finds a home.
+            </h2>
+          </div>
+        </div>
+      </section>
+
+      {/* <section
         id="welcome"
         className="scroll-mt-20 bg-gradient-to-r from-[#4b2e2b] to-[#6b4226] text-stone-100 py-20"
+        style={{
+          backgroundImage: `url('/homebackground.jpg')`,
+        }}
       >
         <div className="max-w-3xl mx-auto text-center px-4">
           <h1 className="text-5xl font-extrabold mb-4 tracking-tight drop-shadow-lg">
@@ -57,7 +88,7 @@ export function Home() {
             Where every story, sketch, and spark finds a home.
           </h2>
         </div>
-      </section>
+      </section> */}
 
       {/* 🔥 Trending Posts */}
       <section className="py-16 bg-stone-800">
