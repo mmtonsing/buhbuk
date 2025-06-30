@@ -22,7 +22,7 @@ export function Navbar() {
       <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         <Link
           to="/about"
-          className="flex items-center gap-3 text-2xl font-extrabold bg-gradient-to-r from-[#d3c3b9] to-[#b9aaa1] bg-clip-text text-transparent tracking-wide"
+          className="flex items-center gap-3 text-3xl font-extrabold bg-gradient-to-r from-[#d3c3b9] to-[#b9aaa1] bg-clip-text text-transparent tracking-wide"
         >
           <img
             src={logo}
