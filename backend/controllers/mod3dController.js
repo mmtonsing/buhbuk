@@ -39,11 +39,7 @@ export const uploadModel = asyncHandler(async (req, res) => {
     modelFiles = [],
   } = req.body;
 
-  // const imageUrl = getS3PublicUrl(
-  //   imageId.startsWith("public/") ? imageId : `public/${imageId}`
-  // );
-
-  const imageUrl = getS3PublicUrl(imageId);
+  // const imageUrl = getS3PublicUrl(imageId);
 
   const mod3d = new Mod3d({
     title,
@@ -69,8 +65,7 @@ export const uploadModel = asyncHandler(async (req, res) => {
     category: "Mod3d",
     refId: mod3d._id,
     author: userId,
-    title,
-    imageUrl,
+    // imageUrl,
     isPublic: true,
     isPremium,
     price: price || 0,
@@ -87,55 +82,6 @@ export const uploadModel = asyncHandler(async (req, res) => {
     { ...mod3d.toObject(), postId: post._id },
     "3D model uploaded successfully"
   );
-});
-//#endregion
-
-//#region 🟢 Retrieve All
-// export const retrieveAllPublic = asyncHandler(async (req, res) => {
-//   const publicMods = await Mod3d.find({
-//     $or: [{ isPublic: true }, { isPublic: { $exists: false } }],
-//   })
-//     .sort({ createdAt: -1 })
-//     .populate("author", "username email profilePic emailVerified");
-
-//   const enriched = await Promise.all(
-//     publicMods.map(async (mod) => {
-//       const enrichedMod = resolveMediaUrls(mod);
-//       const enrichedAuthor = resolveUserUrls(mod.author);
-
-//       const post = await Post.findOne({
-//         category: "Mod3d",
-//         refId: mod._id,
-//       }).select("_id likedBy");
-
-//       return {
-//         ...enrichedMod,
-//         postId: post?._id || null,
-//         likedBy: post?.likedBy || [],
-//         author: enrichedAuthor,
-//       };
-//     })
-//   );
-
-//   return successRes(res, enriched, "Fetched public models");
-// });
-
-export const retrieveAll = asyncHandler(async (req, res) => {
-  const mod3ds = await Mod3d.find().populate(
-    "author",
-    "username email profilePic"
-  );
-
-  const enriched = mod3ds.map((mod) => {
-    const enrichedMod = resolveMediaUrls(mod);
-    const enrichedAuthor = resolveUserUrls(mod.author);
-    return {
-      ...enrichedMod,
-      author: enrichedAuthor,
-    };
-  });
-
-  return successRes(res, enriched, "Fetched all models");
 });
 //#endregion
 
@@ -226,4 +172,53 @@ export const deleteModel = asyncHandler(async (req, res) => {
 
   return successRes(res, {}, "Model deleted successfully");
 });
+//#endregion
+
+//#region 🟢 Retrieve All
+// export const retrieveAllPublic = asyncHandler(async (req, res) => {
+//   const publicMods = await Mod3d.find({
+//     $or: [{ isPublic: true }, { isPublic: { $exists: false } }],
+//   })
+//     .sort({ createdAt: -1 })
+//     .populate("author", "username email profilePic emailVerified");
+
+//   const enriched = await Promise.all(
+//     publicMods.map(async (mod) => {
+//       const enrichedMod = resolveMediaUrls(mod);
+//       const enrichedAuthor = resolveUserUrls(mod.author);
+
+//       const post = await Post.findOne({
+//         category: "Mod3d",
+//         refId: mod._id,
+//       }).select("_id likedBy");
+
+//       return {
+//         ...enrichedMod,
+//         postId: post?._id || null,
+//         likedBy: post?.likedBy || [],
+//         author: enrichedAuthor,
+//       };
+//     })
+//   );
+
+//   return successRes(res, enriched, "Fetched public models");
+// });
+
+// export const retrieveAll = asyncHandler(async (req, res) => {
+//   const mod3ds = await Mod3d.find().populate(
+//     "author",
+//     "username email profilePic"
+//   );
+
+//   const enriched = mod3ds.map((mod) => {
+//     const enrichedMod = resolveMediaUrls(mod);
+//     const enrichedAuthor = resolveUserUrls(mod.author);
+//     return {
+//       ...enrichedMod,
+//       author: enrichedAuthor,
+//     };
+//   });
+
+//   return successRes(res, enriched, "Fetched all models");
+// });
 //#endregion

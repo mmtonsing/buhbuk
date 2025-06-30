@@ -6,44 +6,36 @@ import { resolveMediaUrls } from "../utils/resolveMediaUrls.js";
 import { resolveUserUrls } from "../utils/resolveUserUrls.js";
 //#endregion
 
-//#region 📤 Create Post
-export const createPost = asyncHandler(async (req, res) => {
-  const { category, refId } = req.body;
-
-  if (!category || !refId) {
-    return errorRes(res, "Missing category or refId", 400);
-  }
-
-  const post = await Post.create({
-    category,
-    refId,
-    author: req.user._id,
-  });
-
-  return successRes(res, post, "Post created successfully");
-});
-//#endregion
-
 //#region 🔍 Public Posts (Preview & Feed)
 export const getPublicPosts = asyncHandler(async (req, res) => {
-  const { category, tag, sort = "latest", limit } = req.query;
+  const { category, tag, sort = "latest", limit = 8, page = 1 } = req.query;
 
   const filter = { isPublic: true };
   if (category) filter.category = category;
   if (tag) filter.tags = tag;
 
-  let query = Post.find(filter)
+  const parsedLimit = parseInt(limit, 10);
+  const parsedPage = parseInt(page, 10);
+  const skip = (parsedPage - 1) * parsedLimit;
+
+  let postsQuery = Post.find(filter)
     .populate("author", "username profilePic")
     .populate({ path: "refId", select: "-__v" });
 
-  const parsedLimit = parseInt(limit, 10);
-  if (!isNaN(parsedLimit)) {
-    query = query.limit(parsedLimit);
+  const shouldSortInMemory = sort === "trending" || sort === "popular";
+
+  if (!shouldSortInMemory) {
+    if (sort === "latest") {
+      postsQuery = postsQuery.sort({ createdAt: -1 });
+    }
+    postsQuery = postsQuery.skip(skip).limit(parsedLimit);
+  } else {
+    postsQuery = postsQuery.limit(100); // fetch top 100 candidates to allow proper slicing
   }
 
-  let posts = await query;
+  const rawPosts = await postsQuery;
 
-  const validPosts = posts
+  const enrichedPosts = rawPosts
     .filter((post) => post.refId)
     .map((post) => {
       const enriched = resolveMediaUrls(post.refId);
@@ -57,63 +49,39 @@ export const getPublicPosts = asyncHandler(async (req, res) => {
       };
     });
 
-  // Sorting (same as before)
+  let finalPosts = enrichedPosts;
+
+  // 🧠 Apply in-memory sorting + pagination only for "trending"
   if (sort === "trending") {
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
-    validPosts.sort((a, b) => {
-      const aRecent = new Date(a.createdAt) > oneWeekAgo;
-      const bRecent = new Date(b.createdAt) > oneWeekAgo;
-      const aScore = (a.likedBy?.length || 0) + (aRecent ? 5 : 0);
-      const bScore = (b.likedBy?.length || 0) + (bRecent ? 5 : 0);
-      return bScore - aScore;
-    });
-  } else {
-    validPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    finalPosts = enrichedPosts
+      .map((post) => {
+        const isRecent = new Date(post.createdAt) > oneWeekAgo;
+        const score = (post.likedBy?.length || 0) + (isRecent ? 5 : 0);
+        return { ...post, score };
+      })
+      .sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        return new Date(b.createdAt) - new Date(a.createdAt); // Tie-breaker
+      })
+      .slice(skip, skip + parsedLimit); // manual pagination
+  } else if (sort === "popular") {
+    finalPosts = enrichedPosts
+      .map((post) => ({
+        ...post,
+        likes: post.likedBy?.length || 0,
+      }))
+      .sort((a, b) => {
+        if (b.likes !== a.likes) return b.likes - a.likes;
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      })
+      .slice(skip, skip + parsedLimit);
   }
 
-  return successRes(res, { posts: validPosts }, "Fetched public posts");
+  return successRes(res, { posts: finalPosts }, "Fetched public posts");
 });
-
-//not used yet
-export const getPaginatedPosts = asyncHandler(async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 9;
-  const skip = (page - 1) * limit;
-
-  const total = await Post.countDocuments({ isPublic: true });
-
-  const posts = await Post.find({ isPublic: true })
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(limit)
-    .populate("author", "username profilePic")
-    .populate("refId");
-
-  const enrichedPosts = posts.map((post) => {
-    const enriched = resolveMediaUrls(post.refId);
-    const enrichedAuthor = resolveUserUrls(post.author);
-    return {
-      ...post.toObject(),
-      author: enrichedAuthor,
-      refId: enriched,
-      imageUrl: enriched.imageUrl || null,
-      videoUrl: enriched.videoUrl || null,
-    };
-  });
-
-  return successRes(
-    res,
-    {
-      posts: enrichedPosts,
-      currentPage: page,
-      totalPages: Math.ceil(total / limit),
-    },
-    "Fetched paginated posts"
-  );
-});
-//#endregion
 
 //#region 📄 Get Posts By User
 export const getPostsByUser = asyncHandler(async (req, res) => {
@@ -187,22 +155,5 @@ export const getMyPosts = asyncHandler(async (req, res) => {
       };
     });
   return successRes(res, { posts: enrichedPosts }, "Fetched your posts");
-});
-//#endregion
-
-//#region 🗑️ Delete Post
-export const deletePost = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-
-  const post = await Post.findById(id);
-  if (!post) return errorRes(res, "Post not found", 404);
-
-  if (!post.author.equals(req.user._id)) {
-    return errorRes(res, "Not authorized to delete this post", 403);
-  }
-
-  await post.deleteOne();
-
-  return successRes(res, {}, "Post deleted successfully");
 });
 //#endregion

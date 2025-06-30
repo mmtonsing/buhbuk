@@ -1,77 +1,66 @@
+//src/components/posts/PostCard.jsx
 import { Link } from "react-router-dom";
-import { useAuth } from "@/context/AuthContext";
-import LikeHandler from "@/context/LikeHandler";
 import { UserBadge } from "@/components/user/UserBadge";
+import LikeHandler from "@/context/LikeHandler";
 import { timeAgo } from "@/utils/timeAgo";
 
-export function PostCard({ post }) {
-  if (!post) return null;
-
-  const { _id, category, author, refId, createdAt } = post;
-
-  // ✅ If refId is missing or the populated object is not found
-  if (!refId || typeof refId !== "object") {
-    console.warn("⚠️ Skipping PostCard render, refId is missing:", post);
-    return null; // or show a fallback
+export function PostCard({ post, children }) {
+  if (!post || !post.refId || typeof post.refId !== "object") {
+    console.warn("⚠️ Skipping PostCard render due to missing refId:", post);
+    return null;
   }
 
-  const imageSrc = refId.imageUrl || null;
-  const postDate = createdAt || refId.dateCreated;
-  const postTitle = refId.title || "Untitled";
-  const displayCategory = category === "Mod3d" ? "3D Model" : category;
+  const displayDate = timeAgo(post.createdAt || post.refId.dateCreated);
+  const imageUrl = post.refId.imageUrl;
+  const title = post.refId.title || "Untitled";
+  const category = post.category;
 
   const getViewRoute = () => {
     switch (category) {
       case "Mod3d":
-        return `/viewmod3d/${refId._id}`;
+        return `/viewmod3d/${post.refId._id}`;
       case "Graphic":
-        return `/graphics/${refId._id}`;
+        return `/graphics/${post.refId._id}`;
       case "Blog":
-        return `/blogs/${refId._id}`;
+        return `/blogs/${post.refId._id}`;
       default:
-        return `/viewpost/${_id}`;
+        return `/viewpost/${post._id}`;
     }
   };
 
   return (
-    <div className="block rounded-xl border border-stone-700 shadow bg-stone-800 hover:bg-stone-700 text-stone-100 overflow-hidden transition-transform hover:scale-105 hover:shadow-xl duration-300 group">
+    <div className="rounded-xl border border-stone-700 shadow bg-stone-800 hover:bg-stone-700 overflow-hidden transition-transform hover:scale-105 duration-300">
       <Link to={getViewRoute()}>
-        <div className="flex justify-center items-center bg-stone-900 h-52">
-          {imageSrc ? (
+        <div className="bg-stone-900 h-52 flex justify-center items-center">
+          {imageUrl ? (
             <img
-              src={imageSrc}
-              alt="Post preview"
-              className="object-contain h-full w-full rounded-md p-2"
+              src={imageUrl}
+              alt={title}
+              className="object-contain h-full w-full p-2"
               loading="lazy"
             />
           ) : (
-            <div className="text-gray-500 text-center">No Image</div>
+            <p className="text-stone-400">No Image</p>
           )}
         </div>
 
-        <div className="p-4 space-y-1">
-          <h3 className="text-base font-semibold line-clamp-1">{postTitle}</h3>
+        <div className="p-4">
+          <h3 className="text-base font-semibold line-clamp-1 mb-2">{title}</h3>
+
+          {/* Optional extra content */}
+          {children}
+
+          <div className="flex items-center justify-between text-xs text-stone-400 pt-2">
+            {post.author && <UserBadge user={post.author} />}
+            <LikeHandler postId={post._id} likedBy={post.likedBy} />
+          </div>
+
+          <div className="flex items-center justify-between text-xs text-stone-400 pt-1">
+            <span>{displayDate}</span>
+            <span className="text-amber-400 font-medium">{category}</span>
+          </div>
         </div>
       </Link>
-
-      <div className="px-4 pb-4 space-y-2">
-        <div className="flex items-center justify-between text-xs text-stone-400 pt-1">
-          {author && (
-            <UserBadge
-              key={`${post._id}-${author.profilePicUrl}`}
-              user={author}
-            />
-          )}
-          {refId._id && <LikeHandler postId={_id} likedBy={post.likedBy} />}
-        </div>
-
-        <div className="flex items-center justify-between text-xs text-stone-400 pt-1">
-          <span>{timeAgo(postDate)}</span>
-          <span className="text-amber-400 font-semibold">
-            {displayCategory}
-          </span>
-        </div>
-      </div>
     </div>
   );
 }

@@ -1,21 +1,15 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "@/context/AuthContext";
-import { handleLogout } from "@/utils/logoutHandler";
+import { Link } from "react-router-dom";
+import { useLogoutHandler } from "@/utils/handleLogout";
 import { useScrollTrigger } from "@/utils/useScrollTrigger";
 import { DesktopNav } from "./desktop/DesktopNav";
 import DesktopUser from "./desktop/DesktopUser";
 import MobileNav from "./mobile/MobileNavSheet";
 import { MobileBottomNav } from "./mobile/mobileBottomNav";
-import { HutIcon } from "../../assets/HutIcon";
+import logo from "@/assets/logo-eimibuk.png";
 
 export function Navbar() {
-  const { setUser } = useAuth();
-  const navigate = useNavigate();
   const scrolled = useScrollTrigger(20); // adds shadow after scroll
-
-  const onLogout = () => {
-    handleLogout(navigate, setUser);
-  };
+  const handleLogout = useLogoutHandler();
 
   return (
     <header
@@ -26,30 +20,22 @@ export function Navbar() {
       }`}
     >
       <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-        {/* Logo + Title */}
-        {/* <div className="flex items-center gap-3">
-          <HutIcon className="w-10 h-10 text-green-600 drop-shadow-md" />
-          <Link
-            to="/"
-            className="text-2xl font-extrabold tracking-tight text-green-500 hover:text-green-400 transition-colors"
-          >
-            BukWarm
-          </Link>
-        </div> */}
-        <div className="flex items-center gap-3">
-          <HutIcon className="w-10 h-10 text-[#ff7746] drop-shadow-md" />
-          <Link
-            to="/"
-            className="text-2xl font-extrabold bg-gradient-to-r from-[#ffb347] to-[#ff7746] bg-clip-text text-transparent tracking-wide"
-          >
-            BukWarm
-          </Link>
-        </div>
+        <Link
+          to="/about"
+          className="flex items-center gap-3 text-2xl font-extrabold bg-gradient-to-r from-[#d5bdaf] to-[#988276] bg-clip-text text-transparent tracking-wide"
+        >
+          <img
+            src={logo}
+            alt="EimiBuk logo"
+            className="w-10 h-10 drop-shadow-md"
+          />
+          EimiBuk
+        </Link>
 
         {/* Desktop Nav - Hidden on mobile */}
         <div className="hidden md:flex items-center gap-4">
           <DesktopNav />
-          <DesktopUser onLogout={onLogout} />
+          <DesktopUser onLogout={handleLogout} />
         </div>
 
         {/* Mobile Nav - Only visible on small screens */}

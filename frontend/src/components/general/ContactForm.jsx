@@ -21,9 +21,9 @@ const ContactForm = () => {
   };
 
   return (
-    <div className="w-full mx-auto p-6 mt-10 bg-stone-800 text-stone-100 rounded-2xl shadow-lg">
-      <h2 className="text-3xl font-bold mb-4 text-center text-orange-400">
-        🧡 Send a Message to the Nest
+    <div className="max-w-xl mx-auto p-6 mt-10 bg-stone-800 text-stone-100 rounded-2xl shadow-lg">
+      <h2 className="text-3xl font-bold mb-4 text-center text-orange-600">
+        🧡 Send a Message to EimiBuk
       </h2>
       {submitted ? (
         <p className="text-orange-300 text-center text-lg font-medium">
@@ -72,7 +72,7 @@ const ContactForm = () => {
           </div>
           <Button
             type="submit"
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-xl transition"
+            className="w-full bg-orange-600 hover:bg-orange-800 text-white font-semibold py-2 rounded-xl transition"
           >
             📨 Send Message
           </Button>

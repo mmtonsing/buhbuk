@@ -8,14 +8,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/context/AuthContext";
-import { handleLogout } from "@/utils/logoutHandler";
+import { useLogoutHandler } from "@/utils/handleLogout";
 import { User } from "lucide-react";
 
 export default function DesktopUser() {
   const { user, setUser } = useAuth();
   const navigate = useNavigate();
-
-  const onLogout = () => handleLogout(navigate, setUser);
+  const handleLogout = useLogoutHandler();
 
   if (!user) {
     return (
@@ -50,7 +49,7 @@ export default function DesktopUser() {
         </DropdownMenuItem>
         <DropdownMenuSeparator className="bg-stone-700" />
         <DropdownMenuItem
-          onClick={onLogout}
+          onClick={handleLogout}
           className="text-red-500 hover:text-red-600 cursor-pointer"
         >
           Logout

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getCurrentUser, updateUserDetails } from "@/api/usersApi";
+import { updateUserDetails } from "@/api/usersApi";
 import { useAuth } from "@/context/AuthContext";
 import { Input } from "@/components/ui/input";
 import { EmailVerifyModal } from "@/components/customUI/EmailVerifyModal";

@@ -23,7 +23,9 @@ export function ModCard({ post }) {
         </div>
 
         <div className="p-4 space-y-1">
-          <h3 className="text-base font-semibold line-clamp-1">{post.title}</h3>
+          <h3 className="text-base font-semibold line-clamp-1">
+            {post.refId.title}
+          </h3>
         </div>
       </Link>
 

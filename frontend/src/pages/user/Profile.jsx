@@ -184,7 +184,7 @@ export function Profile() {
         {posts.length > 0 && (
           <Button
             className="bg-[#59322d] hover:bg-[#47211f] text-stone-100 flex items-center gap-2"
-            onClick={() => navigate("/upload")}
+            onClick={() => navigate("/post")}
           >
             <Plus size={18} />
             Post
@@ -206,7 +206,7 @@ export function Profile() {
             You haven’t posted anything yet.
           </h3>
           <p className="mb-4">
-            Share your 3D models, blog entries, or creative stories!
+            Share your stories, art, 3D models, blog entries, or creative ideas!
           </p>
           <div className="flex justify-center">
             <Button

@@ -28,7 +28,7 @@ export function ViewMod3d() {
     async function loadModel() {
       try {
         const data = await getMod3d(id);
-        data.dateCreated = new Date(data.dateCreated).toString();
+        data.createdAt = new Date(data.createdAt).toString();
         setMod3d(data);
       } catch (err) {
         console.error("❌ Failed to load model", err);
@@ -89,7 +89,7 @@ export function ViewMod3d() {
         {mod3d.author && (
           <div className="flex justify-between items-center gap-2 text-stone-300 text-sm mb-1">
             <UserBadge user={mod3d.author} className="p-2 text-xs" />
-            <span>on {mod3d.dateCreated?.slice(4, 15)}</span>
+            <span>on {mod3d.createdAt?.slice(4, 15)}</span>
           </div>
         )}
 

@@ -1,4 +1,5 @@
 import { Toaster } from "sonner";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
 import Loader from "./components/customUI/Loader";
 import { About } from "./pages/main/About";
@@ -15,7 +16,7 @@ import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { ComingSoon } from "./pages/main/ComingSoon";
 import { PostPage } from "./pages/posts/PostPage";
 import { EditMod3d } from "./pages/mod3d/EditMod3d";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
 import Feed from "./pages/posts/Feed";
 import ViewPost from "./pages/posts/ViewPost";
 import EmailVerify from "./pages/user/EmailVerify";

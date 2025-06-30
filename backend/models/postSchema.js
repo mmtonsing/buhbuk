@@ -22,19 +22,15 @@ const PostSchema = new Schema(
     likes: { type: Number, default: 0 },
     likedBy: [{ type: Schema.Types.ObjectId, ref: "User" }],
 
-    // 🔑 Common Display Fields
-    title: { type: String, required: true },
-    imageUrl: { type: String }, // ✅ full public S3 image URL or presigned
-    summary: { type: String }, // for blogs or short description
-
+    // imageUrl: { type: String }, // ✅ full public S3 image URL or presigned
     // 🔒 Access Control
     isPublic: { type: Boolean, default: true },
     isPremium: { type: Boolean, default: false },
     price: { type: Number, default: 0 },
 
     // 🏷️ Meta
-    subcategory: { type: String, default: null }, // e.g., "Paite", "Zou"
-    tags: { type: [String], default: [], index: true },
+    // subcategory: { type: String, default: null }, // e.g., "Paite", "Zou"
+    // tags: { type: [String], default: [], index: true },
   },
   {
     timestamps: true, // includes createdAt, updatedAt

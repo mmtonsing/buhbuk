@@ -1,11 +1,11 @@
-import ContactForm from "../../components/general/ContactForm";
+import ContactForm from "@/components/general/ContactForm";
 
 export function Contact() {
   return (
-    <div className="min-h-screen bg-stone-900 text-stone-200 pt-12 px-4 w-full md:w-2/3 mx-auto">
+    <div className="min-h-screen bg-stone-900 text-stone-200 pt-12 px-4 w-full  mx-auto">
       <div className="text-center">
-        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight text-orange-500 mb-6">
-          🪵 Reach Out to BukWarm
+        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight text-[#d5bdaf] mb-6">
+          🪵 Reach Out to EimiBuk
         </h1>
         <p className="text-lg leading-7 mb-4 text-stone-300">
           Whether you're building, dreaming, or simply wandering by the fire —
@@ -23,7 +23,7 @@ export function Contact() {
         </div>
 
         <p className="text-md mt-4 text-orange-400 italic">
-          This nest is always open for dreamers, builders, and wanderers.
+          This Buk is always open for dreamers, builders, and wanderers.
         </p>
       </div>
       <div className="mt-10">

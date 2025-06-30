@@ -237,22 +237,22 @@ export const updateProfilePic = asyncHandler(async (req, res) => {
 //#endregion
 
 //#region Not used yet
-export const retrieveUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
-  if (!user) return errorRes(res, "User not found", 404);
+// export const retrieveUser = asyncHandler(async (req, res) => {
+//   const user = await User.findById(req.params.id);
+//   if (!user) return errorRes(res, "User not found", 404);
 
-  const enriched = resolveUserUrls(user);
-  return successRes(res, { user: enriched });
-});
+//   const enriched = resolveUserUrls(user);
+//   return successRes(res, { user: enriched });
+// });
 
-export const deleteUser = asyncHandler(async (req, res) => {
-  const user = await User.findByIdAndDelete(req.params.id);
-  return successRes(res, { user });
-});
+// export const deleteUser = asyncHandler(async (req, res) => {
+//   const user = await User.findByIdAndDelete(req.params.id);
+//   return successRes(res, { user });
+// });
 
-export const getAllUsers = asyncHandler(async (req, res) => {
-  const users = await User.find({});
-  const enrichedUsers = users.map(resolveUserUrls);
-  return successRes(res, { users: enrichedUsers });
-});
+// export const getAllUsers = asyncHandler(async (req, res) => {
+//   const users = await User.find({});
+//   const enrichedUsers = users.map(resolveUserUrls);
+//   return successRes(res, { users: enrichedUsers });
+// });
 //#endregion

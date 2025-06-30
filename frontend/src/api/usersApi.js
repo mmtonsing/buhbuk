@@ -91,7 +91,7 @@ export async function resendVerification(email) {
 }
 
 // Get all users
-export async function getUsers() {
+export async function getAllUsers() {
   try {
     const { data } = await extractData(axiosInstance.get("/user"));
     return data.users;
