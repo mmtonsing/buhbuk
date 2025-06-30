@@ -13,8 +13,8 @@ export function MobileBottomNav() {
 
   return (
     <nav
-      className="mobile-bottom-nav fixed bottom-0 left-0 w-full bg-[#2f1f1c] border-t border-[#4a2f2b] z-50 md:hidden shadow-inner"
-      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      className="mobile-bottom-nav fixed bottom-0 left-0 w-full h-16 bg-[#2f1f1c] border-t border-[#4a2f2b] z-40 md:hidden shadow-inner"
+      style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
       <div className="flex justify-around items-center py-2 px-2">
         <Link to="/" className={baseItemClass}>

@@ -4,7 +4,6 @@ import { useScrollTrigger } from "@/utils/useScrollTrigger";
 import { DesktopNav } from "./desktop/DesktopNav";
 import DesktopUser from "./desktop/DesktopUser";
 import MobileNav from "./mobile/MobileNavSheet";
-import { MobileBottomNav } from "./mobile/MobileBottomNav";
 import logo from "@/assets/logo-buhbuk.png";
 
 export function Navbar() {
@@ -42,11 +41,6 @@ export function Navbar() {
         <div className="md:hidden flex items-center gap-2">
           <MobileNav />
         </div>
-      </div>
-
-      {/* Bottom Mobile Nav (like Instagram/YouTube style) */}
-      <div className="md:hidden">
-        <MobileBottomNav />
       </div>
     </header>
   );

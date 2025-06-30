@@ -1,19 +1,27 @@
 import { Navbar } from "../navbar/Navbar";
 import { Outlet } from "react-router-dom";
+import { MobileBottomNav } from "../navbar/mobile/MobileBottomNav";
 
 export function Layout() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col relative">
       <Navbar />
-      <main className="flex justify-center w-screen mt-20 pb-[4.5rem] md:pb-0">
+      {/* Main content takes up all space between navbar and footer */}
+      <main className="flex-grow flex justify-center w-screen mt-20 pb-4 md:pb-0">
         <Outlet />
       </main>
+
       {/* Global Footer */}
-      <footer className="bg-stone-900 text-stone-400 py-6">
+      <footer className="relative bg-stone-900 text-stone-400 py-6 z-10 pb-[5.5rem] md:pb-6">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p>© {new Date().getFullYear()} BuhBuk. All rights reserved.</p>
         </div>
       </footer>
+
+      {/* Bottom Mobile Nav (like Instagram/YouTube style) */}
+      <div className="md:hidden">
+        <MobileBottomNav />
+      </div>
     </div>
   );
 }
