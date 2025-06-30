@@ -4,7 +4,7 @@ import { useScrollTrigger } from "@/utils/useScrollTrigger";
 import { DesktopNav } from "./desktop/DesktopNav";
 import DesktopUser from "./desktop/DesktopUser";
 import MobileNav from "./mobile/MobileNavSheet";
-import { MobileBottomNav } from "./mobile/mobileBottomNav";
+import { MobileBottomNav } from "./mobile/MobileBottomNav";
 import logo from "@/assets/logo-eimibuk.png";
 
 export function Navbar() {
