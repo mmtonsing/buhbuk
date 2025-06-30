@@ -19,7 +19,7 @@ export function MobileBottomNav() {
         borderTop: "1px solid #4a2f2b",
         paddingBottom: "env(safe-area-inset-bottom)",
         minHeight: "4rem",
-        backgroundClip: "padding-box",
+        backgroundClip: "content-box",
       }}
     >
       <div className="flex justify-around items-center py-2 px-2">
