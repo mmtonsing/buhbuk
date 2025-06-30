@@ -12,11 +12,13 @@ export function Layout() {
       </main>
 
       {/* Global Footer */}
-      <footer className="relative bg-stone-900 text-stone-400 py-6 z-10 pb-[5.5rem] md:pb-6">
+      <footer className="relative bg-stone-900 text-stone-400 py-6 z-10">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p>© {new Date().getFullYear()} BuhBuk. All rights reserved.</p>
         </div>
       </footer>
+
+      <div className="h-[4rem] md:hidden" />
 
       {/* Bottom Mobile Nav (like Instagram/YouTube style) */}
       <div className="md:hidden fixed bottom-0 left-0 w-full z-50">
