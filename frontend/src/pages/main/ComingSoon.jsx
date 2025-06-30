@@ -6,7 +6,7 @@ export function ComingSoon({
   message = "We're working on something exciting.",
 }) {
   return (
-    <div className="min-h-screen w-full bg-stone-950 flex flex-col items-center justify-center text-center text-stone-100 px-4">
+    <div className="flex flex-col min-h-screen w-full bg-stone-950  items-center justify-center text-center text-stone-100 px-4">
       <div className="max-w-xl">
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-accent tracking-tight">
           {title}

@@ -46,7 +46,7 @@ export default function Feed() {
   const handleLoadMore = () => loadPosts(page + 1);
 
   return (
-    <div className="min-h-screen w-full max-w-7xl mx-auto px-4 py-10">
+    <div className="flex flex-col min-h-screen w- max-w-7xl mx-auto px-4 py-10">
       {/* 🌾 BuhBuk Feed Intro */}
       <div className="text-center mb-12">
         <h1 className="text-4xl font-extrabold text-amber-300 mb-2">

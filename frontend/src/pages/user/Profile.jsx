@@ -57,7 +57,7 @@ export function Profile() {
   const categories = Object.keys(CATEGORY_LABELS);
 
   return (
-    <div className="w-screen max-w-7xl mx-auto px-4 py-10 text-stone-200 bg-stone-900 min-h-screen">
+    <div className="flex flex-col w-screen max-w-7xl mx-auto px-4 py-10 text-stone-200 bg-stone-900 min-h-screen">
       {/* Profile Card */}
       <div className="bg-gradient-to-br from-stone-800 to-stone-900 p-6 rounded-2xl shadow-xl border border-stone-700 mb-10">
         <h2 className="text-3xl font-bold mb-6 text-stone-100 tracking-wide">

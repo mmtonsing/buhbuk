@@ -2,7 +2,7 @@ import ContactForm from "@/components/general/ContactForm";
 
 export function Contact() {
   return (
-    <div className="min-h-screen bg-stone-900 text-stone-200 pt-12 px-4 w-full mx-auto">
+    <div className="flex flex-col min-h-screen bg-stone-900 text-stone-200 pt-12 px-4 w-full mx-auto">
       <div className="text-center">
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight text-[#d5bdaf] mb-6">
           🪵 Reach Out to BuhBuk

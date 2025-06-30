@@ -23,7 +23,7 @@ export function Landing() {
   }, [location.state]);
 
   return (
-    <div className="flex justify-center items-center w-screen h-screen bg-stone-900 text-stone-100">
+    <div className="flex flex-col justify-center items-center w-screen h-screen bg-stone-900 text-stone-100">
       {/* ✅ Message banner */}
       {showMessage && (
         <MessageBanner
