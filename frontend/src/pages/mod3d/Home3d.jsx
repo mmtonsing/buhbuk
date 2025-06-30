@@ -58,7 +58,7 @@ export function Home3d() {
           >
             {SORT_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
-                Sort: {option.label}
+                {option.label}
               </option>
             ))}
           </select>

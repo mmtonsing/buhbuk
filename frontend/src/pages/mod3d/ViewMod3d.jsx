@@ -89,7 +89,7 @@ export function ViewMod3d() {
         {mod3d.author && (
           <div className="flex justify-between items-center gap-2 text-stone-300 text-sm mb-1">
             <UserBadge user={mod3d.author} className="p-2 text-xs" />
-            <span>on {mod3d.createdAt?.slice(4, 15)}</span>
+            <span>{mod3d.createdAt?.slice(4, 15)}</span>
           </div>
         )}
 
