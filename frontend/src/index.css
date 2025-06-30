@@ -152,9 +152,9 @@ body {
   @apply bg-[#1f1c1b] text-stone-100;
 }
 
-/* html {
+html {
   scroll-behavior: smooth;
-} */
+}
 
 @layer utilities {
   .animate-fade-in {
