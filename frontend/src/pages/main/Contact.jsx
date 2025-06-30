@@ -2,13 +2,13 @@ import ContactForm from "@/components/general/ContactForm";
 
 export function Contact() {
   return (
-    <div className="min-h-screen bg-stone-900 text-stone-200 pt-12 px-4 w-full  mx-auto">
+    <div className="min-h-screen bg-stone-900 text-stone-200 pt-12 px-4 w-full mx-auto">
       <div className="text-center">
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight text-[#d5bdaf] mb-6">
-          🪵 Reach Out to EimiBuk
+          🪵 Reach Out to BuhBuk
         </h1>
         <p className="text-lg leading-7 mb-4 text-stone-300">
-          Whether you're building, dreaming, or simply wandering by the fire —
+          Whether you're building, dreaming, or simply wandering by the barn —
           we’d love to hear from you.
         </p>
 
@@ -17,7 +17,7 @@ export function Contact() {
           <p>🤝 Collaborate on 3D or creative projects</p>
           <p>🎨 Feature your story, art, or indie tool</p>
           <p>💡 Suggest improvements or new features</p>
-          <p>❓ Ask questions about using BukWarm</p>
+          <p>❓ Ask questions about using BuhBuk</p>
           <p>📅 Pitch event ideas or community challenges</p>
           <p>💌 Just to say hi or share encouragement 🧡</p>
         </div>

@@ -1,14 +1,18 @@
 import { Link, useLocation } from "react-router-dom";
 import { pageData } from "./pageData";
 import { DesktopExplore } from "./DesktopExplore";
+import { useAuth } from "@/context/AuthContext";
+import { getVisiblePages } from "@/utils/getVisiblePages";
 
 export function DesktopNav() {
   const { pathname } = useLocation();
+  const { user } = useAuth();
+  const visiblePages = getVisiblePages(pageData, user);
 
   return (
     <nav className="hidden md:block">
       <ul className="flex space-x-2 items-center">
-        {pageData.map((page) => {
+        {visiblePages.map((page) => {
           const isActive = pathname === page.path;
 
           return (

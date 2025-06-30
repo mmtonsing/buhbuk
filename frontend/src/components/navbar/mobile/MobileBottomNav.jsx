@@ -12,7 +12,10 @@ export function MobileBottomNav() {
     "flex flex-col items-center text-xs text-stone-300 hover:text-white transition";
 
   return (
-    <nav className="fixed bottom-0 left-0 w-full bg-[#2f1f1c] border-t border-[#4a2f2b] z-50 md:hidden shadow-inner">
+    <nav
+      className="mobile-bottom-nav fixed bottom-0 left-0 w-full bg-[#2f1f1c] border-t border-[#4a2f2b] z-50 md:hidden shadow-inner"
+      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+    >
       <div className="flex justify-around items-center py-2 px-2">
         <Link to="/" className={baseItemClass}>
           <Home className="h-6 w-6" />
@@ -29,12 +32,14 @@ export function MobileBottomNav() {
           Search
         </button> */}
 
-        <Link to="/post">
-          <button className={baseItemClass}>
-            <PlusCircle className="h-6 w-6" />
-            Post
-          </button>
-        </Link>
+        {user && (
+          <Link to="/post">
+            <button className={baseItemClass}>
+              <PlusCircle className="h-6 w-6" />
+              Post
+            </button>
+          </Link>
+        )}
 
         {/* Explore */}
         <MobileExplorePopover />

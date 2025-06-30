@@ -47,6 +47,18 @@ export default function Feed() {
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-10">
+      {/* 🌾 BuhBuk Feed Intro */}
+      <div className="text-center mb-12">
+        <h1 className="text-4xl font-extrabold text-amber-300 mb-2">
+          The BuhBuk Feed
+        </h1>
+        <p className="text-lg text-stone-300 max-w-2xl mx-auto">
+          Fresh from the barn: explore trending creations, heartfelt stories,
+          and digital harvests from our vibrant community. Welcome to the
+          granary of ideas.
+        </p>
+      </div>
+
       {/* 🔽 Sort Options */}
       <div className="mb-6 flex justify-end gap-4">
         <select

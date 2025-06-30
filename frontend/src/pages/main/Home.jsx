@@ -31,7 +31,7 @@ export function Home() {
   const SkeletonGrid = () => (
     <div className="w-full max-w-7xl mx-auto px-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
-        {Array.from({ length: 6 }).map((_, i) => (
+        {Array.from({ length: 9 }).map((_, i) => (
           <SkeletonCard key={i} className="bg-stone-700 animate-pulse" />
         ))}
       </div>
@@ -46,12 +46,13 @@ export function Home() {
       >
         <div className="max-w-3xl mx-auto text-center px-4">
           <h1 className="text-5xl font-extrabold mb-4 tracking-tight drop-shadow-lg">
-            Welcome to Eimi Buk
+            Welcome to BuhBuk
           </h1>
           <p className="text-xl mb-4">
-            ‘Eimi’ means our people. Buk is our shelter. Whether you create,
-            explore, or support — you belong here —
+            BuhBuk is our granary of creativity. Whether you create, explore, or
+            support
           </p>
+          <p className="text-xl mb-4">— you belong here —</p>
           <h2 className="text-lg mb-8 italic text-amber-200">
             Where every story, sketch, and spark finds a home.
           </h2>
@@ -93,13 +94,6 @@ export function Home() {
           )}
         </div>
       </section>
-
-      {/* 📜 Footer */}
-      <footer className="mt-auto bg-stone-900 text-stone-400 py-6">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <p>© {new Date().getFullYear()} EimiBuk. All rights reserved.</p>
-        </div>
-      </footer>
     </div>
   );
 }

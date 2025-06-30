@@ -23,7 +23,7 @@ const ContactForm = () => {
   return (
     <div className="max-w-xl mx-auto p-6 mt-10 bg-stone-800 text-stone-100 rounded-2xl shadow-lg">
       <h2 className="text-3xl font-bold mb-4 text-center text-orange-600">
-        🧡 Send a Message to EimiBuk
+        🧡 Send a Message to BuhBuk
       </h2>
       {submitted ? (
         <p className="text-orange-300 text-center text-lg font-medium">

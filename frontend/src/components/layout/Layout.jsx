@@ -5,9 +5,15 @@ export function Layout() {
   return (
     <>
       <Navbar />
-      <main className="flex justify-center w-screen mt-20">
+      <main className="flex justify-center w-screen mt-20 pb-[4.5rem] md:pb-0">
         <Outlet />
       </main>
+      {/* Global Footer */}
+      <footer className="bg-stone-900 text-stone-400 py-6">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <p>© {new Date().getFullYear()} BuhBuk. All rights reserved.</p>
+        </div>
+      </footer>
     </>
   );
 }

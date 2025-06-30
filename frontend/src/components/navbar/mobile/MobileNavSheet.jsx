@@ -1,5 +1,5 @@
 import { useNavigate, Link } from "react-router-dom";
-import { Menu, X, XIcon } from "lucide-react";
+import { Menu, XIcon } from "lucide-react";
 import { pageDataMobile } from "./pageDataMobile.js";
 import {
   Sheet,
@@ -37,7 +37,7 @@ export default function MobileNav() {
           <SheetHeader>
             <div className="flex items-center gap-2 mb-4">
               <SheetTitle className="text-2xl font-extrabold bg-gradient-to-r from-[#d5bdaf] to-[#988276] bg-clip-text text-transparent tracking-wide">
-                EimiBuk
+                BuhBuk
               </SheetTitle>
             </div>
           </SheetHeader>

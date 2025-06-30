@@ -4,13 +4,15 @@ export const pageData = [
     path: "/",
   },
   {
-    name: "Post",
-    path: "/post",
-  },
-  {
     name: "Feed",
     path: "/feed",
   },
+  {
+    name: "Post",
+    path: "/post",
+    requiresAuth: true,
+  },
+
   {
     name: "About",
     path: "/about",

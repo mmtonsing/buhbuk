@@ -5,7 +5,7 @@ import { DesktopNav } from "./desktop/DesktopNav";
 import DesktopUser from "./desktop/DesktopUser";
 import MobileNav from "./mobile/MobileNavSheet";
 import { MobileBottomNav } from "./mobile/MobileBottomNav";
-import logo from "@/assets/logo-eimibuk.png";
+import logo from "@/assets/logo-buhbuk.png";
 
 export function Navbar() {
   const scrolled = useScrollTrigger(20); // adds shadow after scroll
@@ -27,9 +27,9 @@ export function Navbar() {
           <img
             src={logo}
             alt="EimiBuk logo"
-            className="w-10 h-10 drop-shadow-md"
+            className="w-14 h-10 drop-shadow-md"
           />
-          EimiBuk
+          BuhBuk
         </Link>
 
         {/* Desktop Nav - Hidden on mobile */}
