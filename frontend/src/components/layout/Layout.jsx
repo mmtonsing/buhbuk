@@ -4,10 +4,10 @@ import { MobileBottomNav } from "../navbar/mobile/MobileBottomNav";
 
 export function Layout() {
   return (
-    <div className="min-h-screen flex flex-col relative">
+    <div className="min-h-screen flex flex-col">
       <Navbar />
       {/* Main content takes up all space between navbar and footer */}
-      <main className="flex-grow flex justify-center w-screen mt-20 pb-4 md:pb-0">
+      <main className="flex-grow flex justify-center w-screen mt-20 md:pb-0">
         <Outlet />
       </main>
 
