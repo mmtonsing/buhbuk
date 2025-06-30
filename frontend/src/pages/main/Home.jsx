@@ -41,7 +41,7 @@ export function Home() {
   return (
     <div className="flex flex-col min-h-screen w-screen bg-stone-900 text-stone-200">
       {/* HomeBanner */}
-      <section className="relative w-full h-[70vh] md:h-[80vh] lg:h-[90vh] text-white overflow-hidden">
+      <section className="relative w-full h-[85vh] sm:h-[80vh] md:h-[90vh] lg:h-[93vh] text-white overflow-hidden">
         {/* Full Image */}
         <img
           src="/homebackground.JPG"

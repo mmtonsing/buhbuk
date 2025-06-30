@@ -9,7 +9,7 @@ const SORT_OPTIONS = [
   { value: "latest", label: "Latest" },
   { value: "popular", label: "Popular" },
 ];
-
+//
 export function Home3d() {
   const [mod3ds, setMod3ds] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -27,15 +27,15 @@ export function Home3d() {
       const posts = await getPublicPosts({
         category: "Mod3d",
         sort,
-        page: pageToLoad,
         limit: 12,
+        page: pageToLoad,
       });
       if (reset) {
         setMod3ds(posts);
       } else {
         setMod3ds((prev) => [...prev, ...posts]);
       }
-      setHasMore(posts.length === 8);
+      setHasMore(posts.length === 12);
       setPage(pageToLoad);
     } catch (err) {
       console.error("Failed to load models:", err);

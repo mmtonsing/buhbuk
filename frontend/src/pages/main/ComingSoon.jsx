@@ -19,9 +19,6 @@ export function ComingSoon({
           <Link to="/">Back to Home</Link>
         </Button>
       </div>
-      <div className="absolute bottom-4 text-xs text-stone-500">
-        &copy; {new Date().getFullYear()} BukWarm. All rights reserved.
-      </div>
     </div>
   );
 }

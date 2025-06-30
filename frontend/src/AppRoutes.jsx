@@ -56,7 +56,7 @@ export function AppRoutes() {
             element={
               <ComingSoon
                 title="Graphics Coming Soon"
-                message="BukWarm is bringing stories to life. Stay tuned!"
+                message="BukWarm is bringing graphics to life. Stay tuned!"
               />
             }
           />
