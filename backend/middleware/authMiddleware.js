@@ -19,6 +19,11 @@ const authMiddleware = async (req, res, next) => {
       return res.status(401).json({ message: "Unauthorized - User not found" });
     }
 
+    // // 🚨 Block users who haven't verified their email
+    // if (!user.emailVerified) {
+    //   return res.status(403).json({ message: "Email not verified" });
+    // }
+
     req.user = user; // ✅ Full user info for routes
 
     next();

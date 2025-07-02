@@ -20,17 +20,14 @@ export function Contact() {
 
         {/* list */}
         <div className="max-w-2xl mx-auto text-center my-6 space-y-2 text-stone-300 text-base sm:text-lg">
-          <p>
+          <PageParagraph>
             🤝 Collaborate on projects 🎨 Feature your story, art, or indie tool
-          </p>
-          <p>
             💡 Suggest improvements or new features ❓ Ask questions about using
-            BuhBuk
-          </p>
-          <p>
-            📅 Pitch event ideas or feedback 💌 Just to say hi or share
-            encouragement 🧡
-          </p>
+            BuhBuk 📅 Pitch event ideas or feedback
+          </PageParagraph>
+          <PageParagraph>
+            💌 Just to say hi or share encouragement 🧡
+          </PageParagraph>
         </div>
 
         <SmallText className="mt-4 text-orange-400 italic">

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Sparkles } from "lucide-react"; // optional icon for flair
-
+import { PageTitle, PageParagraph } from "@/components/customUI/Typography";
 const categories = [
   {
     title: "3D Model",
@@ -23,14 +23,12 @@ export function SowPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col flex-1 w-full h-auto bg-gradient-to-b from-stone-900 to-stone-950 text-white py-14 px-6">
+    <div className="flex flex-col flex-1 w-full h-auto bg-gradient-to-b from-stone-900 to-stone-950 text-white py-10 px-6">
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-extrabold tracking-tight mb-2">
-          Sow a New Crop
-        </h1>
-        <p className="text-stone-400 text-md sm:text-lg lg:text-xl">
+        <PageTitle className="mb-4">Sow a New Crop</PageTitle>
+        <PageParagraph className="max-w-2xl mx-auto">
           choose a variety to share your work.
-        </p>
+        </PageParagraph>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto">

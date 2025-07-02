@@ -32,7 +32,7 @@ export function Navbar() {
             alt="BuhBuk logo"
             className="h-7 sm:h-8 md:h-9 lg:h-10 w-auto pb-0.5 drop-shadow-md"
           />
-          <span className="pt-2.5 [font-family:var(--font-logo)]">BuhBuk</span>
+          <span className=" [font-family:var(--font-logo)]">BuhBuk</span>
         </Link>
 
         {showMobile ? (

@@ -54,11 +54,7 @@ export const verifyEmail = asyncHandler(async (req, res) => {
 
   const user = await User.findOne({
     verificationToken: token,
-    $or: [
-      { verificationExpires: { $gt: new Date() } },
-      { verificationExpires: { $exists: false } },
-      { verificationExpires: null },
-    ],
+    verificationExpires: { $gt: new Date() }, //
   });
 
   if (!user) return errorRes(res, "Invalid or expired verification token", 400);

@@ -73,15 +73,7 @@ export function Buk() {
       {/* Trending Posts */}
       <section className="py-16 bg-stone-800 animate-fade-in">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex justify-between items-center mb-6">
-            <SectionTitle className="mb-0">Trending Harvests</SectionTitle>
-            <button
-              onClick={() => navigate("/harvests")}
-              className="btn-buhbuk px-4 py-2 rounded-lg"
-            >
-              View More
-            </button>
-          </div>
+          <SectionTitle className="mb-0">Trending Harvests</SectionTitle>
 
           {loading ? (
             <SkeletonGrid />
@@ -100,6 +92,14 @@ export function Buk() {
           ) : (
             <PageParagraph>No recent posts yet.</PageParagraph>
           )}
+          <div className="flex justify-center mt-6">
+            <button
+              onClick={() => navigate("/harvests")}
+              className="btn-buhbuk px-4 py-2 rounded-lg"
+            >
+              View More
+            </button>
+          </div>
         </div>
       </section>
     </div>

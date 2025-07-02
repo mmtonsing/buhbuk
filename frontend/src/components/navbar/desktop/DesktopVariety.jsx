@@ -12,7 +12,7 @@ export function DesktopVariety() {
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
-      <DropdownMenuTrigger className="btn-buhbuk-outline  flex items-center gap-2 px-4 py-1.5 text-sm rounded-lg transition">
+      <DropdownMenuTrigger className="  flex items-center gap-2 px-4 py-1.5 text-md rounded-lg transition">
         Variety
         <ChevronDown size={16} />
       </DropdownMenuTrigger>

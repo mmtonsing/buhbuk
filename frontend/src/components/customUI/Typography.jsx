@@ -9,7 +9,7 @@ export function PageTitle({ children, className = "" }) {
   return (
     <h1
       className={clsx(
-        "font-serif text-4xl sm:text-5xl font-extrabold tracking-tight text-center text-stone-100 drop-shadow-md",
+        "font-logo text-4xl sm:text-5xl font-extrabold tracking-tight text-center text-stone-100 drop-shadow-md",
         className
       )}
     >
@@ -22,7 +22,7 @@ export function PageSubtitle({ children, className = "" }) {
   return (
     <h2
       className={clsx(
-        "font-serif text-lg sm:text-xl font-semibold text-amber-200 italic text-center mt-2 tracking-wide",
+        "font-logo text-lg sm:text-xl font-semibold text-amber-200 italic text-center mt-2 tracking-wide",
         className
       )}
     >
@@ -35,7 +35,7 @@ export function PageParagraph({ children, className = "" }) {
   return (
     <p
       className={clsx(
-        "text-[0.95rem] sm:text-lg leading-relaxed text-stone-300 text-center mb-2",
+        "font-mono text-[0.95rem] sm:text-lg leading-relaxed text-stone-300 text-center mb-2",
         className
       )}
     >
@@ -48,7 +48,7 @@ export function SectionTitle({ children, className = "" }) {
   return (
     <h2
       className={clsx(
-        "font-serif text-2xl sm:text-3xl font-bold text-amber-300 mb-6",
+        "font-logo text-2xl sm:text-3xl font-bold text-amber-300 mb-6",
         className
       )}
     >
@@ -61,7 +61,7 @@ export function SmallText({ children, className = "" }) {
   return (
     <p
       className={clsx(
-        "text-xs sm:text-sm text-stone-400 text-center",
+        " text-xs sm:text-sm text-stone-400 text-center",
         className
       )}
     >

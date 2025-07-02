@@ -7,8 +7,8 @@ import {
 
 export function About() {
   return (
-    <div className="flex flex-col flex-1 w-full h-auto bg-stone-900 text-stone-200">
-      <div className="scroll-mt-20 py-16 bg-stone-800 flex-1">
+    <div className="flex flex-col flex-1 w-full h-auto bg-stone-900 text-stone-200 mb-10">
+      <div className="scroll-mt-20 py-12 bg-stone-800 flex-1">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <PageTitle className="text-amber-300 mb-10">About BuhBuk</PageTitle>
 
