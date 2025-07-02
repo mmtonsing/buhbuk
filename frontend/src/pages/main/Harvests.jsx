@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { SkeletonCard } from "@/components/customUI/SkeletonCard";
 import { PostCard } from "@/components/posts/PostCard";
 
-export function Home() {
+export function Harvests() {
   const navigate = useNavigate();
   const [trendingPosts, setTrendingPosts] = useState([]);
   const [loading, setLoading] = useState(true);

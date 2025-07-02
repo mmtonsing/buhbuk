@@ -1,14 +1,14 @@
-// src/components/MobileExplorePopover.jsx
+// src/components/MobilecATEGORYPopover.jsx
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Compass } from "lucide-react";
-import { ExploreRedirectButton } from "../ExploreRedirectButton";
+import { CategoryRedirectButton } from "../CategoryRedirectButton";
 import { useState } from "react";
 
-export function MobileExplorePopover() {
+export function MobileCategoryPopover() {
   const [open, setOpen] = useState(false);
 
   return (
@@ -16,7 +16,7 @@ export function MobileExplorePopover() {
       <PopoverTrigger asChild>
         <button className="flex flex-col items-center text-xs text-stone-300 hover:text-white transition">
           <Compass className="h-6 w-6" />
-          Explore
+          Category
         </button>
       </PopoverTrigger>
 
@@ -26,17 +26,17 @@ export function MobileExplorePopover() {
         align="center"
       >
         <div className="flex flex-col gap-2 text-xs">
-          <ExploreRedirectButton
+          <CategoryRedirectButton
             label="3D Models"
             to="/home3d"
             onClick={() => setOpen(false)}
           />
-          <ExploreRedirectButton
+          <CategoryRedirectButton
             label="Blogs"
             to="/blogs"
             onClick={() => setOpen(false)}
           />
-          <ExploreRedirectButton
+          <CategoryRedirectButton
             label="Graphics"
             to="/graphics"
             onClick={() => setOpen(false)}

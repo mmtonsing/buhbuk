@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { pageData } from "./pageData";
-import { DesktopExplore } from "./DesktopExplore";
+import { DesktopCategory } from "./DesktopCategory";
 import { useAuth } from "@/context/AuthContext";
 import { getVisiblePages } from "@/utils/getVisiblePages";
 
@@ -37,7 +37,7 @@ export function DesktopNav() {
         })}
 
         <li>
-          <DesktopExplore />
+          <DesktopCategory />
         </li>
       </ul>
     </nav>

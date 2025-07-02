@@ -1,11 +1,11 @@
 export const pageData = [
   {
-    name: "Home",
+    name: "Harvests",
     path: "/",
   },
   {
-    name: "Feed",
-    path: "/feed",
+    name: "Explore",
+    path: "/explore",
   },
   {
     name: "Post",

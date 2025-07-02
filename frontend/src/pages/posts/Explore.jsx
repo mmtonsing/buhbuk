@@ -10,7 +10,7 @@ const SORT_OPTIONS = [
   { value: "popular", label: "Popular" },
 ];
 
-export default function Feed() {
+export default function Explore() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);

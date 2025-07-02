@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-export function ExploreRedirectButton({ label, to, onClick }) {
+export function CategoryRedirectButton({ label, to, onClick }) {
   const navigate = useNavigate();
 
   return (

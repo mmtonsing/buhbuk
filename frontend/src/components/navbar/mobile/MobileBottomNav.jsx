@@ -1,7 +1,7 @@
 import { Home, PlusCircle, User, Newspaper } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import { MobileExplorePopover } from "./MobileExplorePopover";
+import { MobileCategoryPopover } from "./MobileCategoryPopover";
 
 export function MobileBottomNav() {
   const { user } = useAuth();
@@ -25,12 +25,12 @@ export function MobileBottomNav() {
       <div className="flex justify-around items-center py-2 px-2">
         <Link to="/" className={baseItemClass}>
           <Home className="h-6 w-6" />
-          Home
+          Harvests
         </Link>
 
-        <Link to="/feed" className={baseItemClass}>
+        <Link to="/explore" className={baseItemClass}>
           <Newspaper className="h-6 w-6" />
-          Feed
+          Explore
         </Link>
 
         {/* <button className={baseItemClass}>
@@ -48,7 +48,7 @@ export function MobileBottomNav() {
         )}
 
         {/* Explore */}
-        <MobileExplorePopover />
+        <MobileCategoryPopover />
 
         {user ? (
           <Link to="/profile" className={baseItemClass}>
