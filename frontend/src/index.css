@@ -54,7 +54,8 @@
   --color-pinky: #ffafcc;
 
   --color-buhbukAccent: #e0c9a6;
-  --font-logo: cursive;
+  --font-logo: "Comic Relief", serif;
+  /* --font-logo: "Dancing Script", cursive; */
 }
 
 :root {
