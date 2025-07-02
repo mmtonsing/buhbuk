@@ -19,13 +19,18 @@ export function Contact() {
         </PageParagraph>
 
         {/* list */}
-        <div className="my-6 space-y-2 text-stone-300 text-base sm:text-lg">
-          <p>🤝 Collaborate on 3D or creative projects</p>
-          <p>🎨 Feature your story, art, or indie tool</p>
-          <p>💡 Suggest improvements or new features</p>
-          <p>❓ Ask questions about using BuhBuk</p>
-          <p>📅 Pitch event ideas or community challenges</p>
-          <p>💌 Just to say hi or share encouragement 🧡</p>
+        <div className="max-w-2xl mx-auto text-center my-6 space-y-2 text-stone-300 text-base sm:text-lg">
+          <p>
+            🤝 Collaborate on projects 🎨 Feature your story, art, or indie tool
+          </p>
+          <p>
+            💡 Suggest improvements or new features ❓ Ask questions about using
+            BuhBuk
+          </p>
+          <p>
+            📅 Pitch event ideas or feedback 💌 Just to say hi or share
+            encouragement 🧡
+          </p>
         </div>
 
         <SmallText className="mt-4 text-orange-400 italic">
@@ -33,7 +38,7 @@ export function Contact() {
         </SmallText>
       </div>
 
-      <div className="mt-10">
+      <div className="mt-1">
         <ContactForm />
       </div>
     </div>

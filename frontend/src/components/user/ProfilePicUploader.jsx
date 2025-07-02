@@ -21,6 +21,11 @@ export default function ProfilePicUploader({ currentPic, onUploadSuccess }) {
       toast.error("Unsupported file type");
       return;
     }
+    if (file.size > 2 * 1024 * 1024) {
+      setError("File too large (max 2MB)");
+      toast.error("Max file size is 2MB");
+      return;
+    }
 
     setSelectedFile(file);
     setPreview(URL.createObjectURL(file));

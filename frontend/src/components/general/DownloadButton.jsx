@@ -52,7 +52,7 @@ export function DownloadButton({ files = [], className = "", onStart, onEnd }) {
       className={`flex items-center gap-2 ${className}`}
       disabled={downloading}
     >
-      <DownloadIcon className="w-4 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7" />
+      <DownloadIcon className="w-4 h-4 sm:w-5 sm:h-5" />
       {downloading ? "Downloading..." : "Download"}
     </button>
   );

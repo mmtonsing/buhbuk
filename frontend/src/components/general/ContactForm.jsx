@@ -28,7 +28,7 @@ const ContactForm = () => {
           Thank you for reaching out! We'll be with you shortly. ☕
         </PageParagraph>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-1">
           <div>
             <label className="block mb-1 font-semibold text-stone-300">
               Name
@@ -39,7 +39,7 @@ const ContactForm = () => {
               value={form.name}
               onChange={handleChange}
               required
-              className="w-full rounded-lg px-3 py-2 bg-stone-700 text-stone-100 border border-stone-600 focus:outline-none focus:ring-2 focus:ring-orange-400"
+              className="w-full rounded-lg px-3 py-1.5 bg-stone-700 text-stone-100 border border-stone-600 focus:outline-none focus:ring-2 focus:ring-orange-400"
             />
           </div>
           <div>
@@ -52,7 +52,7 @@ const ContactForm = () => {
               value={form.email}
               onChange={handleChange}
               required
-              className="w-full rounded-lg px-3 py-2 bg-stone-700 text-stone-100 border border-stone-600 focus:outline-none focus:ring-2 focus:ring-orange-400"
+              className="w-full rounded-lg px-3 py-1.5 bg-stone-700 text-stone-100 border border-stone-600 focus:outline-none focus:ring-2 focus:ring-orange-400"
             />
           </div>
           <div>

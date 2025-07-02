@@ -136,7 +136,7 @@ export function ViewMod3d() {
                       "_blank"
                     )
                   }
-                  className="btn-buhbuk-outline flex items-center gap-1"
+                  className="flex items-center gap-1"
                 >
                   <Twitter className="w-4 h-4" /> Twitter
                 </button>
@@ -149,7 +149,7 @@ export function ViewMod3d() {
                       "_blank"
                     )
                   }
-                  className="btn-buhbuk-outline flex items-center gap-1"
+                  className=" flex items-center gap-1"
                 >
                   <Facebook className="w-4 h-4" /> Facebook
                 </button>
@@ -162,7 +162,7 @@ export function ViewMod3d() {
                       "_blank"
                     )
                   }
-                  className="btn-buhbuk-outline flex items-center gap-1"
+                  className=" flex items-center gap-1"
                 >
                   <LinkIcon className="w-4 h-4" /> WhatsApp
                 </button>
@@ -183,7 +183,7 @@ export function ViewMod3d() {
           </div>
 
           {/* Responsive and compact button group */}
-          <div className="flex flex-wrap justify-center items-center gap-2 mt-6 mb-6 [&>button]:px-2 [&>button]:py-1 [&>button]:text-xs sm:[&>button]:text-sm sm:[&>button]:px-3 sm:[&>button]:py-1.5">
+          <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-4 md:gap-5 lg:gap-6 mt-6 mb-6 [&>button]:px-2 [&>button]:py-1 [&>button]:text-xs sm:[&>button]:text-sm sm:[&>button]:px-3 sm:[&>button]:py-1.5">
             <button
               onClick={() => setShow3DModal(true)}
               className="btn-buhbuk flex items-center gap-1 sm:gap-2"
@@ -194,7 +194,7 @@ export function ViewMod3d() {
             {mod3d.videoId && (
               <button
                 onClick={() => setShowVideo(true)}
-                className="btn-buhbuk-dark flex items-center gap-1 sm:gap-2"
+                className="btn-buhbuk flex items-center gap-1 sm:gap-2"
               >
                 <PlayCircle className="w-4 h-4 sm:w-5 sm:h-5" /> Preview Video
               </button>

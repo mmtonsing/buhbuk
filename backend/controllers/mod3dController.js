@@ -4,7 +4,6 @@ import Mod3d from "../models/mod3dSchema.js";
 import Post from "../models/postSchema.js";
 import { deleteFileFromS3 } from "../services/s3/deleteFile.js";
 import { successRes, errorRes } from "../utils/responseHelper.js";
-import { getS3PublicUrl } from "../services/s3/getS3PublicUrl.js";
 import { resolveUserUrls } from "../utils/resolveUserUrls.js";
 import { resolveMediaUrls } from "../utils/resolveMediaUrls.js";
 //#endregion
