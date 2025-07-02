@@ -82,7 +82,7 @@ export function ViewMod3d() {
               </Link>
               <button
                 onClick={() => setShowConfirm(true)}
-                className="btn-buhbuk-rose-outline px-4"
+                className="btn-buhbuk-rose-outline px-4 py-2"
               >
                 🗑️ Delete
               </button>
@@ -113,38 +113,41 @@ export function ViewMod3d() {
           )}
         </div>
 
-        <div className="flex flex-wrap justify-center gap-4 mt-6 mb-6">
+        {/* Responsive and compact button group */}
+        <div className="flex flex-wrap justify-center items-center gap-2 md:gap-4 lg:gap-5 mt-6 mb-6 [&>button]:px-2 [&>button]:py-1 [&>button]:text-xs sm:[&>button]:text-sm sm:[&>button]:px-3 sm:[&>button]:py-1.5">
           <button
             onClick={() => setShow3DModal(true)}
-            className="btn-buhbuk px-4 py-2 flex items-center gap-2"
+            className="btn-buhbuk flex items-center gap-1 sm:gap-2"
           >
-            <Box className="w-5 h-5" /> 3D View
+            <Box className="w-4 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7" /> 3D View
           </button>
+
           {mod3d.videoId && (
             <button
               onClick={() => setShowVideo(true)}
-              className="btn-buhbuk-dark px-5 py-2.5 flex items-center gap-2"
+              className="btn-buhbuk flex items-center gap-1 sm:gap-2"
             >
-              <PlayCircle className="w-5 h-5" /> Preview Video
+              <PlayCircle className="w-4 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7" />{" "}
+              Preview Video
             </button>
           )}
-          {mod3d.modelFiles?.length > 0 ? (
-            user ? (
+
+          {mod3d.modelFiles?.length > 0 &&
+            (user ? (
               <DownloadButton
                 files={mod3d.modelFiles}
                 onStart={() => setDownloading(true)}
                 onEnd={() => setDownloading(false)}
-                className="btn-buhbuk px-5 py-2.5"
+                className="btn-buhbuk flex items-center gap-1 sm:gap-2 lg:gap-3"
               />
             ) : (
               <button
                 disabled
-                className="px-5 py-2.5 text-sm font-medium rounded-lg bg-gray-600 text-white cursor-not-allowed"
+                className="btn-buhbuk-outline  bg-gray-600 text-white cursor-not-allowed"
               >
                 🔒 Login to download
               </button>
-            )
-          ) : null}
+            ))}
         </div>
 
         <PageSubtitle className="text-green-400 mb-2">
