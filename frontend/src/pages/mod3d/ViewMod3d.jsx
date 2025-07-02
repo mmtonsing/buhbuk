@@ -218,6 +218,10 @@ export function ViewMod3d() {
               ))}
           </div>
 
+          <PageParagraph className="text-lg text-stone-200">
+            {mod3d.description}
+          </PageParagraph>
+
           <div className="flex justify-between items-center mb-4">
             <PageSubtitle className="text-green-400">
               💰 {mod3d.price || "Free"}
@@ -226,10 +230,6 @@ export function ViewMod3d() {
               {mod3d.createdAt?.slice(4, 15)}
             </span>
           </div>
-
-          <PageParagraph className="text-lg text-stone-200">
-            {mod3d.description}
-          </PageParagraph>
         </div>
 
         <ConfirmModal
