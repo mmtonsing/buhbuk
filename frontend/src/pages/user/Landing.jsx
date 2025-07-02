@@ -4,6 +4,7 @@ import { CreateUser } from "@/components/auth/CreateUser";
 import { Login } from "@/components/auth/Login";
 import { Button } from "@/components/ui/button";
 import { MessageBanner } from "@/components/customUI/MessageBanner";
+import { PageTitle, PageParagraph } from "@/components/customUI/Typography";
 
 export function Landing() {
   const [view, setView] = useState(0); // 0 = login, 1 = create account
@@ -22,7 +23,7 @@ export function Landing() {
   }, [location.state]);
 
   return (
-    <div className="flex flex-col flex-1 justify-center items-center w-screen h-auto bg-stone-900 text-stone-100">
+    <div className="flex flex-col flex-1 justify-center items-center w-screen h-auto bg-stone-900 text-stone-100 py-10 px-4">
       {showMessage && (
         <MessageBanner
           message={message}
@@ -31,14 +32,18 @@ export function Landing() {
         />
       )}
 
-      <div className="flex flex-col w-full max-w-sm rounded-xl p-6 bg-stone-800 shadow-lg space-y-4">
+      <div className="flex flex-col w-full max-w-lg rounded-xl p-6 bg-stone-800 shadow-lg space-y-4">
+        <PageTitle className="text-amber-300 text-center text-3xl">
+          {view ? "Create Account" : "Login to BuhBuk"}
+        </PageTitle>
+
         {!view ? (
           <>
             <Login prefillIdentifier={successEmail} />
             <Button
               variant="ghost"
               onClick={() => setView(1)}
-              className="text-sm text-stone-300 hover:text-white"
+              className="text-sm text-stone-300 hover:text-[#47211f] hover:bg-stone-300"
             >
               Create new account
             </Button>
@@ -54,7 +59,7 @@ export function Landing() {
             <Button
               variant="ghost"
               onClick={() => setView(0)}
-              className="text-sm text-stone-300 hover:text-white"
+              className="text-sm text-stone-300 hover:text-[#47211f] hover:bg-stone-300"
             >
               Login existing account
             </Button>

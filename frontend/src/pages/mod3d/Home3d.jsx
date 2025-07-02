@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { getPublicPosts } from "@/api/postsApi";
 import { ModCard } from "@/components/mod3d/Mod3dCard";
 import { SkeletonCard } from "@/components/customUI/SkeletonCard";
-import { Button } from "@/components/ui/button";
+import { PageTitle } from "@/components/customUI/Typography";
 
 const SORT_OPTIONS = [
   { value: "trending", label: "Trending" },
@@ -49,7 +49,7 @@ export function Home3d() {
   return (
     <div className="flex flex-col flex-1 min-h-screen w-full max-w-7xl mx-auto px-4 py-10">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-3xl font-bold text-stone-100">All 3D Models</h2>
+        <PageTitle className="text-left mb-4">All 3D Models</PageTitle>
         <div className="mb-6 flex justify-end gap-4">
           <select
             className="bg-stone-800 text-stone-100 border border-stone-600 rounded px-3 py-1"
@@ -95,12 +95,12 @@ export function Home3d() {
 
       {hasMore && (
         <div className="mt-10 text-center">
-          <Button
+          <button
             onClick={handleLoadMore}
-            className="bg-amber-500 hover:bg-amber-600 text-black px-6 py-2"
+            className="btn-buhbuk px-6 py-2 rounded-lg"
           >
             Load More
-          </Button>
+          </button>
         </div>
       )}
     </div>

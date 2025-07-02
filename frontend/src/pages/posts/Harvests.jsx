@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getPublicPosts } from "@/api/postsApi";
 import { SkeletonCard } from "@/components/customUI/SkeletonCard";
 import { PostCard } from "@/components/posts/PostCard";
-import { Button } from "@/components/ui/button";
+import { PageTitle, PageParagraph } from "@/components/customUI/Typography";
 
 const SORT_OPTIONS = [
   { value: "trending", label: "Trending" },
@@ -18,7 +18,7 @@ export default function Harvests() {
   const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
-    loadPosts(1, true); // initial load or sort change
+    loadPosts(1, true);
   }, [sort]);
 
   async function loadPosts(pageToLoad = 1, reset = false) {
@@ -46,32 +46,37 @@ export default function Harvests() {
   const handleLoadMore = () => loadPosts(page + 1);
 
   return (
-    <div className="flex flex-col flex-1 min-h-screen w-max-w-7xl mx-auto px-4 py-10">
+    <div className="flex flex-col flex-1 min-h-screen w-full max-w-7xl mx-auto px-4 py-10">
       {/* 🌾 BuhBuk Feed Intro */}
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-extrabold text-amber-300 mb-2">
+        <PageTitle className="mb-4 text-amber-300">
           The BuhBuk Harvests
-        </h1>
-        <p className="text-lg text-stone-300 max-w-2xl mx-auto">
+        </PageTitle>
+        <PageParagraph className="max-w-2xl mx-auto">
           Fresh from the barn: explore trending creations, heartfelt stories,
           and digital harvests from our vibrant community. Welcome to the
           granary of ideas.
-        </p>
+        </PageParagraph>
       </div>
 
       {/* 🔽 Sort Options */}
-      <div className="mb-6 flex justify-end gap-4">
-        <select
-          value={sort}
-          onChange={(e) => setSort(e.target.value)}
-          className="bg-stone-800 text-stone-200 border border-stone-600 px-4 py-2 rounded"
-        >
-          {SORT_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
+      <div className="flex items-center justify-between mb-6">
+        <PageTitle className="text-left mb-4 sm:text-center">
+          All Harvests
+        </PageTitle>
+        <div className="justify-end">
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
+            className="bg-stone-800 text-stone-100 border border-stone-600 rounded px-3 py-1 w-full sm:w-auto"
+          >
+            {SORT_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* 🧱 Posts Grid */}
@@ -94,12 +99,12 @@ export default function Harvests() {
       {/* ⏬ Load More */}
       {hasMore && (
         <div className="mt-10 text-center">
-          <Button
+          <button
             onClick={handleLoadMore}
-            className="bg-amber-500 hover:bg-amber-600 text-black px-6 py-2"
+            className="btn-buhbuk px-6 py-2 rounded-xl"
           >
             Load More
-          </Button>
+          </button>
         </div>
       )}
     </div>

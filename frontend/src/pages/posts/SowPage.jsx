@@ -1,7 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import { Sparkles } from "lucide-react"; // optional icon for flair
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 
 const categories = [
   {
@@ -37,12 +35,12 @@ export function SowPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
         {categories.map(({ title, description, path }) => (
-          <Card
+          <div
             key={title}
-            className="bg-stone-800/80 backdrop-blur border border-stone-700 hover:border-rose-600 rounded-2xl shadow-md hover:shadow-pink-500/10 transition-all duration-300 cursor-pointer group flex flex-col"
             onClick={() => navigate(path)}
+            className="p-6 flex flex-col flex-grow bg-stone-800/80 backdrop-blur border border-stone-700 hover:border-rose-600 rounded-2xl shadow-md hover:shadow-pink-500/10 transition-all duration-300 cursor-pointer group"
           >
-            <CardContent className="p-6 flex flex-col flex-grow">
+            <div className="p-6 flex flex-col flex-grow">
               {/* Title */}
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles className="text-rose-600 w-5 h-5 group-hover:animate-pulse" />
@@ -53,14 +51,11 @@ export function SowPage() {
               <p className="text-stone-400 text-sm mb-4">{description}</p>
 
               {/* Button pushed to bottom using mt-auto */}
-              <Button
-                variant="outline"
-                className="mt-auto w-full border-rose-600 text-rose-500 hover:bg-rose-600 hover:text-white"
-              >
+              <button className="mt-auto w-full btn-buhbuk-rose-outline">
                 Sow a {title}
-              </Button>
-            </CardContent>
-          </Card>
+              </button>
+            </div>
+          </div>
         ))}
       </div>
     </div>

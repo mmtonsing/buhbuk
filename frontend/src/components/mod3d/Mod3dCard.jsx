@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import LikeHandler from "@/context/LikeHandler";
 import { UserBadge } from "@/components/user/UserBadge";
 import { timeAgo } from "@/utils/timeAgo";
+import { SmallText } from "@/components/customUI/Typography";
 
 export function ModCard({ post }) {
   const displayDate = timeAgo(post?.createdAt);
@@ -18,26 +19,26 @@ export function ModCard({ post }) {
               loading="lazy"
             />
           ) : (
-            <div className="text-gray-500 text-center">No Image</div>
+            <p className="text-sm text-stone-500">No Image</p>
           )}
         </div>
 
         <div className="p-4 space-y-1">
-          <h3 className="text-base font-semibold line-clamp-1">
+          <h3 className="text-base font-semibold text-stone-100 line-clamp-1">
             {post.refId.title}
           </h3>
         </div>
       </Link>
 
       <div className="px-4 pb-4 space-y-2">
-        <div className="flex items-center justify-between pt-1 text-xs text-stone-400">
+        <div className="flex items-center justify-between pt-1 text-xs text-muted">
           {post.author && (
             <UserBadge user={post.author} key={post.author._id} />
           )}
           <LikeHandler postId={post._id} likedBy={post.likedBy} />
         </div>
-        <div className="flex items-center justify-between pt-1 text-xs text-stone-400">
-          <p>{displayDate}</p>
+        <div className="flex items-center justify-between pt-1 text-xs text-muted">
+          <SmallText>{displayDate}</SmallText>
         </div>
       </div>
     </div>

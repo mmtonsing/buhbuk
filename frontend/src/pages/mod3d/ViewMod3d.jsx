@@ -2,7 +2,6 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { PlayCircle, Box, X } from "lucide-react";
 import { getMod3d, deleteMod3d } from "@/api/mod3dsApi";
-import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { UserBadge } from "@/components/user/UserBadge";
 import { ConfirmModal } from "@/components/customUI/DeleteConfirmModal";
@@ -11,6 +10,11 @@ import { VideoPreviewModal } from "@/components/general/VideoPreviewModal";
 import Loader from "@/components/customUI/Loader";
 import HybridViewer from "@/components/mod3d/HybridViewer";
 import { getRenderableModelFile } from "@/utils/getRenderableModelFile";
+import {
+  PageTitle,
+  PageSubtitle,
+  PageParagraph,
+} from "@/components/customUI/Typography";
 
 export function ViewMod3d() {
   const [mod3d, setMod3d] = useState({});
@@ -63,19 +67,22 @@ export function ViewMod3d() {
 
   return (
     <div className="flex flex-col flex-1 min-h-screen w-full bg-stone-900 text-stone-100 px-4 py-10">
-      <div className="max-w-3xl mx-auto bg-stone-800 rounded-xl shadow-lg p-6 border border-stone-700">
-        <div className="flex justify-between items-center mb-4">
-          <Button onClick={() => navigate(-1)} variant="outline">
+      <div className="max-w-5xl mx-auto bg-stone-800 rounded-2xl shadow-xl p-8 border border-stone-700">
+        <div className="flex justify-between items-center mb-6">
+          <button
+            onClick={() => navigate(-1)}
+            className="btn-buhbuk-outline px-4 py-2"
+          >
             ← Back
-          </Button>
+          </button>
           {user?.id === mod3d.author?._id && (
             <div className="flex gap-2">
               <Link to={`/edit/${id}`}>
-                <Button variant="outline">Edit</Button>
+                <button className="btn-buhbuk-outline px-4 py-2">Edit</button>
               </Link>
               <button
                 onClick={() => setShowConfirm(true)}
-                className="px-4 py-2 rounded-lg text-sm font-medium bg-red-600 text-white hover:bg-red-700 active:bg-red-800 transition-all shadow-sm border border-red-500"
+                className="btn-buhbuk-rose-outline px-4"
               >
                 🗑️ Delete
               </button>
@@ -83,11 +90,12 @@ export function ViewMod3d() {
           )}
         </div>
 
-        <h1 className="text-4xl font-bold text-amber-400 text-center mb-2">
+        <PageTitle className="text-center text-amber-400 mb-2">
           {mod3d.title}
-        </h1>
+        </PageTitle>
+
         {mod3d.author && (
-          <div className="flex justify-between items-center gap-2 text-stone-300 text-sm mb-1">
+          <div className="flex justify-between items-center gap-2 text-stone-300 text-sm mb-4">
             <UserBadge user={mod3d.author} className="p-2 text-xs" />
             <span>{mod3d.createdAt?.slice(4, 15)}</span>
           </div>
@@ -98,37 +106,35 @@ export function ViewMod3d() {
             <img
               src={mod3d.imageUrl}
               alt={mod3d.title}
-              className="max-h-[400px] mx-auto object-contain"
+              className="max-h-[500px] w-full mx-auto object-contain rounded"
             />
           ) : (
             <p className="text-center text-red-400">No image available</p>
           )}
         </div>
 
-        <div className="flex flex-wrap justify-center gap-4 mt-6">
+        <div className="flex flex-wrap justify-center gap-4 mt-6 mb-6">
           <button
             onClick={() => setShow3DModal(true)}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg shadow bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white transition"
+            className="btn-buhbuk px-4 py-2 flex items-center gap-2"
           >
-            <Box className="w-5 h-5" />
-            3D View
+            <Box className="w-5 h-5" /> 3D View
           </button>
           {mod3d.videoId && (
             <button
               onClick={() => setShowVideo(true)}
-              className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-lg shadow bg-purple-500 hover:bg-purple-600 active:bg-purple-700 text-white transition"
+              className="btn-buhbuk-dark px-5 py-2.5 flex items-center gap-2"
             >
-              <PlayCircle className="w-5 h-5" />
-              Preview Video
+              <PlayCircle className="w-5 h-5" /> Preview Video
             </button>
           )}
-          {mod3d.modelFiles?.length > 0 &&
-            (user ? (
+          {mod3d.modelFiles?.length > 0 ? (
+            user ? (
               <DownloadButton
                 files={mod3d.modelFiles}
                 onStart={() => setDownloading(true)}
                 onEnd={() => setDownloading(false)}
-                className="px-5 py-2.5 text-sm font-medium rounded-lg shadow bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 text-white transition"
+                className="btn-buhbuk px-5 py-2.5"
               />
             ) : (
               <button
@@ -137,19 +143,19 @@ export function ViewMod3d() {
               >
                 🔒 Login to download
               </button>
-            ))}
+            )
+          ) : null}
         </div>
 
-        <h2 className="text-2xl font-semibold mb-2 text-green-400">
+        <PageSubtitle className="text-green-400 mb-2">
           💰 {mod3d.price || "Free"}
-        </h2>
+        </PageSubtitle>
 
-        <p className="whitespace-pre-wrap text-lg leading-relaxed text-stone-200">
+        <PageParagraph className="text-lg text-stone-200">
           {mod3d.description}
-        </p>
+        </PageParagraph>
       </div>
 
-      {/* Delete modal */}
       <ConfirmModal
         isOpen={showConfirm}
         onClose={() => setShowConfirm(false)}
@@ -158,14 +164,12 @@ export function ViewMod3d() {
         message="Are you sure you want to delete this model? This action cannot be undone."
       />
 
-      {/* Video modal */}
       <VideoPreviewModal
         isOpen={showVideo}
         onClose={() => setShowVideo(false)}
         videoUrl={mod3d.videoUrl}
       />
 
-      {/* 3D Modal */}
       {show3DModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div

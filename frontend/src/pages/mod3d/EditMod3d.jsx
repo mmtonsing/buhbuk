@@ -7,7 +7,9 @@ import { MessageBanner } from "@/components/customUI/MessageBanner";
 import Loader from "@/components/customUI/Loader";
 import { Label } from "@/components/ui/label";
 import InfoTooltip from "@/components/customUI/InfoToolTip.jsx";
-import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { PageTitle } from "@/components/customUI/Typography";
 
 export function EditMod3d() {
   const { id } = useParams();
@@ -85,19 +87,17 @@ export function EditMod3d() {
     };
 
     try {
-      // Upload image if updated
       if (form.imageFile) {
         const imgRes = await createFile(form.imageFile);
         if (!imgRes?.key) throw new Error("Image upload failed");
         updatedData.imageId = imgRes.key;
       }
 
-      // ✅ Upload model (zip or single)
       if (form.modelFile) {
         const ext = form.modelFile.name.split(".").pop().toLowerCase();
 
         if (ext === "zip") {
-          const zipRes = await createFile(form.modelFile, true); // use zip mode
+          const zipRes = await createFile(form.modelFile, true);
           if (!zipRes.modelFiles?.length)
             throw new Error("Zip upload failed or no models extracted");
 
@@ -116,7 +116,6 @@ export function EditMod3d() {
         }
       }
 
-      // ✅ Upload video if updated
       if (form.videoFile) {
         const vidRes = await createFile(form.videoFile);
         if (!vidRes?.key) throw new Error("Video upload failed");
@@ -136,12 +135,13 @@ export function EditMod3d() {
       setLoading(false);
     }
   };
+
   if (loading) {
     return <Loader message="Saving changes, please wait" overlay={true} />;
   }
 
   return (
-    <div className="flex flex-col flex-1 w-full max-w-3xl mx-auto px-4 py-10 bg-stone-1000 min-h-screen text-stone-100">
+    <div className="flex flex-col flex-1 w-full h-auto max-w-3xl mx-auto px-4 py-4 bg-stone-1000 text-stone-100">
       {showBanner && (
         <MessageBanner
           message="Model updated successfully!"
@@ -150,9 +150,9 @@ export function EditMod3d() {
         />
       )}
 
-      <h2 className="text-3xl font-bold mb-8 text-center text-amber-400">
-        Edit 3D Model
-      </h2>
+      <PageTitle className="mb-8 text-center text-amber-400">
+        Edit your 3D Model
+      </PageTitle>
 
       <form
         onSubmit={handleSubmit}
@@ -163,28 +163,29 @@ export function EditMod3d() {
             Model Name*
             <InfoTooltip text="Give your model a short, descriptive title (max 100 characters)." />
           </Label>
-          <input
-            type="text"
+          <Input
             name="title"
             value={form.title}
             onChange={handleChange}
-            placeholder="Title"
-            className="w-full p-2 rounded bg-stone-700 text-white"
+            placeholder="Model name"
+            maxLength={100}
+            className="bg-stone-700 text-stone-100"
+            required
           />
         </div>
 
         <div>
           <Label className="text-sm text-stone-300 mb-1 block">
-            Price{" "}
+            Price
             <InfoTooltip text="Leave empty for free. Otherwise, enter a numeric price (e.g., 10)." />
           </Label>
-          <input
+          <Input
             type="number"
             name="price"
             value={form.price}
             onChange={handleChange}
-            placeholder="Price"
-            className="w-full p-2 rounded bg-stone-700 text-white"
+            placeholder="Optional price"
+            className="bg-stone-700 text-stone-100"
           />
         </div>
 
@@ -193,13 +194,15 @@ export function EditMod3d() {
             Description*
             <InfoTooltip text="Describe your 3D model (max 300 characters). Markdown not supported." />
           </Label>
-          <textarea
+          <Textarea
             name="description"
             value={form.description}
             onChange={handleChange}
             rows={4}
             placeholder="Description"
-            className="w-full p-2 rounded bg-stone-700 text-white"
+            maxLength={300}
+            className="bg-stone-700 text-stone-100"
+            required
           />
         </div>
 
@@ -208,11 +211,11 @@ export function EditMod3d() {
             Replace Image/Thumbnail*
             <InfoTooltip text="Image should represent your model. Max size: 10MB. Formats: jpg, jpeg, png." />
           </Label>
-          <input
+          <Input
             type="file"
             accept="image/*"
             onChange={handleChange}
-            className="w-full bg-stone-700 text-white file:mr-2 file:p-1 file:border-0 file:rounded"
+            className="cursor-pointer bg-stone-700 text-stone-100"
           />
         </div>
 
@@ -221,11 +224,11 @@ export function EditMod3d() {
             Replace 3D Model*
             <InfoTooltip text="Upload a .zip containing your model files or a direct .glb, .obj, .stl, or .gltf file (max 50MB)." />
           </Label>
-          <input
+          <Input
             type="file"
-            accept=".zip,.glb,.gltf,.obj,.stl"
+            accept=".glb,.gltf,.obj,.stl,.zip"
             onChange={handleChange}
-            className="w-full bg-stone-700 text-white file:mr-2 file:p-1 file:border-0 file:rounded"
+            className="cursor-pointer bg-stone-700 text-stone-100"
           />
         </div>
 
@@ -234,16 +237,23 @@ export function EditMod3d() {
             Replace Demo Video
             <InfoTooltip text="Optional. File must be .mp4, .webm, or .mov (max 20MB). Used for model previews." />
           </Label>
-          <input
+          <Input
             type="file"
             accept=".mp4,.webm,.mov"
             onChange={handleChange}
-            className="w-full bg-stone-700 text-white file:mr-2 file:p-1 file:border-0 file:rounded"
+            className="cursor-pointer bg-stone-700 text-stone-100"
           />
         </div>
-        <Button type="submit" className="w-full">
-          Save Changes
-        </Button>
+
+        <div className="pt-4 text-center">
+          <button
+            type="submit"
+            disabled={loading}
+            className="btn-buhbuk w-1/3 py-2 rounded-xl disabled:opacity-50"
+          >
+            Save Changes
+          </button>
+        </div>
       </form>
     </div>
   );

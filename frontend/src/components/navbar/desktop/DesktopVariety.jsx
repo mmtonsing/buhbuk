@@ -3,8 +3,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
-import { CategoryRedirectButton } from "../CategoryRedirectButton";
+import { VarietyRedirectButton } from "../VarietyRedirectButton";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 
@@ -13,24 +12,23 @@ export function DesktopVariety() {
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
-      <DropdownMenuTrigger
-        className={`${navigationMenuTriggerStyle()} text-white gap-2 px-4 py-2 rounded-md text-sm font-medium hover:bg-stone-700 transition`}
-      >
+      <DropdownMenuTrigger className="btn-buhbuk-outline  flex items-center gap-2 px-4 py-1.5 text-sm rounded-lg transition">
         Variety
         <ChevronDown size={16} />
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="bg-stone-800 border border-stone-700 rounded-lg text-stone-100 shadow-lg p-1">
-        <CategoryRedirectButton
+
+      <DropdownMenuContent className="bg-[#2f1f1c] border border-[#4a2f2b] rounded-xl text-stone-100 shadow-lg p-1 w-40">
+        <VarietyRedirectButton
           label="3D Models"
           to="/home3d"
           onClick={() => setOpen(false)}
         />
-        <CategoryRedirectButton
+        <VarietyRedirectButton
           label="Blogs"
           to="/blogs"
           onClick={() => setOpen(false)}
         />
-        <CategoryRedirectButton
+        <VarietyRedirectButton
           label="Graphics"
           to="/graphics"
           onClick={() => setOpen(false)}

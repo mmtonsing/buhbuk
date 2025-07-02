@@ -62,7 +62,7 @@ export function CreateUser({ onSuccess }) {
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="flex flex-col space-y-2">
+      <form onSubmit={handleSubmit} className="flex flex-col space-y-3">
         <Input
           placeholder="Name"
           onChange={handleChange}
@@ -106,7 +106,7 @@ export function CreateUser({ onSuccess }) {
             </span>
           )}
         </p>
-        <Button type="submit" className="bg-orange-600 hover:bg-orange-700">
+        <Button type="submit" className="btn-buhbuk">
           Create Account
         </Button>
       </form>

@@ -1,9 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getPublicPosts } from "@/api/postsApi";
-import { Button } from "@/components/ui/button";
 import { SkeletonCard } from "@/components/customUI/SkeletonCard";
 import { PostCard } from "@/components/posts/PostCard";
+import {
+  PageTitle,
+  PageSubtitle,
+  PageParagraph,
+  SectionTitle,
+} from "@/components/customUI/Typography";
 
 export function Buk() {
   const navigate = useNavigate();
@@ -40,78 +45,50 @@ export function Buk() {
 
   return (
     <div className="flex flex-col min-h-screen w-screen bg-stone-900 text-stone-200">
-      {/* HomeBanner */}
+      {/* Hero Banner */}
       <section className="relative w-full h-[85vh] sm:h-[80vh] md:h-[90vh] lg:h-[93vh] text-white overflow-hidden">
-        {/* Full Image */}
         <img
           src="/homebackground.JPG"
           alt="Background"
           className="absolute inset-0 w-full h-full object-cover object-center"
         />
-        {/* Dark overlay */}
         <div className="absolute inset-0 bg-black/60" />
-        {/* Foreground content */}
         <div className="relative z-10 flex items-center justify-center h-full px-4">
           <div className="max-w-3xl text-center">
-            <h1 className="text-5xl font-extrabold mb-4 tracking-tight drop-shadow-lg">
+            <PageTitle className="mb-4 lg:!text-6xl">
               Welcome to BuhBuk
-            </h1>
-            <p className="text-xl mb-4">
+            </PageTitle>
+            <PageParagraph>
               BuhBuk is our granary of creativity. Whether you create, explore,
               or support
-            </p>
-            <p className="text-xl mb-4">— you belong here —</p>
-            <h2 className="text-lg mb-8 italic text-amber-200">
+            </PageParagraph>
+            <PageParagraph className="mb-4">— you belong here —</PageParagraph>
+            <PageSubtitle>
               Where every story, sketch, and spark finds a home.
-            </h2>
+            </PageSubtitle>
           </div>
         </div>
       </section>
 
-      {/* <section
-        id="welcome"
-        className="scroll-mt-20 bg-gradient-to-r from-[#4b2e2b] to-[#6b4226] text-stone-100 py-20"
-        style={{
-          backgroundImage: `url('/homebackground.jpg')`,
-        }}
-      >
-        <div className="max-w-3xl mx-auto text-center px-4">
-          <h1 className="text-5xl font-extrabold mb-4 tracking-tight drop-shadow-lg">
-            Welcome to BuhBuk
-          </h1>
-          <p className="text-xl mb-4">
-            BuhBuk is our granary of creativity. Whether you create, explore, or
-            support
-          </p>
-          <p className="text-xl mb-4">— you belong here —</p>
-          <h2 className="text-lg mb-8 italic text-amber-200">
-            Where every story, sketch, and spark finds a home.
-          </h2>
-        </div>
-      </section> */}
-
-      {/* 🔥 Trending Posts */}
-      <section className="py-16 bg-stone-800">
+      {/* Trending Posts */}
+      <section className="py-16 bg-stone-800 animate-fade-in">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-3xl font-bold text-amber-300">
-              Trending Harvests
-            </h2>
-            <Button
+            <SectionTitle className="mb-0">Trending Harvests</SectionTitle>
+            <button
               onClick={() => navigate("/harvests")}
-              className="bg-amber-500 hover:bg-amber-600 text-black px-4 py-2 rounded-lg"
+              className="btn-buhbuk px-4 py-2 rounded-lg"
             >
               View More
-            </Button>
+            </button>
           </div>
 
           {loading ? (
             <SkeletonGrid />
           ) : trendingPosts.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {trendingPosts.map((post) => (
                 <PostCard key={post._id} post={post}>
-                  {/* Optional: Add content here if specific to the type */}
                   {post.category === "Blog" && (
                     <p className="text-sm text-stone-300 line-clamp-2 mt-2">
                       {post.refId?.summary}
@@ -121,7 +98,7 @@ export function Buk() {
               ))}
             </div>
           ) : (
-            <p className="text-stone-400 text-center">No recent posts yet.</p>
+            <PageParagraph>No recent posts yet.</PageParagraph>
           )}
         </div>
       </section>

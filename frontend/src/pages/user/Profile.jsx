@@ -14,6 +14,7 @@ import { EmailVerifyModal } from "@/components/customUI/EmailVerifyModal";
 import { CategoryFilter } from "@/components/general/CategoryFilter";
 import { CATEGORY_LABELS } from "@/utils/constants";
 import { sortByDateCreated } from "@/utils/sortByDate";
+import { SectionTitle, PageParagraph } from "@/components/customUI/Typography";
 
 export function Profile() {
   const { user, setUser, loading, refreshUser } = useAuth();
@@ -60,9 +61,9 @@ export function Profile() {
     <div className="flex flex-col flex-1 min-h-screen w-screen  max-w-7xl mx-auto px-4 py-10 text-stone-200 bg-stone-1000">
       {/* Profile Card */}
       <div className="bg-gradient-to-br from-stone-800 to-stone-900 p-6 rounded-2xl shadow-xl border border-stone-700 mb-10">
-        <h2 className="text-3xl font-bold mb-6 text-stone-100 tracking-wide">
+        <SectionTitle className="text-stone-100 mb-6">
           Your Profile
-        </h2>
+        </SectionTitle>
 
         <div className="grid sm:grid-cols-3 gap-8 items-start">
           {/* Avatar & Edit Info */}
@@ -130,7 +131,7 @@ export function Profile() {
 
             <div className="flex gap-6 items-center mt-2">
               <div className="bg-stone-700 px-4 py-2 rounded-lg text-center">
-                <p className="text-sm text-stone-300">Total Posts</p>
+                <p className="text-sm text-stone-300">Total Harvests</p>
                 <p className="text-xl font-bold text-amber-400">
                   {posts.length}
                 </p>
@@ -148,9 +149,9 @@ export function Profile() {
       {showEditForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
           <div className="bg-stone-800 border border-stone-700 rounded-xl p-6 w-full max-w-md shadow-lg">
-            <h3 className="text-xl font-bold text-stone-100 mb-4">
+            <SectionTitle className="text-stone-100 mb-4 text-xl">
               Edit Your Info
-            </h3>
+            </SectionTitle>
 
             {/* Edit User Profile */}
             <EditProfileForm
@@ -178,16 +179,15 @@ export function Profile() {
 
       {/* Upload Section */}
       <div className="mb-6 flex items-center justify-between">
-        <h3 className="text-2xl font-semibold tracking-wide text-stone-100">
-          Your Uploads
-        </h3>
+        <SectionTitle className="text-stone-100">Your Harvests</SectionTitle>
+
         {posts.length > 0 && (
           <Button
             className="bg-[#59322d] hover:bg-[#47211f] text-stone-100 flex items-center gap-2"
             onClick={() => navigate("/post")}
           >
             <Plus size={18} />
-            Post
+            Sow
           </Button>
         )}
       </div>
@@ -203,18 +203,19 @@ export function Profile() {
       {posts.length === 0 ? (
         <div className="bg-stone-800 border border-stone-700 rounded-xl p-8 shadow-md text-center text-stone-300">
           <h3 className="text-xl font-semibold text-stone-100 mb-2">
-            You haven’t posted anything yet.
+            You haven’t sowed anything yet.
           </h3>
-          <p className="mb-4">
+          <PageParagraph className="mb-4">
             Share your stories, art, 3D models, blog entries, or creative ideas!
-          </p>
+          </PageParagraph>
+
           <div className="flex justify-center">
             <Button
               className="bg-[#59322d] hover:bg-[#47211f] text-stone-100 px-6 py-2 text-lg flex items-center gap-2"
-              onClick={() => navigate("/post")}
+              onClick={() => navigate("/sow")}
             >
               <Plus size={20} />
-              Start Posting
+              Start Sowing
             </Button>
           </div>
         </div>

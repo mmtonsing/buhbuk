@@ -1,19 +1,25 @@
 import ContactForm from "@/components/general/ContactForm";
+import {
+  PageTitle,
+  PageParagraph,
+  SmallText,
+} from "@/components/customUI/Typography";
 
 export function Contact() {
   return (
     <div className="flex flex-col flex-1 min-h-screen bg-stone-900 text-stone-200 pt-12 px-4 w-full mx-auto">
       <div className="text-center">
-        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight text-amber-300 mb-6">
+        <PageTitle className="text-amber-300 mb-6">
           🪵 Reach Out to BuhBuk
-        </h1>
-        <p className="text-lg leading-7 mb-4 text-stone-300">
+        </PageTitle>
+
+        <PageParagraph className="mb-4">
           Whether you're building, dreaming, or simply wandering by the barn —
           we’d love to hear from you.
-        </p>
+        </PageParagraph>
 
         {/* list */}
-        <div className="my-6 space-y-2 text-stone-300">
+        <div className="my-6 space-y-2 text-stone-300 text-base sm:text-lg">
           <p>🤝 Collaborate on 3D or creative projects</p>
           <p>🎨 Feature your story, art, or indie tool</p>
           <p>💡 Suggest improvements or new features</p>
@@ -22,10 +28,11 @@ export function Contact() {
           <p>💌 Just to say hi or share encouragement 🧡</p>
         </div>
 
-        <p className="text-md mt-4 text-orange-400 italic">
+        <SmallText className="mt-4 text-orange-400 italic">
           This Buk is always open for dreamers, builders, and wanderers.
-        </p>
+        </SmallText>
       </div>
+
       <div className="mt-10">
         <ContactForm />
       </div>

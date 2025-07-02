@@ -52,6 +52,9 @@
   --color-deepbrown: #3b2f2f;
   --color-fadedbrown: #6b4f3f;
   --color-pinky: #ffafcc;
+
+  --color-buhbukAccent: #e0c9a6;
+  --font-logo: "Playfair Display", serif;
 }
 
 :root {
@@ -146,6 +149,23 @@
 /* customs */
 .btn-cozy-outline {
   @apply border-stone-800 text-white font-medium shadow-[0_0_10px_rgba(255,235,205,0.2)] hover:bg-stone-700 hover:text-white;
+}
+
+.btn-buhbuk {
+  @apply bg-[#59322d] hover:bg-[#47211f] text-stone-100 font-semibold rounded-lg shadow-sm transition duration-200;
+}
+.btn-buhbuk-outline {
+  @apply border border-[#59322d] text-white hover:bg-[#47211f] hover:text-white;
+}
+.btn-buhbuk-dark {
+  @apply bg-[#3b2f2f] hover:bg-[#2a201f] text-stone-200;
+}
+.btn-buhbuk-rose-outline {
+  @apply border border-rose-600 text-rose-500 hover:bg-rose-600 hover:text-white rounded-xl py-2 font-semibold transition;
+}
+
+.nav-link-mobile {
+  @apply text-sm px-3 py-2 rounded-md hover:bg-[#3b2a26] transition;
 }
 
 body {

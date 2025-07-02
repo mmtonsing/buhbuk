@@ -2,56 +2,46 @@ import { Home, PlusCircle, User, Newspaper } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { MobileVarietyPopover } from "./MobileVarietyPopover";
+import { useWindowWidth } from "@/hooks/useWindowWidth";
 
 export function MobileBottomNav() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const width = useWindowWidth();
+  if (width >= 900) return null;
 
   const baseItemClass =
-    "flex flex-col items-center text-xs text-stone-300 hover:text-white transition";
+    "flex flex-col items-center gap-0.5 text-xs font-medium text-stone-300 hover:text-amber-300 transition";
 
   return (
-    <nav
-      className="fixed bottom-0 left-0 w-full h-16 bg-[#2f1f1c] border-t border-[#4a2f2b] z-40 md:hidden shadow-inner"
-      style={{
-        backgroundColor: "#2f1f1c",
-        borderTop: "1px solid #4a2f2b",
-        paddingBottom: "env(safe-area-inset-bottom)",
-        minHeight: "4rem",
-        backgroundClip: "content-box",
-      }}
-    >
-      <div className="flex justify-around items-center py-2 px-2">
-        <Link to="/" className={baseItemClass}>
+    <nav className="fixed bottom-0 left-0 w-full z-40 border-t border-[#4a2f2b] bg-[#2f1f1c] shadow-inner backdrop-blur-md">
+      <div className="flex justify-around items-center h-16 px-2">
+        <Link to="/" className={baseItemClass} aria-label="Home">
           <Home className="h-6 w-6" />
           Buk
         </Link>
 
-        <Link to="/harvests" className={baseItemClass}>
+        <Link to="/harvests" className={baseItemClass} aria-label="Harvests">
           <Newspaper className="h-6 w-6" />
           Harvests
         </Link>
 
-        {/* <button className={baseItemClass}>
-          <Search className="h-6 w-6" />
-          Search
-        </button> */}
-
         {user && (
-          <Link to="/sow">
-            <button className={baseItemClass}>
-              <PlusCircle className="h-6 w-6" />
-              Sow
-            </button>
+          <Link
+            to="/sow"
+            className={baseItemClass}
+            aria-label="Create New Post"
+          >
+            <PlusCircle className="h-6 w-6" />
+            Sow
           </Link>
         )}
 
-        {/* Explore */}
         <MobileVarietyPopover />
 
         {user ? (
-          <Link to="/profile" className={baseItemClass}>
+          <Link to="/profile" className={baseItemClass} aria-label="Profile">
             <User className="h-6 w-6" />
             Profile
           </Link>
@@ -61,6 +51,7 @@ export function MobileBottomNav() {
               navigate("/auth", { state: { from: location.pathname } })
             }
             className={baseItemClass}
+            aria-label="Login"
           >
             <User className="h-6 w-6" />
             Login

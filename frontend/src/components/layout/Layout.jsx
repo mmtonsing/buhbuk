@@ -21,7 +21,7 @@ export function Layout() {
       <div className="h-[4rem] md:hidden" />
 
       {/* Bottom Mobile Nav (like Instagram/YouTube style) */}
-      <div className="md:hidden fixed bottom-0 left-0 w-full z-50">
+      <div>
         <MobileBottomNav />
       </div>
     </div>

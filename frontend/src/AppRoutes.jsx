@@ -46,7 +46,7 @@ export function AppRoutes() {
             element={
               <ComingSoon
                 title="Blogs Coming Soon"
-                message="BukWarm is bringing stories to life. Stay tuned!"
+                message="BuhBuk is bringing stories to life. Stay tuned!"
               />
             }
           />

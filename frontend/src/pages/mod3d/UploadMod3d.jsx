@@ -4,12 +4,12 @@ import { uploadMod3d } from "@/api/mod3dsApi";
 import { createFile } from "@/api/fileApi";
 import { getFileExtension } from "@/utils/fileValidators";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { MessageBanner } from "@/components/customUI/MessageBanner";
 import Loader from "@/components/customUI/Loader";
 import InfoTooltip from "@/components/customUI/InfoToolTip.jsx";
+import { PageTitle } from "@/components/customUI/Typography";
 
 export function UploadMod3d() {
   const [title, setTitle] = useState("");
@@ -165,10 +165,7 @@ export function UploadMod3d() {
 
   if (loading)
     return (
-      <Loader
-        message="Uploading model, this may take some time"
-        overlay={true}
-      />
+      <Loader message="Sowing model, this may take some time" overlay={true} />
     );
 
   return (
@@ -181,9 +178,9 @@ export function UploadMod3d() {
         />
       )}
 
-      <h2 className="text-3xl font-bold mb-8 text-center text-amber-400">
-        Upload your 3D Model
-      </h2>
+      <PageTitle className="mb-8 text-center text-amber-400">
+        Sow your 3D Model
+      </PageTitle>
 
       <form
         onSubmit={handleSubmit}
@@ -207,7 +204,7 @@ export function UploadMod3d() {
 
         <div>
           <Label className="text-sm text-stone-300 mb-1 block">
-            Price{" "}
+            Price
             <InfoTooltip text="Leave empty for free. Otherwise, enter a numeric price (e.g., 10)." />
           </Label>
           <Input
@@ -286,13 +283,13 @@ export function UploadMod3d() {
         </div>
 
         <div className="pt-4 text-center">
-          <Button
+          <button
             type="submit"
             disabled={loading}
-            className="bg-[#59322d] hover:bg-[#47211f] text-stone-100 px-6 py-2 text-lg rounded-lg shadow-md disabled:opacity-50"
+            className="btn-buhbuk w-1/3 py-2 rounded-xl  disabled:opacity-50"
           >
-            Submit
-          </Button>
+            Upload
+          </button>
         </div>
       </form>
     </div>

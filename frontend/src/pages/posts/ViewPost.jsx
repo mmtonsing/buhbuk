@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "@/api/axiosInstance";
+import { PageTitle, PageParagraph } from "@/components/customUI/Typography";
+import { Link } from "react-router-dom";
 
 export default function ViewPost() {
   const { id } = useParams();
@@ -36,26 +38,48 @@ export default function ViewPost() {
     fetchPost();
   }, [id, navigate]);
 
-  if (loading) return <div className="p-4 text-stone-400">Loading...</div>;
-  if (!post) return <div className="p-4 text-red-500">Post not found.</div>;
+  if (loading)
+    return (
+      <div className="p-4 text-center">
+        <PageParagraph className="text-stone-400 italic">
+          Loading...
+        </PageParagraph>
+      </div>
+    );
+  if (!post)
+    return (
+      <div className="p-4 text-center">
+        <PageParagraph className="text-red-500">Post not found.</PageParagraph>
+        <Link
+          to="/"
+          className="inline-block mt-4 btn-buhbuk-outline px-4 py-2 rounded-xl"
+        >
+          Back to BuhBuk
+        </Link>
+      </div>
+    );
 
   // 🧩 Optional fallback view if redirect did not occur (e.g. unknown category)
   return (
     <div className="p-4 max-w-3xl mx-auto text-white">
-      <h1 className="text-2xl font-bold mb-2">{post.title || "Untitled"}</h1>
-      <p className="text-sm text-stone-400 mb-4">Category: {post.category}</p>
+      <PageTitle className="text-3xl mb-2">
+        {post.title || "Untitled"}
+      </PageTitle>
+      <PageParagraph className="text-stone-400 italic mb-4">
+        Category: {post.category}
+      </PageParagraph>
 
       {post.imageUrl ? (
         <img
           src={post.imageUrl}
           alt="Post preview"
-          className="w-full h-auto max-h-[400px] object-contain bg-stone-800"
+          className="w-full h-auto max-h-[400px] object-contain bg-stone-800 rounded-xl"
         />
       ) : (
-        <div className="text-stone-400">No image available</div>
+        <PageParagraph className="text-stone-500 italic">
+          No image available
+        </PageParagraph>
       )}
-
-      {/* You can render post.summary or other fields here */}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-export function CategoryRedirectButton({ label, to, onClick }) {
+export function VarietyRedirectButton({ label, to, onClick }) {
   const navigate = useNavigate();
 
   return (
@@ -9,7 +9,7 @@ export function CategoryRedirectButton({ label, to, onClick }) {
         navigate(to);
         onClick?.();
       }}
-      className="w-full text-left px-3 py-2 text-sm hover:bg-stone-700 rounded-md"
+      className="text-left w-full px-3 py-2 text-sm rounded-md hover:bg-[#3b2a26] transition"
     >
       {label}
     </button>

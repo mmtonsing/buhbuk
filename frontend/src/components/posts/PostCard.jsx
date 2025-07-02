@@ -1,8 +1,8 @@
-//src/components/posts/PostCard.jsx
 import { Link } from "react-router-dom";
 import { UserBadge } from "@/components/user/UserBadge";
 import LikeHandler from "@/context/LikeHandler";
 import { timeAgo } from "@/utils/timeAgo";
+import { SmallText } from "@/components/customUI/Typography";
 
 export function PostCard({ post, children }) {
   if (!post || !post.refId || typeof post.refId !== "object") {
@@ -28,8 +28,21 @@ export function PostCard({ post, children }) {
     }
   };
 
+  const formatCategory = (cat) => {
+    switch (cat) {
+      case "Mod3d":
+        return "3D Model";
+      case "Graphic":
+        return "Graphic Art";
+      case "Blog":
+        return "Blog Post";
+      default:
+        return "Post";
+    }
+  };
+
   return (
-    <div className="rounded-xl border border-stone-700 shadow bg-stone-800 hover:bg-stone-700 overflow-hidden transition-transform hover:scale-105 duration-300">
+    <div className="rounded-xl border border-stone-700 shadow bg-stone-800 hover:bg-stone-700 overflow-hidden transition-transform hover:scale-105 duration-300 group">
       <Link to={getViewRoute()}>
         <div className="bg-stone-900 h-52 flex justify-center items-center">
           {imageUrl ? (
@@ -40,24 +53,28 @@ export function PostCard({ post, children }) {
               loading="lazy"
             />
           ) : (
-            <p className="text-stone-400">No Image</p>
+            <p className="text-stone-400 text-sm">No Image</p>
           )}
         </div>
 
-        <div className="p-4">
-          <h3 className="text-base font-semibold line-clamp-1 mb-2">{title}</h3>
+        <div className="p-4 space-y-2">
+          <h3 className="text-base font-semibold text-stone-100 line-clamp-1">
+            {title}
+          </h3>
 
           {/* Optional extra content */}
           {children}
 
-          <div className="flex items-center justify-between text-xs text-stone-400 pt-2">
+          <div className="flex items-center justify-between text-xs text-muted pt-2">
             {post.author && <UserBadge user={post.author} />}
             <LikeHandler postId={post._id} likedBy={post.likedBy} />
           </div>
 
-          <div className="flex items-center justify-between text-xs text-stone-400 pt-1">
-            <span>{displayDate}</span>
-            <span className="text-amber-400 font-medium">{category}</span>
+          <div className="flex items-center justify-between text-xs pt-1">
+            <SmallText>{displayDate}</SmallText>
+            <span className="text-[color:var(--color-buhbukAccent)] font-medium">
+              {formatCategory(category)}
+            </span>
           </div>
         </div>
       </Link>

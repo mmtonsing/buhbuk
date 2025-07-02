@@ -1,6 +1,6 @@
 import { useNavigate, Link } from "react-router-dom";
-import { Menu, XIcon } from "lucide-react";
-import { pageDataMobile } from "./pageDataMobile.js";
+import { Menu, X } from "lucide-react";
+import { pageDataMobile } from "./pageDataMobile";
 import {
   Sheet,
   SheetClose,
@@ -9,87 +9,93 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { useAuth } from "@/context/AuthContext.jsx";
-import { useLogoutHandler } from "@/utils/handleLogout.js";
+import { useAuth } from "@/context/AuthContext";
+import { useLogoutHandler } from "@/utils/handleLogout";
+import { useWindowWidth } from "@/hooks/useWindowWidth";
 
 export default function MobileNav() {
-  const { user, setUser } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const handleLogout = useLogoutHandler();
+  const width = useWindowWidth();
+  if (width >= 900) return null;
 
   return (
-    <div className="md:hidden">
-      <Sheet>
-        <SheetTrigger asChild>
-          <Menu className="w-10 h-10 text-stone-200" />
-        </SheetTrigger>
-        <SheetContent
-          side="right"
-          className="w-64 bg-[#1e1513] text-stone-300 border-l border-[#3b2a26] px-4 py-4"
+    <Sheet>
+      <SheetTrigger asChild>
+        <button
+          aria-label="Open navigation"
+          className="p-2 rounded-md hover:bg-stone-800 transition"
         >
-          <SheetClose
-            asChild
-            className="ring-offset-background focus:ring-ring data-[state=open]:bg-secondary absolute top-6 right-9 rounded-xs opacity-80 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none"
+          <Menu className="w-6 h-6 text-stone-100" />
+        </button>
+      </SheetTrigger>
+
+      <SheetContent
+        side="right"
+        className="w-64 bg-[#1e1513] text-stone-200 border-l border-[#3b2a26] px-4 py-4"
+      >
+        <SheetClose asChild>
+          <button
+            className="absolute top-5 right-5 p-1 rounded-full hover:bg-[#2e1f1b] transition"
+            aria-label="Close menu"
           >
-            <XIcon className="size-10">X</XIcon>
-          </SheetClose>
-          {/* HEADER */}
-          <SheetHeader>
-            <div className="flex items-center gap-2 mb-4">
-              <SheetTitle className="text-2xl font-extrabold bg-gradient-to-r from-[#d5bdaf] to-[#988276] bg-clip-text text-transparent tracking-wide">
-                BuhBuk
-              </SheetTitle>
-            </div>
-          </SheetHeader>
+            <X className="w-6 h-6" />
+          </button>
+        </SheetClose>
 
-          {/* NAVIGATION */}
-          <nav className="flex flex-col space-y-2">
-            {pageDataMobile.map((page) => (
-              <SheetClose asChild key={page.path}>
-                <Link
-                  to={page.path}
-                  className="text-sm font-medium px-3 py-2 rounded hover:bg-[#3b2a26] transition"
-                >
-                  {page.name}
-                </Link>
-              </SheetClose>
-            ))}
+        {/* Header */}
+        <SheetHeader className="mb-6">
+          <SheetTitle className="text-2xl [font-family:var(--font-logo)] bg-gradient-to-r from-[#f3d6a4] to-[#b47f4e] bg-clip-text text-transparent tracking-wide">
+            BuhBuk
+          </SheetTitle>
+        </SheetHeader>
 
-            <hr className="my-3 border-[#3b2a26]" />
+        {/* Navigation links */}
+        <nav className="flex flex-col gap-2">
+          {pageDataMobile.map((page) => (
+            <SheetClose asChild key={page.path}>
+              <Link to={page.path} className="nav-link-mobile">
+                {page.name}
+              </Link>
+            </SheetClose>
+          ))}
 
-            {/* USER ACTIONS */}
-            {user ? (
-              <>
-                <SheetClose asChild>
-                  <button
-                    onClick={() => navigate("/profile")}
-                    className="text-sm px-3 py-2 text-left rounded hover:bg-[#3b2a26] transition"
-                  >
-                    Profile
-                  </button>
-                </SheetClose>
-                <SheetClose asChild>
-                  <button
-                    onClick={handleLogout}
-                    className="text-sm px-3 py-2 text-left text-red-500 hover:bg-[#3b2a26] transition"
-                  >
-                    Logout
-                  </button>
-                </SheetClose>
-              </>
-            ) : (
+          <hr className="my-3 border-[#3b2a26]" />
+
+          {/* Auth buttons */}
+          {user ? (
+            <>
               <SheetClose asChild>
                 <button
-                  onClick={() => navigate("/auth")}
-                  className="text-sm px-3 py-2 text-left bg-green-700 text-white rounded hover:bg-green-800 transition"
+                  onClick={() => navigate("/profile")}
+                  className="text-sm text-left px-3 py-2 rounded-md hover:bg-[#3b2a26] transition"
                 >
-                  Login / Signup
+                  Profile
                 </button>
               </SheetClose>
-            )}
-          </nav>
-        </SheetContent>
-      </Sheet>
-    </div>
+
+              <SheetClose asChild>
+                <button
+                  onClick={handleLogout}
+                  className="text-sm text-left px-3 py-2 rounded-md text-red-500 hover:bg-[#3b2a26] transition"
+                >
+                  Logout
+                </button>
+              </SheetClose>
+            </>
+          ) : (
+            <SheetClose asChild>
+              <button
+                onClick={() => navigate("/auth")}
+                className="btn-buhbuk w-full text-center py-2 text-sm mt-2"
+              >
+                Login / Signup
+              </button>
+            </SheetClose>
+          )}
+        </nav>
+      </SheetContent>
+    </Sheet>
   );
 }
