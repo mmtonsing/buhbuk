@@ -1,15 +1,15 @@
 export const pageData = [
   {
-    name: "Harvests",
+    name: "Buk",
     path: "/",
   },
   {
-    name: "Explore",
-    path: "/explore",
+    name: "Harvests",
+    path: "/harvests",
   },
   {
-    name: "Post",
-    path: "/post",
+    name: "Sow",
+    path: "/sow",
     requiresAuth: true,
   },
 

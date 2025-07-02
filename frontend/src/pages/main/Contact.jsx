@@ -4,7 +4,7 @@ export function Contact() {
   return (
     <div className="flex flex-col flex-1 min-h-screen bg-stone-900 text-stone-200 pt-12 px-4 w-full mx-auto">
       <div className="text-center">
-        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight text-[#d5bdaf] mb-6">
+        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight text-amber-300 mb-6">
           🪵 Reach Out to BuhBuk
         </h1>
         <p className="text-lg leading-7 mb-4 text-stone-300">

@@ -11,12 +11,12 @@ import { ViewMod3d } from "./pages/mod3d/ViewMod3d";
 import { UploadMod3d } from "./pages/mod3d/UploadMod3d";
 import { Layout } from "./components/layout/Layout";
 import { UserPosts } from "./pages/user/UserPosts";
-import { Harvests } from "./pages/main/Harvests";
+import { Buk } from "./pages/main/Buk";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { ComingSoon } from "./pages/main/ComingSoon";
-import { PostPage } from "./pages/posts/PostPage";
+import { SowPage } from "./pages/posts/SowPage";
 import { EditMod3d } from "./pages/mod3d/EditMod3d";
-import Explore from "./pages/posts/Explore";
+import Harvests from "./pages/posts/Harvests";
 import ViewPost from "./pages/posts/ViewPost";
 import EmailVerify from "./pages/user/EmailVerify";
 
@@ -31,10 +31,10 @@ export function AppRoutes() {
       <Routes>
         <Route element={<Layout />}>
           {/* Public Routes */}
-          <Route path="/" element={<Harvests />} />
+          <Route path="/" element={<Buk />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/explore" element={<Explore />} />
+          <Route path="/harvests" element={<Harvests />} />
           <Route path="/home3d" element={<Home3d />} />
           <Route path="/viewmod3d/:id" element={<ViewMod3d />} />
           <Route path="/auth" element={<Landing />} />
@@ -64,7 +64,7 @@ export function AppRoutes() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/uploadmod3d" element={<UploadMod3d />} />
             <Route path="/user/:id" element={<UserPosts />} />
-            <Route path="/post" element={<PostPage />} />
+            <Route path="/sow" element={<SowPage />} />
             <Route path="/edit/:id" element={<EditMod3d />} />
           </Route>
         </Route>

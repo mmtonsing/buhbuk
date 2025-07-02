@@ -6,25 +6,23 @@ import { Button } from "@/components/ui/button";
 import { MessageBanner } from "@/components/customUI/MessageBanner";
 
 export function Landing() {
-  const [view, setView] = useState(0); //0-login 1-create
+  const [view, setView] = useState(0); // 0 = login, 1 = create account
+  const [successEmail, setSuccessEmail] = useState("");
   const [message, setMessage] = useState("");
   const [showMessage, setShowMessage] = useState(false);
   const location = useLocation();
 
-  // ✅ Show message on redirect with state
+  // Show redirect message
   useEffect(() => {
     if (location.state?.message) {
       setMessage(location.state.message);
       setShowMessage(true);
-
-      // Clear state to prevent it from showing again on refresh/back
-      window.history.replaceState({}, document.title);
+      window.history.replaceState({}, document.title); // clear state
     }
   }, [location.state]);
 
   return (
     <div className="flex flex-col flex-1 justify-center items-center w-screen h-auto bg-stone-900 text-stone-100">
-      {/* ✅ Message banner */}
       {showMessage && (
         <MessageBanner
           message={message}
@@ -36,7 +34,7 @@ export function Landing() {
       <div className="flex flex-col w-full max-w-sm rounded-xl p-6 bg-stone-800 shadow-lg space-y-4">
         {!view ? (
           <>
-            <Login />
+            <Login prefillIdentifier={successEmail} />
             <Button
               variant="ghost"
               onClick={() => setView(1)}
@@ -47,7 +45,12 @@ export function Landing() {
           </>
         ) : (
           <>
-            <CreateUser onSuccess={() => setView(0)} />
+            <CreateUser
+              onSuccess={(email) => {
+                setSuccessEmail(email);
+                setView(0);
+              }}
+            />
             <Button
               variant="ghost"
               onClick={() => setView(0)}

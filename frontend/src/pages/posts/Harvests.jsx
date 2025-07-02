@@ -10,7 +10,7 @@ const SORT_OPTIONS = [
   { value: "popular", label: "Popular" },
 ];
 
-export default function Explore() {
+export default function Harvests() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -50,7 +50,7 @@ export default function Explore() {
       {/* 🌾 BuhBuk Feed Intro */}
       <div className="text-center mb-12">
         <h1 className="text-4xl font-extrabold text-amber-300 mb-2">
-          The BuhBuk Feed
+          The BuhBuk Harvests
         </h1>
         <p className="text-lg text-stone-300 max-w-2xl mx-auto">
           Fresh from the barn: explore trending creations, heartfelt stories,

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { SkeletonCard } from "@/components/customUI/SkeletonCard";
 import { PostCard } from "@/components/posts/PostCard";
 
-export function Harvests() {
+export function Buk() {
   const navigate = useNavigate();
   const [trendingPosts, setTrendingPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -95,10 +95,10 @@ export function Harvests() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-3xl font-bold text-amber-300">
-              Trending Posts
+              Trending Harvests
             </h2>
             <Button
-              onClick={() => navigate("/feed")}
+              onClick={() => navigate("/harvests")}
               className="bg-amber-500 hover:bg-amber-600 text-black px-4 py-2 rounded-lg"
             >
               View More

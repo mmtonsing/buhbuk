@@ -21,17 +21,17 @@ const categories = [
   },
 ];
 
-export function PostPage() {
+export function SowPage() {
   const navigate = useNavigate();
 
   return (
     <div className="flex flex-col flex-1 w-full h-auto bg-gradient-to-b from-stone-900 to-stone-950 text-white py-14 px-6">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-extrabold tracking-tight mb-2">
-          Create a New Post
+          Sow a New Crop
         </h1>
         <p className="text-stone-400 text-md sm:text-lg lg:text-xl">
-          Start posting — choose a category to share your work.
+          choose a variety to share your work.
         </p>
       </div>
 
@@ -39,13 +39,13 @@ export function PostPage() {
         {categories.map(({ title, description, path }) => (
           <Card
             key={title}
-            className="bg-stone-800/80 backdrop-blur border border-stone-700 hover:border-pink-500 rounded-2xl shadow-md hover:shadow-pink-500/10 transition-all duration-300 cursor-pointer group flex flex-col"
+            className="bg-stone-800/80 backdrop-blur border border-stone-700 hover:border-rose-600 rounded-2xl shadow-md hover:shadow-pink-500/10 transition-all duration-300 cursor-pointer group flex flex-col"
             onClick={() => navigate(path)}
           >
             <CardContent className="p-6 flex flex-col flex-grow">
               {/* Title */}
               <div className="flex items-center gap-2 mb-2">
-                <Sparkles className="text-pink-500 w-5 h-5 group-hover:animate-pulse" />
+                <Sparkles className="text-rose-600 w-5 h-5 group-hover:animate-pulse" />
                 <h2 className="text-xl font-bold text-white drop-shadow-sm">
                   {title}
                 </h2>
@@ -55,9 +55,9 @@ export function PostPage() {
               {/* Button pushed to bottom using mt-auto */}
               <Button
                 variant="outline"
-                className="mt-auto w-full border-pink-500 text-pink-400 hover:bg-pink-500 hover:text-white"
+                className="mt-auto w-full border-rose-600 text-rose-500 hover:bg-rose-600 hover:text-white"
               >
-                Go to {title}
+                Sow a {title}
               </Button>
             </CardContent>
           </Card>

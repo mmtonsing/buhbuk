@@ -5,7 +5,7 @@ export function About() {
     <div className="flex flex-col flex-1 w-full h-auto bg-stone-900 text-stone-200">
       <div className="scroll-mt-20 py-16 bg-stone-800 flex-1">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-center text-5xl font-extrabold tracking-tight text-[#d5bdaf] mb-10">
+          <h1 className="text-center text-5xl font-extrabold tracking-tight text-amber-300 mb-10">
             About BuhBuk
           </h1>
 

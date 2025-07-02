@@ -1,4 +1,3 @@
-// components/customUI/SuccessModal.jsx
 import { useEffect, Fragment } from "react";
 import {
   Dialog,
@@ -6,21 +5,26 @@ import {
   TransitionChild,
   DialogTitle,
 } from "@headlessui/react";
+import { Button } from "@/components/ui/button";
 
 export function SuccessModal({
   isOpen,
   setIsOpen,
   message = "Changes saved!",
-  duration = 2500, // ✅ allow external control
+  duration = 2500,
+  onClose,
+  buttonText = null, // pass "Go to Login Now" to show a button
 }) {
   useEffect(() => {
-    if (isOpen) {
-      const timer = setTimeout(() => {
-        setIsOpen(false);
-      }, duration);
-      return () => clearTimeout(timer);
-    }
-  }, [isOpen, duration]);
+    if (!isOpen) return;
+
+    const timer = setTimeout(() => {
+      setIsOpen(false);
+      onClose?.();
+    }, duration);
+
+    return () => clearTimeout(timer);
+  }, [isOpen, duration, onClose, setIsOpen]);
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -35,10 +39,22 @@ export function SuccessModal({
           leaveTo="opacity-0 scale-95"
         >
           <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-            <div className="bg-stone-800 border border-stone-700 rounded-xl px-6 py-4 shadow-xl text-center max-w-md w-full">
+            <div className="bg-stone-800 border border-stone-700 rounded-xl px-6 py-5 shadow-xl text-center max-w-md w-full space-y-4">
               <DialogTitle className="text-white text-lg font-medium whitespace-pre-line">
                 ✅ {message}
               </DialogTitle>
+
+              {buttonText && (
+                <Button
+                  onClick={() => {
+                    setIsOpen(false);
+                    onClose?.();
+                  }}
+                  className="bg-orange-600 hover:bg-orange-700"
+                >
+                  {buttonText}
+                </Button>
+              )}
             </div>
           </div>
         </TransitionChild>

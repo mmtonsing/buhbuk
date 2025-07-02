@@ -8,7 +8,7 @@ import { Compass } from "lucide-react";
 import { CategoryRedirectButton } from "../CategoryRedirectButton";
 import { useState } from "react";
 
-export function MobileCategoryPopover() {
+export function MobileVarietyPopover() {
   const [open, setOpen] = useState(false);
 
   return (
@@ -16,7 +16,7 @@ export function MobileCategoryPopover() {
       <PopoverTrigger asChild>
         <button className="flex flex-col items-center text-xs text-stone-300 hover:text-white transition">
           <Compass className="h-6 w-6" />
-          Category
+          Variety
         </button>
       </PopoverTrigger>
 

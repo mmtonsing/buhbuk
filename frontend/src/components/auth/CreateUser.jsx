@@ -49,7 +49,12 @@ export function CreateUser({ onSuccess }) {
       setSuccessEmail(user.email);
       setShowSuccess(true);
       setUser({ username: "", email: "", password: "", confirmPassword: "" });
-      // setTimeout(() => onSuccess?.(), 3000);
+
+      // Auto switch to login after delay
+      setTimeout(() => {
+        onSuccess?.(user.email); // switch view + pass email up
+        setShowSuccess(false);
+      }, 8000);
     } else {
       toast.error(`❌ ${res.message}`);
     }
@@ -109,9 +114,13 @@ export function CreateUser({ onSuccess }) {
       <SuccessModal
         isOpen={showSuccess}
         setIsOpen={setShowSuccess}
-        message={`Verification link sent to:\n📧${successEmail}\n\n📬 Check your inbox or spam folder.\n\n⏳ It might take a few minutes to arrive.\n🚀 You can explore while you wait.`}
-        duration={10000}
-        onClose={onSuccess}
+        message={`A verification link has been sent to:\n📧 ${successEmail}\n\n⏳ You’ll be redirected to login shortly.\nOr click below:`}
+        duration={8000}
+        onClose={() => {
+          setShowSuccess(false);
+          onSuccess?.(successEmail); // allow manual close
+        }}
+        buttonText="Go to Login Now"
       />
     </>
   );
