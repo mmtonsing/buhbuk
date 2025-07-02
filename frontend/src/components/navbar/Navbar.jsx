@@ -4,7 +4,7 @@ import { useScrollTrigger } from "@/utils/useScrollTrigger";
 import { DesktopNav } from "./desktop/DesktopNav";
 import DesktopUser from "./desktop/DesktopUser";
 import MobileNav from "./mobile/MobileNavSheet";
-import logo from "@/assets/logo-buhbuk.png";
+import logo from "/logo-buhbuk.png";
 import { useWindowWidth } from "@/hooks/useWindowWidth";
 
 export function Navbar() {
