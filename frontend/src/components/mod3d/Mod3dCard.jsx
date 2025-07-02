@@ -10,42 +10,39 @@ export function ModCard({ post }) {
   const category = post.category;
 
   return (
-    <div className="block rounded-xl border border-stone-700 shadow bg-stone-800 hover:bg-stone-700 text-stone-100 overflow-hidden transition-transform hover:scale-105 hover:shadow-xl duration-300 group">
+    <div className="rounded-xl border border-stone-700 shadow bg-stone-800 hover:bg-stone-700 overflow-hidden transition-transform hover:scale-105 duration-300 group">
       <Link to={`/viewmod3d/${post.refId._id}`}>
-        <div className="flex justify-center items-center bg-stone-900 h-52">
+        <div className="bg-stone-900 h-52 w-full flex justify-center items-center overflow-hidden">
           {post.imageUrl ? (
             <img
               src={post.imageUrl}
-              alt={post.title}
-              className="object-contain h-full w-full rounded-md p-2"
+              alt={post.refId.title}
+              className="object-contain max-h-full w-full p-2"
               loading="lazy"
             />
           ) : (
-            <p className="text-sm text-stone-500">No Image</p>
+            <p className="text-stone-400 text-sm">No Image</p>
           )}
         </div>
 
-        <div className="p-4 space-y-1">
+        <div className="p-4 space-y-2">
           <h3 className="text-base font-semibold text-stone-100 line-clamp-1">
             {post.refId.title}
           </h3>
+
+          <div className="flex items-center justify-between text-xs text-muted pt-2">
+            {post.author && <UserBadge user={post.author} />}
+            <LikeHandler postId={post._id} likedBy={post.likedBy} />
+          </div>
+
+          <div className="flex items-center justify-between text-xs pt-1">
+            <SmallText>{displayDate}</SmallText>
+            <span className="text-[color:var(--color-buhbukAccent)] font-medium">
+              {formatCategory(category)}
+            </span>
+          </div>
         </div>
       </Link>
-
-      <div className="px-4 pb-4 space-y-2">
-        <div className="flex items-center justify-between pt-1 text-xs text-muted">
-          {post.author && (
-            <UserBadge user={post.author} key={post.author._id} />
-          )}
-          <LikeHandler postId={post._id} likedBy={post.likedBy} />
-        </div>
-        <div className="flex items-center justify-between pt-1 text-xs text-muted">
-          <SmallText>{displayDate}</SmallText>
-          <span className="text-[color:var(--color-buhbukAccent)] font-medium">
-            {formatCategory(category)}
-          </span>
-        </div>
-      </div>
     </div>
   );
 }

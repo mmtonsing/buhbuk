@@ -9,7 +9,7 @@ const SORT_OPTIONS = [
   { value: "latest", label: "Latest" },
   { value: "popular", label: "Popular" },
 ];
-//
+
 export function Home3d() {
   const [mod3ds, setMod3ds] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -18,7 +18,7 @@ export function Home3d() {
   const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
-    loadMod3ds(1, true); // initial load or sort change
+    loadMod3ds(1, true);
   }, [sort]);
 
   async function loadMod3ds(pageToLoad = 1, reset = false) {
@@ -48,56 +48,37 @@ export function Home3d() {
 
   return (
     <div className="flex flex-col flex-1 min-h-screen w-full max-w-7xl mx-auto px-4 py-10">
-      <div className="flex items-center justify-between mb-6">
-        <PageTitle className="text-left mb-4">All 3D Models</PageTitle>
-        <div className="mb-6 flex justify-end gap-4">
-          <select
-            className="bg-stone-800 text-stone-100 border border-stone-600 rounded px-3 py-1"
-            value={sort}
-            onChange={(e) => setSort(e.target.value)}
-          >
-            {SORT_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
+      {/* Heading and sort filter */}
+      <div className="flex items-center justify-between mb-6 flex-col sm:flex-row gap-4">
+        <PageTitle className="text-left">All 3D Models</PageTitle>
+        <select
+          className="bg-stone-800 text-stone-100 border border-stone-600 rounded px-3 py-1"
+          value={sort}
+          onChange={(e) => setSort(e.target.value)}
+        >
+          {SORT_OPTIONS.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
       </div>
 
-      {loading && mod3ds.length === 0 ? (
-        <div
-          className="grid gap-6"
-          style={{
-            gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-          }}
-        >
-          {Array.from({ length: 8 }).map((_, i) => (
-            <SkeletonCard key={i} className="bg-stone-700 animate-pulse" />
-          ))}
-        </div>
-      ) : mod3ds.length === 0 ? (
-        <div className="text-center text-lg text-stone-300 py-20">
-          No models available.
-        </div>
-      ) : (
-        <div
-          className="grid gap-6"
-          style={{
-            gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-          }}
-        >
-          {mod3ds.map((post) => (
-            <ModCard key={post._id} post={post} />
-          ))}
-        </div>
-      )}
+      {/* Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {loading && mod3ds.length === 0
+          ? Array.from({ length: 8 }).map((_, i) => (
+              <SkeletonCard key={i} className="bg-stone-700 animate-pulse" />
+            ))
+          : mod3ds.map((post) => <ModCard key={post._id} post={post} />)}
+      </div>
 
+      {/* Load More */}
       {hasMore && (
         <div className="mt-10 text-center">
           <button
             onClick={handleLoadMore}
-            className="btn-buhbuk px-6 py-2 rounded-lg"
+            className="btn-buhbuk px-6 py-2 rounded-xl"
           >
             Load More
           </button>
