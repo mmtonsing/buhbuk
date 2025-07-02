@@ -13,7 +13,7 @@ export function About() {
           <PageTitle className="text-amber-300 mb-10">About BuhBuk</PageTitle>
 
           <section className="mb-12">
-            <SectionTitle>
+            <SectionTitle className="text-center">
               A Granary for Creativity — Rooted in Us.
             </SectionTitle>
             <PageParagraph>
@@ -26,7 +26,7 @@ export function About() {
           </section>
 
           <section className="mb-12">
-            <SectionTitle>✨ Our Vision</SectionTitle>
+            <SectionTitle className="text-center">✨ Our Vision</SectionTitle>
             <PageParagraph>
               We believe that creativity is like a harvest — it needs time,
               space, and care. Whether you build in 3D, write stories, craft
@@ -36,7 +36,9 @@ export function About() {
           </section>
 
           <section className="mb-12">
-            <SectionTitle>🧰 What You Can Do Here</SectionTitle>
+            <SectionTitle className="text-center">
+              🧰 What You Can Do Here
+            </SectionTitle>
             <ul className="list-disc ml-6 text-base md:text-lg space-y-2">
               <li>
                 🌀 Share 3D Models — Upload and showcase interactive creations.
@@ -61,7 +63,9 @@ export function About() {
           </section>
 
           <section className="mb-12">
-            <SectionTitle>🔧 Crafted by Heart, Open to All</SectionTitle>
+            <SectionTitle className="text-center">
+              🔧 Crafted by Heart, Open to All
+            </SectionTitle>
             <PageParagraph>
               BuhBuk is built by <strong>Langmuanmung Tonsing</strong>, a
               full-stack developer and creative soul from the Paite community.
@@ -72,7 +76,7 @@ export function About() {
           </section>
 
           <section className="mb-16">
-            <SectionTitle>🌿 Why BuhBuk?</SectionTitle>
+            <SectionTitle className="text-center">🌿 Why BuhBuk?</SectionTitle>
             <PageParagraph>
               In a world chasing fast trends, BuhBuk invites you to slow down
               and store what truly matters. Here, we honor story, craft, and
