@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://bukwarm.onrender.com/:path*"
+      "destination": "https://buhbuk.onrender.com/:path*"
     },
     {
       "source": "/(.*)",
