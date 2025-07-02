@@ -3,6 +3,7 @@ import { UserBadge } from "@/components/user/UserBadge";
 import LikeHandler from "@/context/LikeHandler";
 import { timeAgo } from "@/utils/timeAgo";
 import { SmallText } from "@/components/customUI/Typography";
+import { formatCategory } from "@/utils/formatCategory";
 
 export function PostCard({ post, children }) {
   if (!post || !post.refId || typeof post.refId !== "object") {
@@ -25,19 +26,6 @@ export function PostCard({ post, children }) {
         return `/blogs/${post.refId._id}`;
       default:
         return `/viewpost/${post._id}`;
-    }
-  };
-
-  const formatCategory = (cat) => {
-    switch (cat) {
-      case "Mod3d":
-        return "3D Model";
-      case "Graphic":
-        return "Graphic Art";
-      case "Blog":
-        return "Blog Post";
-      default:
-        return "Post";
     }
   };
 

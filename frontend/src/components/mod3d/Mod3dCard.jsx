@@ -3,9 +3,11 @@ import LikeHandler from "@/context/LikeHandler";
 import { UserBadge } from "@/components/user/UserBadge";
 import { timeAgo } from "@/utils/timeAgo";
 import { SmallText } from "@/components/customUI/Typography";
+import { formatCategory } from "@/utils/formatCategory";
 
 export function ModCard({ post }) {
   const displayDate = timeAgo(post?.createdAt);
+  const category = post.category;
 
   return (
     <div className="block rounded-xl border border-stone-700 shadow bg-stone-800 hover:bg-stone-700 text-stone-100 overflow-hidden transition-transform hover:scale-105 hover:shadow-xl duration-300 group">
@@ -39,6 +41,9 @@ export function ModCard({ post }) {
         </div>
         <div className="flex items-center justify-between pt-1 text-xs text-muted">
           <SmallText>{displayDate}</SmallText>
+          <span className="text-[color:var(--color-buhbukAccent)] font-medium">
+            {formatCategory(category)}
+          </span>
         </div>
       </div>
     </div>
